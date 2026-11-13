@@ -1,0 +1,1034 @@
+/* =====================================================================
+   Trajes Candelaria · estructura y componentes
+   Los colores salen de variables -c-* definidas en tema-guindo.css / tema-marino.css
+   (cada tema importa este archivo). Títulos: Playfair Display · Texto: Plus Jakarta Sans.
+   =====================================================================
+
+.root {
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-size: 13px;
+    -fx-background-color: -c-fondo;
+    -fx-accent: -c-oro;
+    -fx-focus-color: -c-oro;
+    -fx-faint-focus-color: transparent;
+    -fx-text-base-color: -c-texto;
+    -fx-selection-bar: -c-oro-claro;
+    -fx-selection-bar-non-focused: -c-oro-claro;
+    -fx-selection-bar-text: -c-texto;
+}
+
+.label { -fx-text-fill: -c-texto; }
+
+/* ---------- Íconos (Ikonli) ---------- */
+.ikonli-font-icon { -fx-icon-color: -c-texto-2; -fx-icon-size: 16px; }
+
+/* =====================================================================
+   Botones
+   ===================================================================== */
+.button, .toggle-button, .menu-button {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: -c-borde;
+    -fx-border-radius: 12;
+    -fx-border-width: 1.2;
+    -fx-padding: 10 18 10 18;
+    -fx-text-fill: -c-texto;
+    -fx-font-family: "Plus Jakarta Sans SemiBold";
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 8;
+}
+.button:hover, .toggle-button:hover, .menu-button:hover {
+    -fx-border-color: -c-oro;
+    -fx-background-color: #FFFDF8;
+}
+.button:pressed { -fx-background-color: -c-fondo-2; }
+.button:disabled { -fx-opacity: 0.45; }
+.button:focused, .toggle-button:focused { -fx-border-color: -c-oro; }
+.toggle-button:selected {
+    -fx-background-color: -c-side;
+    -fx-border-color: -c-side;
+    -fx-text-fill: white;
+}
+
+/* Primario: dorado */
+.boton-primario, .boton-dorado {
+    -fx-background-color: linear-gradient(to bottom, derive(-c-oro, 12%), -c-oro);
+    -fx-border-color: transparent;
+    -fx-text-fill: -c-side;
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(201,162,74,0.35), 14, 0, 0, 4);
+}
+.boton-primario:hover, .boton-dorado:hover {
+    -fx-background-color: linear-gradient(to bottom, -c-oro, -c-oro-osc);
+    -fx-border-color: transparent;
+}
+.boton-primario .ikonli-font-icon, .boton-dorado .ikonli-font-icon { -fx-icon-color: -c-side; }
+
+.boton-peligro {
+    -fx-border-color: #EBC4BF;
+    -fx-text-fill: -c-rojo;
+}
+.boton-peligro:hover { -fx-background-color: #FDF1EF; -fx-border-color: -c-rojo; }
+
+.boton-grande { -fx-padding: 14 26 14 26; -fx-font-size: 14px; }
+
+/* =====================================================================
+   Campos de formulario: 44 px, borde crema, dorado al enfocar
+   ===================================================================== */
+.text-field, .password-field, .text-area, .combo-box, .date-picker, .spinner, .color-picker {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: -c-borde;
+    -fx-border-radius: 12;
+    -fx-border-width: 1.2;
+    -fx-font-size: 13px;
+}
+.text-field, .password-field, .combo-box, .date-picker, .spinner, .color-picker {
+    -fx-pref-height: 44;
+    -fx-min-height: 44;
+}
+.text-field, .password-field { -fx-padding: 0 14 0 14; }
+.text-area .content { -fx-background-color: white; -fx-background-radius: 12; }
+.text-field:focused, .password-field:focused, .text-area:focused,
+.combo-box:focused, .date-picker:focused, .spinner:focused, .color-picker:focused,
+.combo-box:showing, .date-picker:showing {
+    -fx-border-color: -c-oro;
+    -fx-effect: dropshadow(gaussian, rgba(201,162,74,0.25), 10, 0, 0, 0);
+}
+.date-picker > .text-field {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-effect: null;
+    -fx-min-height: 0;
+    -fx-pref-height: -1;
+}
+.combo-box > .list-cell { -fx-padding: 0 0 0 12; -fx-text-fill: -c-texto; }
+.combo-box .arrow-button, .date-picker .arrow-button, .color-picker .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 14 0 8;
+}
+.combo-box .arrow, .date-picker .arrow, .color-picker .arrow { -fx-background-color: -c-texto-2; }
+.date-picker .arrow-button .calendar-icon, .date-picker > .arrow-button > .arrow { -fx-background-color: -c-oro; }
+.combo-box-popup .list-view, .context-menu {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: -c-borde;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(27,35,51,0.10), 24, 0, 0, 6);
+    -fx-padding: 6;
+}
+.combo-box-popup .list-cell { -fx-padding: 9 12 9 12; -fx-background-radius: 8; }
+.combo-box-popup .list-cell:hover { -fx-background-color: -c-fondo; }
+.combo-box-popup .list-cell:selected { -fx-background-color: -c-oro-claro; -fx-text-fill: -c-texto; }
+
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: #CFC9BC;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+.check-box:selected .box { -fx-background-color: -c-oro; -fx-border-color: -c-oro; }
+.check-box:selected .mark { -fx-background-color: white; }
+
+/* =====================================================================
+   Navegación superior + contenido
+   ===================================================================== */
+.barra-superior {
+    -fx-background-color: -c-side;
+    -fx-padding: 0 28 0 24;
+    -fx-min-height: 72;
+    -fx-pref-height: 72;
+    -fx-spacing: 18;
+    -fx-alignment: center-left;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 18, 0, 0, 3);
+}
+.menu-marca { -fx-spacing: 11; -fx-alignment: center-left; }
+.logo-cuadro {
+    -fx-background-color: linear-gradient(to bottom right, -c-oro-claro, -c-oro 45%, -c-oro-osc);
+    -fx-background-radius: 12;
+    -fx-min-width: 40; -fx-min-height: 40;
+    -fx-pref-width: 40; -fx-pref-height: 40;
+    -fx-max-width: 40; -fx-max-height: 40;
+    -fx-alignment: center;
+}
+.logo-cuadro .ikonli-font-icon { -fx-icon-color: -c-side; -fx-icon-size: 19px; }
+.menu-titulo {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+}
+.menu-subtitulo {
+    -fx-text-fill: -c-oro;
+    -fx-font-size: 9px;
+    -fx-font-family: "Plus Jakarta Sans SemiBold";
+}
+.nav-menu { -fx-spacing: 2; -fx-alignment: center; }
+.nav-item, .nav-mas {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 2 0;
+    -fx-border-radius: 0;
+    -fx-padding: 24 11 22 11;
+    -fx-text-fill: rgba(255,255,255,0.68);
+    -fx-font-family: "Plus Jakarta Sans Medium";
+    -fx-font-size: 13.5px;
+    -fx-effect: null;
+}
+.nav-item:hover, .nav-mas:hover, .nav-mas:showing {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-border-color: transparent transparent rgba(255,255,255,0.25) transparent;
+}
+.nav-item:focused, .nav-mas:focused { -fx-border-color: transparent; }
+.nav-item.activo, .nav-mas.activo, .nav-item.activo:focused, .nav-mas.activo:focused {
+    -fx-text-fill: white;
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+    -fx-border-color: transparent transparent -c-oro transparent;
+}
+.nav-mas > .label { -fx-text-fill: rgba(255,255,255,0.68); }
+.nav-mas:hover > .label, .nav-mas:showing > .label, .nav-mas.activo > .label { -fx-text-fill: white; }
+.nav-mas > .arrow-button { -fx-padding: 0 0 0 6; -fx-background-color: transparent; }
+.nav-mas > .arrow-button > .arrow { -fx-background-color: rgba(255,255,255,0.68); }
+.avatar { -fx-cursor: hand; }
+.avatar-circulo { -fx-fill: linear-gradient(to bottom right, -c-oro-claro, -c-oro-osc); }
+.avatar-texto { -fx-fill: -c-side; -fx-font-weight: bold; -fx-font-size: 13px; }
+.avatar:hover .avatar-circulo { -fx-stroke: white; -fx-stroke-width: 2; }
+.boton-nueva-reserva { -fx-padding: 10 18 10 16; }
+
+.context-menu .menu-item { -fx-padding: 9 14 9 12; -fx-background-radius: 8; }
+.context-menu .menu-item:focused { -fx-background-color: -c-fondo; }
+.context-menu .menu-item:focused .label { -fx-text-fill: -c-texto; }
+.context-menu .menu-item .ikonli-font-icon { -fx-icon-color: -c-oro-osc; -fx-icon-size: 15px; }
+.context-menu .separator .line { -fx-border-color: -c-borde transparent transparent transparent; }
+
+.area-contenido, .area-contenido > .viewport { -fx-background-color: -c-fondo; }
+.scroll-pane { -fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0; }
+.scroll-pane > .viewport { -fx-background-color: transparent; }
+.scroll-bar { -fx-background-color: transparent; }
+.scroll-bar .thumb { -fx-background-color: #D6D0C3; -fx-background-radius: 6; }
+.scroll-bar .thumb:hover { -fx-background-color: -c-oro; }
+.scroll-bar .increment-button, .scroll-bar .decrement-button { -fx-padding: 0; -fx-pref-height: 0; -fx-pref-width: 0; }
+.scroll-bar .increment-arrow, .scroll-bar .decrement-arrow { -fx-shape: " "; -fx-padding: 0; }
+.scroll-bar:vertical { -fx-pref-width: 10; -fx-padding: 2; }
+.scroll-bar:horizontal { -fx-pref-height: 10; -fx-padding: 2; }
+
+/* =====================================================================
+   Contenido y tipografía
+   ===================================================================== */
+.contenido {
+    -fx-padding: 34 38 34 38;
+    -fx-spacing: 20;
+    -fx-background-color: -c-fondo;
+}
+.titulo {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 30px;
+    -fx-text-fill: -c-texto;
+}
+/* Subtítulo de pantalla: 13 px, mayúsculas, dorado, espaciado (ver Ui.sobretitulo) */
+.sobretitulo {
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-text-fill: -c-oro;
+}
+.sobretitulo .ikonli-font-icon { -fx-icon-color: -c-oro; -fx-icon-size: 14px; }
+.subtitulo {
+    -fx-text-fill: -c-texto-2;
+    -fx-font-size: 13px;
+}
+.seccion {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-text-fill: -c-texto;
+}
+.etiqueta {
+    -fx-text-fill: -c-texto-2;
+    -fx-font-family: "Plus Jakarta Sans SemiBold";
+    -fx-font-size: 11.5px;
+}
+.encabezado { -fx-spacing: 6; }
+
+/* Tarjetas blancas (formularios, paneles) */
+.panel, .barra-filtros, .totales, .tarjeta-blanca {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(27,35,51,0.10), 24, 0, 0, 6);
+}
+.panel { -fx-padding: 22; -fx-spacing: 12; }
+.barra-filtros { -fx-padding: 14 18 14 18; -fx-spacing: 12; -fx-alignment: center-left; }
+.tarjeta-blanca { -fx-padding: 22; }
+
+/* ---------- Tarjetas de indicadores ---------- */
+.tarjeta {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 18 20 18 20;
+    -fx-effect: dropshadow(gaussian, rgba(27,35,51,0.10), 24, 0, 0, 6);
+    -fx-min-width: 150;
+}
+.tarjeta-titulo { -fx-text-fill: -c-texto-2; -fx-font-size: 12px; -fx-font-family: "Plus Jakarta Sans Medium"; }
+.tarjeta-valor {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 26px;
+    -fx-text-fill: -c-texto;
+}
+.tarjeta-icono {
+    -fx-background-radius: 12;
+    -fx-min-width: 46; -fx-min-height: 46; -fx-pref-width: 46; -fx-pref-height: 46;
+    -fx-max-width: 46; -fx-max-height: 46;
+    -fx-alignment: center;
+    -fx-background-color: #F6EEDB;
+}
+.tarjeta-icono .ikonli-font-icon { -fx-icon-size: 20px; -fx-icon-color: -c-oro-osc; }
+.tarjeta.verde .tarjeta-icono   { -fx-background-color: #E3F4EC; }
+.tarjeta.verde .tarjeta-icono .ikonli-font-icon   { -fx-icon-color: -c-verde; }
+.tarjeta.azul .tarjeta-icono    { -fx-background-color: #E6EAF3; }
+.tarjeta.azul .tarjeta-icono .ikonli-font-icon    { -fx-icon-color: -c-side-2; }
+.tarjeta.naranja .tarjeta-icono { -fx-background-color: #FBEFDD; }
+.tarjeta.naranja .tarjeta-icono .ikonli-font-icon { -fx-icon-color: #C47A12; }
+.tarjeta.rojo .tarjeta-icono    { -fx-background-color: #F9E5E2; }
+.tarjeta.rojo .tarjeta-icono .ikonli-font-icon    { -fx-icon-color: -c-rojo; }
+.tarjeta.granate .tarjeta-icono { -fx-background-color: #F4E3E5; }
+.tarjeta.granate .tarjeta-icono .ikonli-font-icon { -fx-icon-color: -c-guindo; }
+.tarjeta.gris .tarjeta-icono    { -fx-background-color: #EEF0F3; }
+/* Las tarjetas de los diálogos (sin ícono) llevan una línea de color arriba */
+.tarjeta.verde   { -fx-border-color: -c-verde transparent transparent transparent; }
+.tarjeta.azul    { -fx-border-color: -c-side-2 transparent transparent transparent; }
+.tarjeta.naranja { -fx-border-color: #D98A1C transparent transparent transparent; }
+.tarjeta.rojo    { -fx-border-color: -c-rojo transparent transparent transparent; }
+.tarjeta.gris    { -fx-border-color: #A0A6B1 transparent transparent transparent; }
+.tarjeta.dorado  { -fx-border-color: -c-oro transparent transparent transparent; }
+.tarjeta.granate { -fx-border-color: -c-guindo transparent transparent transparent; }
+.tarjeta { -fx-border-width: 3 0 0 0; -fx-border-radius: 16 16 0 0; }
+.tarjeta.con-icono { -fx-border-width: 0; }
+
+/* ---------- Chips de estado ---------- */
+.badge, .chip {
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 20;
+    -fx-font-size: 10.5px;
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+}
+.badge { -fx-padding: 3 8 3 8; -fx-font-size: 10px; }
+.badge-verde   { -fx-background-color: #E3F4EC; -fx-text-fill: -c-verde; }
+.badge-azul    { -fx-background-color: #E6EAF3; -fx-text-fill: -c-side-2; }
+.badge-naranja { -fx-background-color: #FBEFDD; -fx-text-fill: #B36A0B; }
+.badge-gris    { -fx-background-color: #EEF0F3; -fx-text-fill: -c-texto-2; }
+.badge-morado  { -fx-background-color: #EEE6F6; -fx-text-fill: #6A3D99; }
+.badge-rojo    { -fx-background-color: #F9E5E2; -fx-text-fill: -c-rojo; }
+
+.chip-oro {
+    -fx-background-color: linear-gradient(to right, -c-oro-claro, -c-oro);
+    -fx-text-fill: -c-side;
+}
+.chip-oro .ikonli-font-icon { -fx-icon-color: -c-side; -fx-icon-size: 11px; }
+.chip-blanco {
+    -fx-background-color: rgba(255,255,255,0.95);
+    -fx-text-fill: -c-texto;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 2);
+}
+.chip-verde { -fx-background-color: #E3F4EC; -fx-text-fill: -c-verde; -fx-font-size: 12px; -fx-padding: 9 14 9 14; }
+.chip-verde .ikonli-font-icon { -fx-icon-color: -c-verde; -fx-icon-size: 14px; }
+.chip-rojo { -fx-background-color: #F9E5E2; -fx-text-fill: -c-rojo; -fx-font-size: 12px; -fx-padding: 9 14 9 14; }
+.chip-rojo .ikonli-font-icon { -fx-icon-color: -c-rojo; -fx-icon-size: 14px; }
+.chip-banner {
+    -fx-background-color: rgba(201,162,74,0.16);
+    -fx-border-color: rgba(201,162,74,0.55);
+    -fx-border-radius: 20;
+    -fx-text-fill: -c-oro-claro;
+    -fx-font-size: 11.5px;
+    -fx-padding: 6 14 6 14;
+}
+.chip-banner .ikonli-font-icon { -fx-icon-color: -c-oro; -fx-icon-size: 12px; }
+
+/* =====================================================================
+   Tablas modernas
+   ===================================================================== */
+.table-view {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-border-color: transparent;
+    -fx-padding: 8 10 10 10;
+    -fx-effect: dropshadow(gaussian, rgba(27,35,51,0.10), 24, 0, 0, 6);
+    -fx-table-cell-border-color: transparent;
+}
+.table-view:focused { -fx-background-insets: 0; -fx-background-color: white; }
+.table-view .column-header-background {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent -c-borde transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-size: 42;
+}
+.table-view .column-header .label {
+    -fx-text-fill: #8A8F9A;
+    -fx-font-size: 10.5px;
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+    -fx-padding: 0 0 0 10;
+}
+.table-view .column-header .arrow { -fx-background-color: -c-oro; }
+.table-view .column-resize-line { -fx-background-color: -c-oro; }
+.table-row-cell {
+    -fx-cell-size: 52px;
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #F0ECE4 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-text-fill: -c-texto;
+}
+.table-row-cell:odd { -fx-background-color: white; }
+.table-row-cell:hover { -fx-background-color: -c-fondo; }
+.table-row-cell:selected { -fx-background-color: #F6EEDB; }
+.table-row-cell:selected .table-cell { -fx-text-fill: -c-texto; }
+.table-row-cell:empty { -fx-background-color: white; -fx-border-color: transparent; }
+.table-cell {
+    -fx-border-color: transparent;
+    -fx-padding: 0 8 0 8;
+    -fx-font-size: 12.5px;
+    -fx-alignment: center-left;
+    -fx-text-fill: -c-texto;
+}
+.table-view .placeholder .label { -fx-text-fill: -c-texto-2; }
+.table-view > .corner { -fx-background-color: white; }
+
+/* ---------- Pestañas (Reportes) ---------- */
+.tab-pane > .tab-header-area { -fx-padding: 0 0 10 0; }
+.tab-pane > .tab-header-area > .tab-header-background { -fx-background-color: transparent; }
+.tab-pane > .tab-header-area > .headers-region > .tab {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 8 16 8 16;
+    -fx-background-insets: 0 6 0 0;
+    -fx-border-color: transparent;
+}
+.tab-pane > .tab-header-area > .headers-region > .tab .tab-label { -fx-text-fill: -c-texto-2; -fx-font-family: "Plus Jakarta Sans SemiBold"; }
+.tab-pane > .tab-header-area > .headers-region > .tab:selected { -fx-background-color: -c-side; }
+.tab-pane > .tab-header-area > .headers-region > .tab:selected .tab-label { -fx-text-fill: white; }
+.tab-pane > .tab-header-area > .headers-region > .tab:selected .focus-indicator { -fx-border-color: transparent; }
+.tab-pane > .tab-content-area { -fx-background-color: transparent; -fx-padding: 6 0 0 0; }
+
+/* ---------- Totales ---------- */
+.totales { -fx-padding: 16 22 16 22; -fx-alignment: center-left; }
+.total-grande {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-text-fill: -c-guindo;
+}
+.descuento { -fx-text-fill: -c-verde; -fx-font-family: "Plus Jakarta Sans SemiBold"; }
+
+/* ---------- Diálogos ---------- */
+.dialog-pane { -fx-background-color: -c-fondo; }
+.dialog-pane > .header-panel { -fx-background-color: -c-side; }
+.dialog-pane > .header-panel .label { -fx-text-fill: white; -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 16px; }
+.dialog-pane > .content.label { -fx-padding: 20; }
+.cabecera {
+    -fx-background-color: white;
+    -fx-padding: 22 28 18 28;
+    -fx-spacing: 6;
+    -fx-border-color: transparent transparent -c-oro transparent;
+    -fx-border-width: 0 0 2 0;
+}
+.barra-acciones {
+    -fx-background-color: white;
+    -fx-padding: 14 28 14 28;
+    -fx-spacing: 10;
+    -fx-alignment: center-right;
+    -fx-border-color: -c-borde transparent transparent transparent;
+}
+
+/* =====================================================================
+   Inicio
+   ===================================================================== */
+.inicio { -fx-padding: 0 0 44 0; -fx-spacing: 0; -fx-background-color: -c-fondo; }
+.inicio-seccion { -fx-padding: 0 44 0 44; }
+.banner {
+    -fx-background-color: linear-gradient(to right, -c-hero1 0%, -c-hero2 100%);
+    -fx-padding: 54 56 128 56;
+}
+.banner-titulo {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 52px;
+}
+.banner-blanco { -fx-fill: white; }
+.banner-dorado { -fx-fill: -c-oro; }
+.banner-parrafo { -fx-fill: rgba(255,255,255,0.78); -fx-font-size: 15px; }
+.banner-negrita { -fx-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; }
+.adorno { -fx-fill: -c-oro; -fx-stroke: transparent; }
+.adorno-linea { -fx-fill: transparent; -fx-stroke: -c-oro; -fx-stroke-width: 3; }
+.buscador {
+    -fx-background-color: white;
+    -fx-background-radius: 22;
+    -fx-padding: 16 26 22 26;
+    -fx-spacing: 14;
+    -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.22), 44, 0, 0, 16);
+}
+.pestana {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-border-color: transparent;
+    -fx-padding: 9 16 9 14;
+    -fx-text-fill: -c-texto-2;
+    -fx-effect: null;
+}
+.pestana:hover { -fx-background-color: -c-fondo; -fx-border-color: transparent; }
+.pestana:selected {
+    -fx-background-color: -c-fondo-2;
+    -fx-text-fill: -c-guindo;
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+}
+.pestana .ikonli-font-icon { -fx-icon-size: 15px; }
+.pestana:selected .ikonli-font-icon { -fx-icon-color: -c-guindo; }
+.buscador-linea { -fx-background-color: -c-borde; -fx-min-height: 1; -fx-pref-height: 1; -fx-max-height: 1; }
+.campo-titulo {
+    -fx-text-fill: -c-texto-2;
+    -fx-font-size: 10.5px;
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+}
+.nota { -fx-text-fill: -c-texto-2; -fx-font-size: 12px; }
+
+.chip-filtro {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-border-color: -c-borde;
+    -fx-border-radius: 20;
+    -fx-padding: 8 16 8 16;
+    -fx-font-family: "Plus Jakarta Sans SemiBold";
+    -fx-font-size: 12.5px;
+    -fx-text-fill: -c-texto;
+    -fx-effect: null;
+}
+.chip-filtro:hover { -fx-border-color: -c-oro; -fx-background-color: white; }
+.chip-filtro:selected {
+    -fx-background-color: -c-guindo;
+    -fx-border-color: -c-guindo;
+    -fx-text-fill: white;
+}
+.resultados-titulo {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 32px;
+    -fx-text-fill: -c-texto;
+}
+
+/* =====================================================================
+   Tarjeta de traje (Inicio y Catálogo)
+   ===================================================================== */
+.traje-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.10), 24, 0, 0, 6);
+}
+.traje-card.elevada { -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.24), 38, 0, 0, 16); }
+.traje-cuerpo { -fx-padding: 18 20 20 20; -fx-spacing: 7; }
+.traje-meta {
+    -fx-text-fill: -c-oro-osc;
+    -fx-font-size: 10.5px;
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+}
+.traje-veces { -fx-text-fill: -c-texto-2; -fx-font-size: 11px; }
+.traje-nombre {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 22px;
+    -fx-text-fill: -c-texto;
+}
+.traje-codigo { -fx-text-fill: #A0A6B1; -fx-font-size: 11px; }
+.traje-desc { -fx-text-fill: -c-texto-2; -fx-font-size: 12.5px; }
+.traje-detalle { -fx-text-fill: -c-texto; -fx-font-size: 12px; }
+.traje-detalle .ikonli-font-icon { -fx-icon-color: -c-oro-osc; -fx-icon-size: 14px; }
+.traje-separador { -fx-background-color: #EFE8E1; -fx-pref-height: 1; -fx-min-height: 1; -fx-max-height: 1; }
+.traje-precio {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 26px;
+    -fx-text-fill: -c-texto;
+}
+.traje-precio-nota { -fx-text-fill: -c-texto-2; -fx-font-size: 13px; }
+.boton-guindo {
+    -fx-background-color: -c-guindo;
+    -fx-border-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+    -fx-padding: 11 20 11 20;
+}
+.boton-guindo:hover { -fx-background-color: derive(-c-guindo, -18%); -fx-border-color: transparent; }
+.boton-guindo .ikonli-font-icon { -fx-icon-color: white; }
+.placeholder-danza {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 30px;
+    -fx-text-fill: white;
+    -fx-text-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 12, 0, 0, 2);
+}
+.placeholder-sub { -fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 10px; -fx-font-weight: bold; }
+.chakana-tenue { -fx-fill: white; -fx-opacity: 0.13; }
+.punto-verde { -fx-fill: -c-verde; }
+.punto-rojo { -fx-fill: -c-rojo; }
+.punto-ambar { -fx-fill: #D98A1C; }
+.vacio-catalogo { -fx-padding: 60; -fx-alignment: center; -fx-spacing: 10; }
+
+/* =====================================================================
+   Personalizadores
+   ===================================================================== */
+.visor-3d { -fx-background-radius: 16; -fx-border-color: transparent; -fx-effect: dropshadow(gaussian, rgba(27,35,51,0.10), 24, 0, 0, 6); }
+.visor-barra { -fx-padding: 10 0 0 0; }
+.parte-fila {
+    -fx-background-color: -c-fondo;
+    -fx-background-radius: 12;
+    -fx-padding: 10 12 10 12;
+    -fx-spacing: 6;
+}
+.color-boton {
+    -fx-min-width: 24; -fx-pref-width: 24; -fx-max-width: 24;
+    -fx-min-height: 24; -fx-pref-height: 24; -fx-max-height: 24;
+    -fx-padding: 0;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(0, 0, 0, 0.18);
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-effect: null;
+}
+.color-boton.elegido { -fx-border-color: -c-oro; -fx-border-width: 3; }
+.estudio {
+    -fx-background-color: radial-gradient(center 50% 42%, radius 75%, derive(-c-side, 25%) 0%, -c-side 55%, derive(-c-side, -45%) 100%);
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(27,35,51,0.10), 24, 0, 0, 6);
+}
+.aviso-capa {
+    -fx-text-fill: #8A5A00;
+    -fx-background-color: #FBF3E0;
+    -fx-background-radius: 12;
+    -fx-padding: 10;
+    -fx-font-size: 11px;
+}
+
+/* ---------- Tooltips ---------- */
+.tooltip {
+    -fx-background-color: -c-side;
+    -fx-background-radius: 8;
+    -fx-text-fill: white;
+    -fx-font-size: 11.5px;
+    -fx-padding: 6 10 6 10;
+}
+
+/* =====================================================================
+   Inicio de sesión
+   ===================================================================== */
+.login { -fx-background-color: -c-fondo; }
+.login-izq {
+    -fx-background-color: linear-gradient(to bottom right, -c-hero1 0%, -c-hero2 100%);
+}
+.login-chakana { -fx-fill: -c-oro; -fx-opacity: 0.22; }
+.logo-grande {
+    -fx-min-width: 58; -fx-min-height: 58; -fx-pref-width: 58; -fx-pref-height: 58;
+    -fx-max-width: 58; -fx-max-height: 58;
+    -fx-background-radius: 16;
+}
+.logo-grande .ikonli-font-icon { -fx-icon-size: 27px; }
+.login-marca {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 44px;
+    -fx-text-fill: white;
+}
+.login-frase {
+    -fx-text-fill: -c-oro;
+    -fx-font-family: "Plus Jakarta Sans SemiBold";
+    -fx-font-size: 15px;
+}
+.login-texto { -fx-text-fill: rgba(255,255,255,0.72); -fx-font-size: 14px; -fx-line-spacing: 3; }
+.login-pie { -fx-text-fill: rgba(255,255,255,0.45); -fx-font-size: 10.5px; }
+.login-der { -fx-background-color: -c-fondo; }
+.login-scroll, .login-scroll > .viewport { -fx-background-color: transparent; }
+.login-tarjeta {
+    -fx-background-color: white;
+    -fx-background-radius: 22;
+    -fx-padding: 36 38 32 38;
+    -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.14), 40, 0, 0, 12);
+}
+.login-titulo {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 34px;
+    -fx-text-fill: -c-texto;
+}
+.login-ayuda .label { -fx-text-fill: -c-texto-2; }
+.enlace {
+    -fx-text-fill: -c-guindo;
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+.enlace:hover { -fx-underline: true; }
+.enlace:visited { -fx-text-fill: -c-guindo; }
+.boton-ancho { -fx-pref-height: 46; -fx-font-size: 14px; }
+
+/* Campo de 44 px con ícono: el borde va en la caja y se vuelve dorado si el campo de adentro tiene el foco */
+.campo-icono {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: -c-borde;
+    -fx-border-radius: 12;
+    -fx-border-width: 1.2;
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-padding: 0 4 0 14;
+    -fx-cursor: text;
+}
+.campo-icono:focus-within {
+    -fx-border-color: -c-oro;
+    -fx-effect: dropshadow(gaussian, rgba(201,162,74,0.25), 10, 0, 0, 0);
+}
+.campo-icono .ikonli-font-icon { -fx-icon-color: #A59B8E; -fx-icon-size: 16px; }
+.campo-icono:focus-within .ikonli-font-icon { -fx-icon-color: -c-oro-osc; }
+.campo-interno, .campo-interno:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-effect: null;
+    -fx-padding: 0 8 0 0;
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+}
+.error-suave {
+    -fx-background-color: #FBEDEB;
+    -fx-background-radius: 10;
+    -fx-text-fill: #B03A2E;
+    -fx-padding: 10 12 10 12;
+    -fx-font-size: 12.5px;
+}
+.error-suave .ikonli-font-icon { -fx-icon-color: #C0392B; -fx-icon-size: 15px; }
+
+/* ---------- Usuario en la barra superior ---------- */
+.saludo { -fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px; }
+.boton-salir {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-background-radius: 10;
+    -fx-border-color: transparent;
+    -fx-padding: 9;
+    -fx-effect: null;
+}
+.boton-salir:hover { -fx-background-color: rgba(255,255,255,0.18); -fx-border-color: transparent; }
+.boton-salir .ikonli-font-icon { -fx-icon-color: white; -fx-icon-size: 16px; }
+.menu-usuario { -fx-padding: 8 14 8 12; -fx-opacity: 1; }
+.menu-usuario:disabled { -fx-opacity: 1; }
+.menu-usuario-nombre { -fx-font-family: "Plus Jakarta Sans"; -fx-font-weight: bold; -fx-text-fill: -c-texto; }
+.menu-usuario-rol { -fx-text-fill: -c-oro-osc; -fx-font-size: 10px; }
+
+/* =====================================================================
+   Portal del cliente
+   ===================================================================== */
+.usuario-caja { -fx-padding: 6 10 6 6; -fx-background-radius: 30; }
+.usuario-caja:hover { -fx-background-color: rgba(255,255,255,0.08); }
+.usuario-caja .ikonli-font-icon { -fx-icon-color: rgba(255,255,255,0.7); }
+.usuario-nombre { -fx-text-fill: white; -fx-font-family: "Plus Jakarta Sans SemiBold"; -fx-font-size: 13px; }
+.usuario-rol { -fx-text-fill: -c-oro; -fx-font-size: 9px; }
+.boton-secundario {
+    -fx-background-color: white;
+    -fx-border-color: -c-borde;
+    -fx-text-fill: -c-texto;
+}
+.ok-suave {
+    -fx-background-color: #E6F5EE;
+    -fx-background-radius: 10;
+    -fx-text-fill: -c-verde;
+    -fx-padding: 8 12 8 12;
+}
+.aviso-gris {
+    -fx-background-color: #EEF0F3;
+    -fx-background-radius: 10;
+    -fx-text-fill: -c-texto-2;
+    -fx-padding: 10 12 10 12;
+}
+.campo-bloqueado, .campo-bloqueado:focused {
+    -fx-background-color: -c-fondo;
+    -fx-text-fill: -c-texto-2;
+    -fx-border-color: -c-borde;
+    -fx-effect: null;
+}
+
+/* ---------- Detalle del traje ---------- */
+.detalle { -fx-background-color: -c-fondo; }
+.detalle-scroll, .detalle-scroll > .viewport { -fx-background-color: transparent; }
+.detalle-foto { -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.16), 28, 0, 0, 8); }
+.miniatura {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: transparent;
+    -fx-border-width: 2;
+    -fx-cursor: hand;
+    -fx-opacity: 0.75;
+}
+.miniatura.elegida { -fx-border-color: -c-oro; -fx-opacity: 1; }
+.detalle-nombre {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 38px;
+    -fx-text-fill: -c-texto;
+}
+.detalle-desc { -fx-text-fill: -c-texto-2; -fx-font-size: 14px; -fx-line-spacing: 3; }
+.detalle-seccion {
+    -fx-font-family: "Playfair Display";
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-text-fill: -c-texto;
+}
+.pieza-item { -fx-text-fill: -c-texto; -fx-font-size: 13px; }
+.pieza-item .ikonli-font-icon { -fx-icon-color: -c-oro-osc; -fx-icon-size: 15px; }
+.talla-chip {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: -c-borde;
+    -fx-border-radius: 10;
+    -fx-padding: 8 16 8 16;
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+    -fx-effect: null;
+}
+.talla-chip.elegida { -fx-background-color: -c-guindo; -fx-border-color: -c-guindo; -fx-text-fill: white; }
+
+/* Mini calendario */
+.cal-caja {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 16 18 16 18;
+    -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.08), 18, 0, 0, 4);
+}
+.cal-mes { -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 16px; }
+.cal-nav { -fx-padding: 4 8 4 8; -fx-background-radius: 8; -fx-border-radius: 8; -fx-effect: null; }
+.cal-semana {
+    -fx-min-width: 42; -fx-pref-width: 42; -fx-alignment: center;
+    -fx-text-fill: -c-texto-2; -fx-font-size: 10.5px; -fx-font-weight: bold;
+}
+.cal-dia {
+    -fx-min-width: 42; -fx-pref-width: 42; -fx-min-height: 34; -fx-pref-height: 34;
+    -fx-alignment: center;
+    -fx-background-radius: 9;
+    -fx-font-size: 12.5px;
+}
+.cal-libre { -fx-text-fill: -c-texto; }
+.cal-pasado { -fx-text-fill: #C9C2B8; }
+.cal-ocupado { -fx-background-color: -c-guindo; -fx-text-fill: white; -fx-font-weight: bold; }
+.cal-elegido { -fx-background-color: -c-oro-claro; -fx-text-fill: -c-texto; -fx-font-weight: bold; }
+.cal-hoy { -fx-border-color: -c-oro; -fx-border-radius: 9; -fx-border-width: 1.5; }
+.cal-muestra { -fx-min-width: 14; -fx-min-height: 14; -fx-max-width: 14; -fx-max-height: 14; -fx-background-radius: 4; }
+.cal-muestra.cal-libre { -fx-background-color: white; -fx-border-color: -c-borde; -fx-border-radius: 4; }
+
+/* Tarjeta resumen fija */
+.resumen-tarjeta {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.16), 34, 0, 0, 10);
+    -fx-border-color: -c-oro-claro transparent transparent transparent;
+    -fx-border-width: 4 0 0 0;
+    -fx-border-radius: 20 20 0 0;
+}
+.resumen-titulo { -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 20px; }
+.resumen-concepto { -fx-text-fill: -c-texto-2; -fx-font-size: 12.5px; }
+.resumen-monto { -fx-text-fill: -c-texto; -fx-font-family: "Plus Jakarta Sans SemiBold"; -fx-font-size: 13px; }
+.resumen-total-texto { -fx-text-fill: -c-texto; -fx-font-family: "Plus Jakarta Sans"; -fx-font-weight: bold; -fx-font-size: 14px; }
+.resumen-total { -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 28px; -fx-text-fill: -c-guindo; }
+.resumen-total-chico { -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: -c-guindo; }
+.boton-solicitar { -fx-pref-height: 52; -fx-font-size: 15px; }
+
+/* Confirmación con check animado */
+.confirmacion-velo { -fx-background-color: rgba(30,10,15,0.55); }
+.confirmacion-tarjeta {
+    -fx-background-color: white;
+    -fx-background-radius: 24;
+    -fx-padding: 36 40 32 40;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 50, 0, 0, 18);
+}
+.check-circulo { -fx-fill: linear-gradient(to bottom right, -c-oro-claro, -c-oro 50%, -c-oro-osc); }
+.check-trazo { -fx-stroke: white; -fx-stroke-width: 6; -fx-fill: transparent; }
+.confirmacion-titulo { -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 28px; }
+.confirmacion-texto { -fx-text-fill: -c-texto-2; -fx-font-size: 14px; -fx-text-alignment: center; -fx-alignment: center; }
+
+/* ---------- Mis reservas ---------- */
+.reserva-tarjeta {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 24 28 24 28;
+    -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.10), 24, 0, 0, 6);
+}
+.reserva-titulo { -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 22px; }
+.reserva-datos { -fx-padding: 16 0 0 0; -fx-border-color: #EFE8E1 transparent transparent transparent; }
+.reserva-valor { -fx-font-family: "Plus Jakarta Sans SemiBold"; -fx-font-size: 15px; }
+.paso-circulo.paso-hecho { -fx-fill: -c-guindo; }
+.paso-circulo.paso-actual { -fx-fill: -c-oro; -fx-effect: dropshadow(gaussian, rgba(201,162,74,0.55), 14, 0.3, 0, 0); }
+.paso-circulo.paso-pendiente { -fx-fill: white; -fx-stroke: #D8D1C6; -fx-stroke-width: 2; }
+.paso-circulo.paso-cortado { -fx-fill: -c-rojo; }
+.paso-hecho .ikonli-font-icon, .paso-cortado .ikonli-font-icon { -fx-icon-color: white; }
+.paso-numero { -fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #A69D90; }
+.paso-actual .paso-numero { -fx-text-fill: white; }
+.paso-nombre { -fx-font-size: 12px; -fx-text-fill: -c-texto-2; }
+.paso-nombre.paso-actual { -fx-text-fill: -c-oro-osc; -fx-font-weight: bold; }
+.paso-nombre.paso-hecho { -fx-text-fill: -c-guindo; }
+.paso-nombre.paso-cortado { -fx-text-fill: -c-rojo; -fx-font-weight: bold; }
+.paso-linea { -fx-min-height: 3; -fx-pref-height: 3; -fx-max-height: 3; -fx-background-radius: 2; }
+.paso-linea.paso-hecho { -fx-background-color: -c-guindo; }
+.paso-linea.paso-pendiente { -fx-background-color: #E3DCD2; }
+
+/* ---------- Mis diseños ---------- */
+.diseno-imagen { -fx-background-color: radial-gradient(center 50% 40%, radius 75%, #FFFFFF 0%, -c-fondo-2 100%); }
+
+/* =====================================================================
+   Panel de la tienda: barra lateral guindo
+   ===================================================================== */
+.menu-scroll, .menu-scroll > .viewport { -fx-background-color: -c-side; -fx-background-insets: 0; }
+.menu-lateral {
+    -fx-background-color: linear-gradient(to bottom, -c-side, derive(-c-side, -28%));
+    -fx-padding: 0 0 0 0;
+    -fx-spacing: 2;
+}
+.menu-marca-lateral { -fx-padding: 26 16 20 20; }
+.menu-grupo {
+    -fx-text-fill: rgba(255,255,255,0.42);
+    -fx-font-size: 9.5px;
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+    -fx-padding: 16 24 6 24;
+}
+.menu-boton {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0 12 12 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-radius: 0;
+    -fx-text-fill: rgba(255,255,255,0.72);
+    -fx-font-family: "Plus Jakarta Sans Medium";
+    -fx-font-size: 13.5px;
+    -fx-alignment: center-left;
+    -fx-padding: 10 18 10 21;
+    -fx-graphic-text-gap: 14;
+    -fx-effect: null;
+}
+.menu-boton .ikonli-font-icon { -fx-icon-color: rgba(255,255,255,0.5); -fx-icon-size: 17px; }
+.menu-boton:hover {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+}
+.menu-boton:hover .ikonli-font-icon { -fx-icon-color: -c-oro-claro; }
+.menu-boton:focused { -fx-border-color: transparent; }
+.menu-boton.activo, .menu-boton.activo:focused {
+    -fx-background-color: -c-side-2;
+    -fx-border-color: -c-oro;
+    -fx-text-fill: white;
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+}
+.menu-boton.activo .ikonli-font-icon { -fx-icon-color: -c-oro; }
+.insignia {
+    -fx-background-color: #E5484D;
+    -fx-background-radius: 10;
+    -fx-text-fill: white;
+    -fx-font-size: 10.5px;
+    -fx-font-family: "Plus Jakarta Sans";
+    -fx-font-weight: bold;
+    -fx-padding: 1 7 1 7;
+    -fx-min-width: 20;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(229,72,77,0.5), 8, 0, 0, 1);
+}
+.menu-usuario-lateral {
+    -fx-background-color: rgba(0,0,0,0.20);
+    -fx-padding: 14 14 14 16;
+    -fx-spacing: 10;
+}
+
+/* ---------- Solicitudes / pedidos / inicio ---------- */
+.solicitud-cliente { -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 21px; }
+.chip-hace { -fx-background-color: #F3ECE0; -fx-text-fill: -c-oro-osc; -fx-font-size: 11.5px; -fx-padding: 6 12 6 10; }
+.chip-hace .ikonli-font-icon { -fx-icon-color: -c-oro-osc; }
+.chip-hace-viejo { -fx-background-color: #FBE9E7; -fx-text-fill: -c-rojo; }
+.chip-hace-viejo .ikonli-font-icon { -fx-icon-color: -c-rojo; }
+.boton-fila { -fx-padding: 6 12 6 10; -fx-font-size: 12px; -fx-effect: null; }
+.tarjeta-clic { -fx-cursor: hand; }
+.tarjeta-clic:hover { -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.20), 30, 0, 0, 10); }
+
+/* =====================================================================
+   Diseña tu traje (portal, por capas)
+   ===================================================================== */
+.disena { -fx-padding: 30 34 30 34; }
+.pasos-scroll, .pasos-scroll > .viewport { -fx-background-color: transparent; }
+.pasos-tarjeta {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 24 24 24 24;
+    -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.12), 28, 0, 0, 8);
+}
+.paso { -fx-padding: 0 0 16 0; -fx-border-color: transparent transparent #EFE8E1 transparent; -fx-border-width: 0 0 1 0; }
+.paso-num {
+    -fx-background-color: -c-guindo;
+    -fx-background-radius: 14;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-min-width: 26; -fx-min-height: 26; -fx-max-width: 26; -fx-max-height: 26;
+    -fx-alignment: center;
+}
+.paso-titulo { -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 17px; }
+.flecha-angulo {
+    -fx-background-color: rgba(255,255,255,0.14);
+    -fx-background-radius: 30;
+    -fx-border-color: rgba(255,255,255,0.25);
+    -fx-border-radius: 30;
+    -fx-padding: 10;
+    -fx-effect: null;
+}
+.flecha-angulo:hover { -fx-background-color: rgba(255,255,255,0.28); -fx-border-color: -c-oro; }
+.flecha-angulo .ikonli-font-icon { -fx-icon-color: white; }
+.muestra {
+    -fx-padding: 3;
+    -fx-background-radius: 20;
+    -fx-border-color: transparent;
+    -fx-border-width: 2;
+    -fx-border-radius: 20;
+    -fx-cursor: hand;
+}
+.muestra:hover { -fx-border-color: -c-oro-claro; }
+.muestra.elegida { -fx-border-color: -c-oro; }
+.circulo-color { -fx-stroke: rgba(0,0,0,0.15); -fx-stroke-width: 1; }
+.modalidad {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-color: -c-borde;
+    -fx-border-radius: 14;
+    -fx-border-width: 1.5;
+    -fx-padding: 12 14 12 14;
+    -fx-alignment: center-left;
+    -fx-effect: null;
+}
+.modalidad:selected { -fx-border-color: -c-oro; -fx-background-color: #FBF6EA; }
+.modalidad-titulo { -fx-font-family: "Plus Jakarta Sans"; -fx-font-weight: bold; -fx-font-size: 13.5px; }
+.modalidad-titulo .ikonli-font-icon { -fx-icon-color: -c-guindo; }
+.resumen-disena {
+    -fx-background-color: -c-fondo;
+    -fx-background-radius: 16;
+    -fx-padding: 18;
+}
+.precio-tachable { -fx-text-fill: -c-texto-2; -fx-font-size: 11.5px; -fx-strikethrough: true; }

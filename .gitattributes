@@ -1,0 +1,5 @@
+# mvnw debe conservar LF para que funcione en Linux/macOS; los .cmd, CRLF
+mvnw     text eol=lf
+*.cmd    text eol=crlf
+*.png    binary
+*.ttf    binary

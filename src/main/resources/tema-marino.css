@@ -1,0 +1,20 @@
+/* Tema marino: azul marino + dorado, con detalles guindo. */
+@import "estilos.css";
+
+.root {
+    -c-side: #1B2333;
+    -c-side-2: #26314A;
+    -c-hero1: #1B2333;
+    -c-hero2: #2C3956;
+    -c-guindo: #7A1F2B;
+    -c-oro: #C9A24A;
+    -c-oro-claro: #E8D5A3;
+    -c-oro-osc: #A9852F;
+    -c-fondo: #F7F5F0;
+    -c-fondo-2: #EEF0F5;
+    -c-texto: #1F2430;
+    -c-texto-2: #6B7280;
+    -c-borde: #E5E1D8;
+    -c-verde: #1E9E6A;
+    -c-rojo: #C0392B;
+}

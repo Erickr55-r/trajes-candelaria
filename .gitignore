@@ -1,0 +1,27 @@
+# ---- Compilación (Maven / IntelliJ) ----
+target/
+out/
+*.class
+
+# ---- IDE (IntelliJ guarda aquí la Run Configuration con DB_PASSWORD: nunca se sube) ----
+.idea/
+*.iml
+
+# ---- Registros ----
+*.log
+
+# ---- Diseños generados por los usuarios en el portal ----
+disenos/
+
+# ---- Archivos de trabajo de Blender (los PNG renderizados sí se suben) ----
+*.blend
+*.blend1
+
+# ---- Archivos del sistema ----
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# ---- Configuración local con contraseñas (por si alguien la crea) ----
+application-local.properties
+.env
