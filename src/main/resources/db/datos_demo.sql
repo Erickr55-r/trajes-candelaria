@@ -11,7 +11,9 @@
 --
 -- Agrega: conjuntos de Puno, cuentas de la tienda y de clientes, y para el
 -- cliente de prueba (usuario «cliente», DNI 44268151) una solicitud
--- pendiente y otra rechazada con su motivo, en fechas de la Candelaria 2027.
+-- pendiente y otra rechazada con su motivo, en fechas de la Candelaria 2027;
+-- un alquiler que se devuelve hoy, pagos de este mes y dos trajes más en
+-- mantenimiento (para que los indicadores del panel tengan valores).
 -- Usuarios nuevos: rosa.mamani / venta123 (VENDEDOR), ana.ramos y
 -- jorge.calla / cliente123 (CLIENTE).
 -- =====================================================================
@@ -81,6 +83,53 @@ SELECT currval(pg_get_serial_sequence('alquiler', 'id_alquiler')), t.id_traje, t
 FROM traje t
 WHERE t.id_traje = (SELECT tt.id_traje FROM fn_trajes_disponibles('2027-02-01', '2027-02-04', 'Caporales') f
                     JOIN traje tt ON tt.codigo = f.codigo WHERE tt.genero = 'MUJER' ORDER BY tt.codigo LIMIT 1);
+
+-- 4) Alquiler ENTREGADO que vuelve HOY (indicador «Devoluciones del día»), con sus pagos de este mes
+INSERT INTO alquiler (id_cliente, fecha_registro, fecha_salida, fecha_devolucion_prevista, estado, observacion, creado_en)
+VALUES ((SELECT id_cliente FROM cliente WHERE nombres = 'Jorge' AND apellidos = 'Calla Choque'), CURRENT_DATE - 6,
+        CURRENT_DATE - 3, CURRENT_DATE, 'RESERVADO', 'Presentación por el aniversario del Colegio San Carlos',
+        NOW() - INTERVAL '6 days');
+INSERT INTO detalle_alquiler (id_alquiler, id_traje, precio, garantia)
+SELECT currval(pg_get_serial_sequence('alquiler', 'id_alquiler')), t.id_traje, t.precio_alquiler, t.garantia
+FROM traje t
+WHERE t.id_traje IN (SELECT tt.id_traje FROM fn_trajes_disponibles(CURRENT_DATE - 3, CURRENT_DATE, 'Llamerada') f
+                     JOIN traje tt ON tt.codigo = f.codigo ORDER BY tt.codigo LIMIT 2);
+INSERT INTO pago (id_alquiler, fecha_pago, concepto, monto, metodo)
+SELECT id_alquiler, GREATEST(CURRENT_DATE - 6, DATE_TRUNC('month', CURRENT_DATE)::date), 'ADELANTO',
+       ROUND(monto_alquiler / 2, 2), 'YAPE'
+FROM alquiler WHERE id_alquiler = currval(pg_get_serial_sequence('alquiler', 'id_alquiler'));
+INSERT INTO pago (id_alquiler, fecha_pago, concepto, monto, metodo)
+SELECT id_alquiler, GREATEST(CURRENT_DATE - 3, DATE_TRUNC('month', CURRENT_DATE)::date), 'SALDO',
+       monto_alquiler - ROUND(monto_alquiler / 2, 2), 'EFECTIVO'
+FROM alquiler WHERE id_alquiler = currval(pg_get_serial_sequence('alquiler', 'id_alquiler'));
+INSERT INTO pago (id_alquiler, fecha_pago, concepto, monto, metodo)
+SELECT id_alquiler, GREATEST(CURRENT_DATE - 3, DATE_TRUNC('month', CURRENT_DATE)::date), 'GARANTIA',
+       monto_garantia, 'EFECTIVO'
+FROM alquiler WHERE id_alquiler = currval(pg_get_serial_sequence('alquiler', 'id_alquiler'));
+UPDATE alquiler SET estado = 'ENTREGADO'
+WHERE id_alquiler = currval(pg_get_serial_sequence('alquiler', 'id_alquiler'));
+
+-- 5) Adelantos de este mes de dos conjuntos que ya reservaron para la Candelaria 2027 (indicador «Ingresos del mes»)
+INSERT INTO pago (id_alquiler, fecha_pago, concepto, monto, metodo)
+SELECT v.id_alquiler, GREATEST(CURRENT_DATE - 1, DATE_TRUNC('month', CURRENT_DATE)::date), 'ADELANTO',
+       LEAST(300.00, v.monto_alquiler - v.pagado_alquiler), 'TRANSFERENCIA'
+FROM v_alquileres_resumen v
+WHERE v.estado = 'RESERVADO' AND v.conjunto IN ('Diablada Hijos del Altiplano', 'Morenada Señorial Bella Vista')
+  AND v.monto_alquiler - v.pagado_alquiler > 0;
+
+-- 6) Dos trajes más en MANTENIMIENTO (de danzas distintas y sin alquileres pendientes)
+INSERT INTO mantenimiento (id_traje, tipo, fecha_inicio, detalle)
+SELECT x.id_traje, 'REPARACION', CURRENT_DATE - 2, 'Demo: cambio de pedrería y costuras antes de la Candelaria'
+FROM (SELECT DISTINCT ON (d.nombre) t.id_traje, d.nombre
+        FROM traje t JOIN danza d ON d.id_danza = t.id_danza
+       WHERE t.estado = 'DISPONIBLE' AND d.nombre IN ('Kullawada', 'Waca Waca', 'Ayarachi', 'Q''ajelo')
+         AND NOT EXISTS (SELECT 1 FROM detalle_alquiler da JOIN alquiler a ON a.id_alquiler = da.id_alquiler
+                          WHERE da.id_traje = t.id_traje AND a.estado IN ('SOLICITADO', 'RESERVADO', 'ENTREGADO'))
+       ORDER BY d.nombre, t.codigo DESC) x
+ORDER BY x.nombre
+LIMIT 2;
+UPDATE traje SET estado = 'MANTENIMIENTO'
+WHERE id_traje IN (SELECT id_traje FROM mantenimiento WHERE detalle LIKE 'Demo:%' AND fecha_fin IS NULL);
 
 COMMIT;
 

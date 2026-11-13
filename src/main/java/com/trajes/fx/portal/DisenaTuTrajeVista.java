@@ -309,6 +309,7 @@ public class DisenaTuTrajeVista extends HBox {
             tb.getStyleClass().add("talla-chip");
             tb.setToggleGroup(tallas);
             tb.setUserData(t);
+            tb.setMinWidth(Region.USE_PREF_SIZE);
             if ("M".equals(t)) {
                 tb.setSelected(true);
             }
@@ -320,7 +321,8 @@ public class DisenaTuTrajeVista extends HBox {
             }
         });
         entrega.setPrefWidth(170);
-        HBox tallaEntrega = new HBox(16, new VBox(6, Ui.etiqueta("TALLA"), cajaTallas),
+        // talla y entrega una debajo de la otra: así las 5 tallas caben sin recortarse
+        VBox tallaEntrega = new VBox(12, new VBox(6, Ui.etiqueta("TALLA"), cajaTallas),
                 new VBox(6, Ui.etiqueta("ENTREGA"), entrega));
 
         // resumen

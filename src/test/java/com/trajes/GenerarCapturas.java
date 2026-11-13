@@ -6,11 +6,13 @@ import com.trajes.fx.PortalClienteView;
 import com.trajes.fx.Servicios;
 import com.trajes.fx.Sesion;
 import com.trajes.fx.vistas.AlquilerDetalleDialogo;
+import com.trajes.fx.vistas.ClienteDetalleDialogo;
 import com.trajes.fx.vistas.PedidoDisenoDialogo;
 import com.trajes.modelo.AlquilerResumen;
 import com.trajes.modelo.Opcion;
 import com.trajes.modelo.PedidoResumen;
 import com.trajes.modelo.PiezaAlquiler;
+import com.trajes.modelo.TrajeDisponible;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -23,6 +25,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -48,6 +52,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Predicate;
@@ -61,6 +66,7 @@ import java.util.function.Predicate;
  * <pre>
  *   (con DB_PASSWORD definida) GenerarCapturas --spring.datasource.url=jdbc:postgresql://localhost:5432/trajes_demo
  * </pre>
+ * Con {@code -Dcapturas=22,31,33} solo se escriben esas capturas (el recorrido completo igual se hace).
  * Está en src/test/java, así que no entra en el jar de mvn package.
  */
 public class GenerarCapturas {
@@ -68,6 +74,9 @@ public class GenerarCapturas {
     private static final int ANCHO = 1440;
     private static final int ALTO = 900;
     private static final File CARPETA = new File(System.getProperty("user.dir"), "capturas");
+    /** -Dcapturas=22,31,... escribe solo esas capturas (el recorrido completo igual se hace). Vacío = todas. */
+    private static final List<String> SOLO = System.getProperty("capturas", "").isBlank() ? List.of()
+            : Arrays.stream(System.getProperty("capturas").split(",")).map(String::trim).toList();
 
     public static void main(String[] args) {
         String url = String.join(" ", args) + " " + System.getenv().getOrDefault("DB_URL", "");
@@ -144,6 +153,31 @@ public class GenerarCapturas {
             int cotizado = enviarDiseno(portal, 4, "CONFECCION", false);
             s.personalizador().cotizar(cotizado, new BigDecimal("185.00"));
             System.out.println("[capturas] diseños: " + pendiente + " PENDIENTE, " + cotizado + " COTIZADO");
+
+            // 22 · personalizador con color, dos implementos, modalidad y precio estimado (sin enviar)
+            fx(() -> portal.ir(PortalClienteView.DISENIO));
+            pausa(3000);
+            Node disena = centro(portal).getContent();
+            fx(() -> {
+                stage.getScene().getRoot().applyCss();
+                stage.getScene().getRoot().layout();
+                clic(new ArrayList<>(disena.lookupAll(".muestra")).get(1));
+                ((DatePicker) campo(disena, "entrega")).setValue(LocalDate.of(2027, 1, 24));
+                for (Node n : disena.lookupAll(".modalidad")) {
+                    if ("CONFECCION".equals(n.getUserData())) {
+                        ((ToggleButton) n).setSelected(true);
+                    }
+                }
+                List<Node> checks = new ArrayList<>(disena.lookupAll(".check-box"));
+                for (Node n : checks.subList(checks.size() - 2, checks.size())) {
+                    ((CheckBox) n).setSelected(true);
+                    n.fireEvent(new javafx.event.ActionEvent());
+                }
+            });
+            pausa(700);
+            fx(() -> ((ScrollPane) disena.lookup(".pasos-scroll")).setVvalue(1));
+            pausa(600);
+            guardar("22_portal_disena_traje.png");
 
             // 21 · catálogo con el buscador lleno (Caporales, 01/02 al 04/02/2027)
             fx(() -> portal.ir(PortalClienteView.INICIO));
@@ -222,6 +256,48 @@ public class GenerarCapturas {
             fx(() -> app.ingresar(s.usuarios().autenticar("admin", "admin123")));
             pausa(2500);
             PanelVendedorView panel = (PanelVendedorView) stage.getScene().getRoot();
+
+            // 31 · inicio: indicadores y agenda de próximos movimientos
+            fx(() -> panel.mostrar(PanelVendedorView.INICIO));
+            pausa(2500);
+            fx(() -> {
+                ScrollPane sp = areaPanel(panel);
+                Parent c = (Parent) sp.getContent();
+                Node movimientos = c.getChildrenUnmodifiable().get(c.getChildrenUnmodifiable().size() - 1);
+                desplazarANodo(sp, movimientos, 20);
+            });
+            pausa(700);
+            guardar("31_panel_inicio.png");
+
+            // 33 · nueva reserva: cliente, fechas de la Candelaria, 3 trajes marcados y adelanto
+            fx(() -> panel.mostrar(PanelVendedorView.NUEVA_RESERVA));
+            pausa(1800);
+            fx(() -> {
+                Object v = areaPanel(panel).getContent();
+                ComboBox<Opcion> cliente = campo(v, "cliente");
+                cliente.getItems().stream().filter(o -> o != null && o.nombre().startsWith("Roxana Calla Huanca"))
+                        .findFirst().ifPresent(cliente::setValue);
+                ((DatePicker) campo(v, "salida")).setValue(LocalDate.of(2027, 2, 1));
+                ((DatePicker) campo(v, "devolucion")).setValue(LocalDate.of(2027, 2, 4));
+                ComboBox<Opcion> danza = campo(v, "danza");
+                danza.getItems().stream().filter(o -> o != null && o.nombre().equals("Caporales")).findFirst()
+                        .ifPresent(danza::setValue);
+                invocar(v, "buscar");
+                TableView<?> tabla = campo(v, "tabla");
+                try {
+                    Method marca = v.getClass().getDeclaredMethod("marca", TrajeDisponible.class);
+                    marca.setAccessible(true);
+                    for (Object t : tabla.getItems().subList(0, Math.min(3, tabla.getItems().size()))) {
+                        ((javafx.beans.property.BooleanProperty) marca.invoke(v, t)).set(true);
+                    }
+                } catch (ReflectiveOperationException e) {
+                    throw new IllegalStateException(e);
+                }
+                ((TextField) campo(v, "adelanto")).setText("150.00");
+                seleccionar(campo(v, "metodo"), "YAPE");
+            });
+            pausa(900);
+            guardar("33_panel_nueva_reserva.png");
 
             // 34 · alquileres con estados variados (ordenados por cliente para que se mezclen)
             fx(() -> panel.mostrar(PanelVendedorView.ALQUILERES));
@@ -345,6 +421,46 @@ public class GenerarCapturas {
             fx(pedido::close);
             pausa(800);
 
+            // 40 · clientes con el detalle de un cliente abierto (sus alquileres)
+            fx(() -> panel.mostrar(PanelVendedorView.CLIENTES));
+            pausa(1800);
+            int idCliente = s.clientes().listar("44268151").get(0).idCliente();
+            Platform.runLater(() -> new ClienteDetalleDialogo(s, idCliente).mostrar());
+            pausa(2000);
+            Stage detalleCliente = ventana(w -> titulo(w).equals("Detalle del cliente"));
+            guardarConDialogos("40_panel_clientes.png", detalleCliente);
+            fx(detalleCliente::close);
+            pausa(600);
+
+            // 42 · inventario de trajes (ordenado por estado: primero los que están en mantenimiento)
+            fx(() -> panel.mostrar(PanelVendedorView.TRAJES));
+            pausa(1800);
+            fx(() -> {
+                TableView<?> tabla = campo(areaPanel(panel).getContent(), "tabla");
+                for (TableColumn<?, ?> c : tabla.getColumns()) {
+                    if ("ESTADO".equals(c.getText())) {
+                        c.setSortType(TableColumn.SortType.DESCENDING);
+                        ordenarSinCambiarSentido(tabla, c);
+                    }
+                }
+            });
+            pausa(700);
+            guardar("42_panel_trajes.png");
+
+            // 44 · reportes con «Ingresos por mes»
+            fx(() -> panel.mostrar(PanelVendedorView.REPORTES));
+            pausa(1800);
+            fx(() -> {
+                TabPane pestanias = (TabPane) areaPanel(panel).getContent().lookup(".tab-pane");
+                for (Tab t : pestanias.getTabs()) {
+                    if ("Ingresos por mes".equals(t.getText())) {
+                        pestanias.getSelectionModel().select(t);
+                    }
+                }
+            });
+            pausa(900);
+            guardar("44_panel_reportes.png");
+
             // 41 · conjuntos y 43 · usuarios
             fx(() -> panel.mostrar(PanelVendedorView.CONJUNTOS));
             pausa(1500);
@@ -365,6 +481,10 @@ public class GenerarCapturas {
          * se dibuja centrado con una sombra, como se ve en pantalla.
          */
         private void guardarConDialogos(String archivo, Window... dialogos) throws Exception {
+            if (!SOLO.isEmpty() && !SOLO.contains(archivo.substring(0, archivo.indexOf('_')))) {
+                System.out.println("[capturas] (omitida) " + archivo);
+                return;
+            }
             BufferedImage[] base = new BufferedImage[1];
             List<BufferedImage> capas = new ArrayList<>();
             fx(() -> {
@@ -414,6 +534,20 @@ public class GenerarCapturas {
             double y = contenido.sceneToLocal(objetivo.localToScene(0, 0)).getY() - margen;
             double total = contenido.getBoundsInLocal().getHeight() - sp.getViewportBounds().getHeight();
             sp.setVvalue(total <= 0 ? 0 : Math.min(1, Math.max(0, y / total)));
+        }
+
+        /** Desplaza el scroll para que ese nodo (hijo directo del contenido) quede arriba. */
+        private static void desplazarANodo(ScrollPane sp, Node nodo, double margen) {
+            Node contenido = sp.getContent();
+            double y = nodo.getBoundsInParent().getMinY() - margen;
+            double total = contenido.getBoundsInLocal().getHeight() - sp.getViewportBounds().getHeight();
+            sp.setVvalue(total <= 0 ? 0 : Math.min(1, Math.max(0, y / total)));
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        private static void ordenarSinCambiarSentido(TableView tabla, TableColumn columna) {
+            tabla.getSortOrder().setAll(columna);
+            tabla.sort();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes"})

@@ -608,9 +608,12 @@ public final class Ui {
         Label t = new Label(titulo);
         t.getStyleClass().add("tarjeta-titulo");
         t.setWrapText(true);
+        t.setMinHeight(Region.USE_PREF_SIZE);   // si no cabe en una línea, pasa a dos (no se corta)
         Label v = new Label(valor);
         v.getStyleClass().add("tarjeta-valor");
+        v.setMinWidth(Region.USE_PREF_SIZE);    // el número nunca se recorta
         VBox textos = new VBox(2, t, v);
+        HBox.setHgrow(textos, Priority.ALWAYS);
         HBox caja = new HBox(14, cuadro, textos);
         caja.setAlignment(Pos.CENTER_LEFT);
         caja.getStyleClass().addAll("tarjeta", "con-icono", color);
