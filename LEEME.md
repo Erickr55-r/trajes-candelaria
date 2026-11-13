@@ -263,6 +263,22 @@ alquiler-trajes/
         └── db/consultas_ejemplo.sql         ← 15 consultas para la exposición
 ```
 
+## Capturas del manual
+
+Las capturas de `capturas/` (21_… a 43_…) se generan solas con `src/test/java/com/trajes/GenerarCapturas.java`,
+a 1440×900, sobre una base de **demostración** (nunca sobre la real: el programa se niega si la URL no contiene
+«demo», porque crea diseños y registra una devolución):
+
+```
+psql -U postgres -c "CREATE DATABASE trajes_demo;"
+psql -U postgres -d trajes_demo -f src/main/resources/db/base_datos.sql
+psql -U postgres -d trajes_demo -f src/main/resources/db/personalizador.sql
+psql -U postgres -d trajes_demo -f src/main/resources/db/datos_demo.sql
+```
+
+Luego, en IntelliJ, ejecuta `GenerarCapturas` con la variable `DB_PASSWORD` y el argumento
+`--spring.datasource.url=jdbc:postgresql://localhost:5432/trajes_demo`.
+
 ## Problemas comunes
 
 | Mensaje | Solución |
