@@ -57,7 +57,7 @@ restricciones, triggers y funciones.
 1. **Clonar el repositorio**
 
    ```bash
-   git clone https://github.com/<tu-usuario>/trajes-candelaria.git
+   git clone https://github.com/Erickr55-r/trajes-candelaria.git
    cd trajes-candelaria
    ```
 
