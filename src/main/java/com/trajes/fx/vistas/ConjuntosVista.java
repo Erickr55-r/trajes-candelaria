@@ -13,7 +13,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-/** Conjuntos de danza: lista y formulario para registrar uno nuevo. */
 public class ConjuntosVista extends VBox {
 
     private final Servicios s;

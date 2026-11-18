@@ -14,24 +14,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Carga un render por capas desde una carpeta del classpath (por ejemplo {@code render/caporal/frente}):
- * <ul>
- *     <li>{@code base.png}: el bailarín completo (capa de abajo, no se tiñe).</li>
- *     <li>cualquier otro {@code *.png}: una prenda teñible (pantalon.png, chaqueta.png, botas.png...).</li>
- * </ul>
- * Las prendas se apilan en orden alfabético del nombre de archivo. Para forzar un orden se puede
- * anteponer un número: {@code 10_botas.png}, {@code 20_pantalon.png}, {@code 30_chaqueta.png}
- * (el número no aparece en pantalla).
- *
- * <p>Funciona igual desde IntelliJ (carpeta) y desde el .jar empaquetado, porque usa el buscador de
- * recursos de Spring en lugar de listar archivos del disco.
- */
 public final class RenderCapas {
 
     public static final String BASE = "base.png";
 
-    /** Nombres con tilde para los archivos conocidos (el resto se muestra tal cual, con mayúscula inicial). */
     private static final Map<String, String> NOMBRES = Map.of(
             "pantalon", "Pantalón", "pollera", "Pollera", "mascara", "Máscara", "boton", "Botón",
             "botones", "Botones", "cinturon", "Cinturón", "camison", "Camisón");
@@ -44,7 +30,6 @@ public final class RenderCapas {
         this.prendas = prendas;
     }
 
-    /** @param carpeta ruta dentro de resources, sin barra inicial: "render/caporal/frente" */
     public static RenderCapas cargar(String carpeta) {
         Resource[] pngs;
         try {
@@ -78,11 +63,10 @@ public final class RenderCapas {
         return new RenderCapas(base, List.copyOf(prendas));
     }
 
-    /** "20_pantalon1.png" → "Pantalón"; "chaqueta.png" → "Chaqueta"; "botas_altas.png" → "Botas altas". */
     static String nombreVisible(String archivo) {
         String n = archivo.replaceFirst("(?i)\\.png$", "")
-                .replaceFirst("^\\d+[_\\-\\s]*", "")   // prefijo de orden
-                .replaceFirst("[_\\-\\s]*\\d+$", "")   // número de versión al final
+                .replaceFirst("^\\d+[_\\-\\s]*", "")   
+                .replaceFirst("[_\\-\\s]*\\d+$", "")   
                 .replace('_', ' ').replace('-', ' ').trim();
         if (n.isEmpty()) {
             return archivo;

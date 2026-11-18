@@ -5,24 +5,17 @@ import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-/**
- * Una prenda del render (por ejemplo pantalon.png): una capa PNG con transparencia, pintada en blanco,
- * que se tiñe multiplicando cada píxel por el color elegido.
- *
- * <p>La imagen original se guarda en memoria (como arreglo ARGB) para recalcular el teñido cada vez
- * que cambia el color sin volver a leer el archivo.
- */
 public final class PrendaTenible {
 
     private final String archivo;
     private final String nombre;
     private final int ancho;
     private final int alto;
-    /** Píxeles originales en ARGB (sin premultiplicar). No se modifican nunca. */
+     
     private final int[] original;
-    /** Buffer reutilizable para el resultado del teñido. */
+     
     private final int[] resultado;
-    /** Imagen que se muestra; se reescribe en cada cambio de color. */
+     
     private final WritableImage imagen;
     private final double fraccionTransparente;
     private Color color = Color.WHITE;
@@ -46,7 +39,6 @@ public final class PrendaTenible {
         aplicarColor(Color.WHITE);
     }
 
-    /** rgb = rgb_original × color, conservando el alfa de cada píxel. */
     public void aplicarColor(Color nuevo) {
         this.color = nuevo;
         int cr = (int) Math.round(nuevo.getRed() * 255);
@@ -75,7 +67,6 @@ public final class PrendaTenible {
         return nombre;
     }
 
-    /** Proporción de píxeles totalmente transparentes (una capa de prenda bien hecha suele pasar de 0.5). */
     public double fraccionTransparente() {
         return fraccionTransparente;
     }

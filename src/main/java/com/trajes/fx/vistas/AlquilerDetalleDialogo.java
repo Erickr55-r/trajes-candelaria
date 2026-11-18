@@ -26,7 +26,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Detalle de un alquiler: montos, trajes, pagos, daños y las acciones según su estado. */
 public class AlquilerDetalleDialogo {
 
     private static final int FILAS_DANIO = 4;
@@ -41,7 +40,6 @@ public class AlquilerDetalleDialogo {
         this.idAlquiler = idAlquiler;
     }
 
-    /** Abre el diálogo y espera a que se cierre. */
     public void mostrar() {
         if (!Ui.ejecutar(this::cargar)) {
             return;
@@ -107,9 +105,6 @@ public class AlquilerDetalleDialogo {
         return caja;
     }
 
-    // ------------------------------------------------------------------ acciones
-
-    /** Solicitud hecha por el cliente desde su portal: la tienda la aprueba o la rechaza con un motivo. */
     private VBox accionesSolicitud(AlquilerResumen a) {
         Button aprobar = Ui.estilo(new Button("Aprobar solicitud"), "boton-primario");
         aprobar.setOnAction(e -> {
@@ -254,7 +249,6 @@ public class AlquilerDetalleDialogo {
                 fila, rejilla, boton);
     }
 
-    /** Ejecuta una acción, recarga el diálogo y muestra el mensaje de éxito. */
     private void hacer(Ui.Accion accion, String exito) {
         if (Ui.ejecutar(() -> {
             accion.ejecutar();
@@ -263,8 +257,6 @@ public class AlquilerDetalleDialogo {
             Ui.info(exito);
         }
     }
-
-    // ------------------------------------------------------------------ tablas
 
     private TableView<AlquilerDetalleTraje> tablaTrajes(List<AlquilerDetalleTraje> trajes) {
         TableView<AlquilerDetalleTraje> t = Ui.tabla("Sin trajes.");

@@ -23,20 +23,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Danzante 3D estilizado, hecho con mallas suaves de {@link GeneradorMallas} y texturas de
- * {@link GeneradorTexturas}. Mide unas 8 cabezas (352 unidades) con los pies en y = 172.
- *
- * <p>Cada combinación de danza y figura (varón o cholita) se arma una sola vez y se guarda: elegir
- * qué partes lleva el traje solo muestra u oculta prendas, y cambiar un color solo regenera la
- * textura de esa parte. Si existe {@code /modelos/<danza>.obj} (o {@code <danza>_cholita.obj}),
- * se usa ese modelo en lugar del generado por código.</p>
- *
- * <p>Coordenadas: Y crece hacia abajo y el frente mira hacia -Z (hacia la cámara).</p>
- */
 public class Maniqui3D extends Group {
 
-    /** Implemento que se dibuja sobre el maniquí. */
     public record Adorno(String nombre, String destino, int cantidad) {}
 
     private enum Forma { CAPORAL, MORENADA, DIABLADA, TINKUS }
@@ -54,7 +42,6 @@ public class Maniqui3D extends Group {
             Color.web("#F5D90A"), Color.web("#F5F5F5"), Color.web("#4FC3F7"), Color.web("#F57C00"),
             Color.web("#6A1B9A"), Color.web("#F06292"), Color.web("#1E5BFF"));
 
-    // Mallas pequeñas que se repiten muchas veces (una sola malla, muchos MeshView)
     private static TriangleMesh esferita;
     private static TriangleMesh fleco;
     private static TriangleMesh espejo;
@@ -88,10 +75,9 @@ public class Maniqui3D extends Group {
     private boolean conBordado;
     private boolean conLentejuelas;
 
-    /** Una figura armada (malla y puntos donde se ponen los implementos). */
     private static final class Figura {
         final Group raiz = new Group();
-        /** Nodos de cada parte; la clave "!parte" significa "visible solo si NO se incluye la parte". */
+         
         final Map<String, List<Node>> porParte = new HashMap<>();
         Node matracaMadera;
         Point3D manoDerecha;
@@ -115,7 +101,6 @@ public class Maniqui3D extends Group {
         }
     }
 
-    /** Recorrido del brazo derecho (x > 0) y sus radios; el izquierdo es su espejo. */
     private record Brazo(List<Point3D> curva, double[] radios) {
         Point3D mano() {
             Point3D w = curva.get(curva.size() - 1);
@@ -141,7 +126,6 @@ public class Maniqui3D extends Group {
         armar(null, List.of());
     }
 
-    /** Nombre sin tildes y en minúsculas ("Pantalón" → "pantalon"), para comparar partes. */
     public static String clave(String nombre) {
         if (nombre == null) {
             return "";
@@ -150,9 +134,6 @@ public class Maniqui3D extends Group {
         return sin.toLowerCase(Locale.ROOT).trim();
     }
 
-    // ------------------------------------------------------------------ colores y texturas
-
-    /** Material de una parte; se crea la primera vez con su textura y un color inicial típico. */
     public PhongMaterial material(String parte) {
         String k = clave(parte);
         PhongMaterial m = materiales.get(k);
@@ -164,7 +145,6 @@ public class Maniqui3D extends Group {
         return m;
     }
 
-    /** Cambia el color de una parte: solo se regenera la textura de esa parte. */
     public void colorear(String parte, Color color) {
         String k = clave(parte);
         colores.put(k, color);
@@ -192,7 +172,7 @@ public class Maniqui3D extends Group {
         boolean lentejuelas = conLentejuelas && k.equals("chaqueta");
         GeneradorTexturas.aplicar(m, tipoDe(k), c, bordado, lentejuelas);
         if (k.equals("chaqueta")) {
-            // La pechera de la diablada siempre va bordada; la mantilla de la cholita es más clara
+            
             GeneradorTexturas.aplicar(derivado("pechera"), Tipo.TERCIOPELO, c, true, lentejuelas);
             GeneradorTexturas.aplicar(derivado("mantilla"), Tipo.TELA, c.interpolate(Color.WHITE, 0.45), false, false);
         }
@@ -202,12 +182,6 @@ public class Maniqui3D extends Group {
         return materiales.computeIfAbsent(nombre, x -> new PhongMaterial());
     }
 
-    // ------------------------------------------------------------------ armado
-
-    /**
-     * Arma el maniquí para una danza con las partes indicadas. Las prendas que no se incluyen
-     * no se ven (queda el cuerpo de maniquí). Si se incluye "Pollera", la figura es una cholita.
-     */
     public void armar(String danza, Collection<String> nombresPartes) {
         partes.clear();
         nombresPartes.forEach(p -> partes.add(clave(p)));
@@ -243,7 +217,6 @@ public class Maniqui3D extends Group {
         return procedural;
     }
 
-    /** Figura a partir de un modelo .obj: cada grupo se pinta según su nombre (chaqueta, botas...). */
     private Figura desdeObj(Map<String, MeshView> grupos, Figura referencia) {
         Figura f = new Figura();
         for (Map.Entry<String, MeshView> g : grupos.entrySet()) {
@@ -268,7 +241,7 @@ public class Maniqui3D extends Group {
                 f.agregar(null, v);
             }
         }
-        // Los implementos se ubican con las medidas de la figura generada (misma altura y posición)
+        
         f.manoDerecha = referencia.manoDerecha;
         f.manoIzquierda = referencia.manoIzquierda;
         f.xPierna = referencia.xPierna;
@@ -334,12 +307,12 @@ public class Maniqui3D extends Group {
 
     private static Brazo brazo(Forma forma, boolean cholita) {
         if (cholita) {
-            // Manos en la cintura, sobre la pollera
+            
             return new Brazo(List.of(p3(31, -108, 0), p3(37, -86, 3), p3(43, -66, 6), p3(43, -52, -4), p3(38, -46, -14)),
                     new double[]{8, 7, 5.6, 5.3, 4.2});
         }
         if (forma == Forma.MORENADA) {
-            // Brazos abiertos por encima del traje de campana
+            
             return new Brazo(List.of(p3(40, -110, 0), p3(52, -88, 2), p3(63, -66, 0), p3(70, -44, -8), p3(73, -28, -16)),
                     new double[]{9.5, 8.3, 6.6, 6.2, 4.9});
         }
@@ -347,10 +320,8 @@ public class Maniqui3D extends Group {
                 new double[]{9.5, 8.3, 6.6, 6.2, 4.9});
     }
 
-    // ------------------------------------------------------------------ cuerpo
-
     private void cuerpo(Figura f, Forma forma, boolean mujer, Brazo brazo) {
-        // Cabeza ovalada con mentón, cuello y torso de sección elíptica
+        
         f.agregar(null, pieza(cabeza(), piel, 0, -158, 0));
         f.agregar(null, pieza(torno(1, 7, -146, 7.2, -136, 8.5, -126, 10, -122), piel, 0, 0, 0));
         double[] torso = mujer
@@ -364,7 +335,6 @@ public class Maniqui3D extends Group {
             f.agregar(null, pieza(GeneradorMallas.elipsoide(10.5, 11.5, 10, 32), malla, lado * xHombro, -108, 0));
         }
 
-        // Brazos un poco separados y doblados, con las manos
         for (Brazo b : new Brazo[]{brazo, brazo.espejo()}) {
             f.agregar(null, pieza(GeneradorMallas.tubo(b.curva(), b.radios(), 32, true), mujer ? piel : malla, 0, 0, 0));
             Point3D m = b.mano();
@@ -373,7 +343,6 @@ public class Maniqui3D extends Group {
                     pieza(GeneradorMallas.elipsoide(1.8, 4.4, 1.9, 16), piel, m.getX() - lado * 1.6, m.getY() - 2.5, m.getZ() - 5.2));
         }
 
-        // Piernas con rodilla, pantorrilla y tobillo
         f.xPierna = mujer ? 13.5 : 15;
         PhongMaterial pielPiernas = mujer ? piel : malla;
         PhongMaterial pies = (forma == Forma.TINKUS && !mujer) || mujer ? piel : malla;
@@ -384,7 +353,6 @@ public class Maniqui3D extends Group {
             f.agregar(null, pieza(GeneradorMallas.elipsoide(7 * e, 5, 16.5 * e, 24), pies, lado * (f.xPierna + 0.5), 167, -6));
         }
 
-        // Cabello (debajo del sombrero o la máscara)
         MeshView casco = pieza(peloCasco(mujer ? 0.31 : 0.27, mujer ? 0.68 : 0.6), pelo, 0, -158, 0);
         f.agregar("!mascara", casco);
 
@@ -398,7 +366,6 @@ public class Maniqui3D extends Group {
         f.zPecho = -24;
     }
 
-    /** Nariz, orejas, ojos, cejas y boca (se ocultan cuando el traje lleva máscara). */
     private void cara(Figura f) {
         f.agregar("!mascara", pieza(GeneradorMallas.elipsoide(2.6, 5.5, 3.6, 24), piel, 0, -155, -17.2));
         for (int lado : new int[]{-1, 1}) {
@@ -411,18 +378,15 @@ public class Maniqui3D extends Group {
         f.agregar("!mascara", pieza(GeneradorMallas.elipsoide(4.6, 1.15, 1.3, 20), labios, 0, -146.6, -14.3));
     }
 
-    // ------------------------------------------------------------------ danzas
-
     private void caporal(Figura f, Brazo brazo) {
         PhongMaterial chaqueta = material("chaqueta");
-        // Chaqueta entallada, abierta abajo como saco
+        
         f.agregar("chaqueta", pieza(torno(0.64, 0, -130.5, 10, -128.5, 20, -124.5, 33, -118.5, 38, -109, 38, -96,
                 35, -80, 30, -62, 29, -52, 31, -38, 34, -26, 35.5, -20, 33, -19), chaqueta, 0, 0, 0));
         mangas(f, brazo.grosor(2.6, 1.2), chaqueta);
         hombreras(f, 33, -117.5, 13, chaqueta);
         botones(f, new double[]{-96, -84, -72, -60}, new double[]{-24.9, -23.3, -20.6, -19.3});
 
-        // Pantalón acampanado
         PhongMaterial pantalon = material("pantalon");
         f.agregar("pantalon", pieza(torno(0.63, 27.5, -54, 30, -38, 33, -22, 33.5, -10, 28, 1, 15, 7.5, 0, 9.5), pantalon, 0, 0, 0));
         for (int lado : new int[]{-1, 1}) {
@@ -447,7 +411,7 @@ public class Maniqui3D extends Group {
 
     private void morenada(Figura f, Brazo brazo) {
         PhongMaterial chaqueta = material("chaqueta");
-        // Traje ancho y abultado tipo campana, con pliegues suaves abajo
+        
         f.agregar("chaqueta", pieza(GeneradorMallas.tornoOndulado(GeneradorMallas.perfil(0, -131, 10, -129, 22, -125,
                 39, -119, 47, -109, 49.5, -96, 52, -78, 56, -54, 62, -28, 69, -2, 74, 18, 76, 27, 74.5, 31, 60, 32.5,
                 30, 33, 0, 33), SEG, 0.8, 12, v -> v < 0.35 ? 0 : 0.035 * (v - 0.35) / 0.65, false), chaqueta, 0, 0, 0));
@@ -469,7 +433,6 @@ public class Maniqui3D extends Group {
         f.yCopa = -186;
         f.radioCopa = 16;
 
-        // Máscara de moreno: ojos saltones, nariz y labios gruesos
         PhongMaterial mascara = material("mascara");
         MeshView cara = pieza(cabeza(), mascara, 0, -158.5, -1.5);
         cara.getTransforms().add(new Scale(1.2, 1.15, 1.2));
@@ -483,7 +446,6 @@ public class Maniqui3D extends Group {
                     pieza(GeneradorMallas.elipsoide(6.5, 2, 3, 16), mascara, lado * 7, -169.5, -19.5));
         }
 
-        // Matraca de madera del moreno (se cambia por la dorada si se elige ese implemento)
         Group matraca = matraca(madera, brazo.mano());
         f.matracaMadera = matraca;
         f.agregar(null, matraca);
@@ -499,7 +461,6 @@ public class Maniqui3D extends Group {
         mangas(f, brazo.grosor(2.6, 1.6), chaqueta);
         hombreras(f, 33, -117.5, 12, chaqueta);
 
-        // Pechera bordada sobre el pecho, siguiendo la curva de la chaqueta
         TriangleMesh pechera = GeneradorMallas.superficie(24, 20, (u, v) -> {
             double ancho = 27 - 7 * v - 6 * Math.pow(v, 4);
             double x = (u - 0.5) * 2 * ancho;
@@ -510,7 +471,6 @@ public class Maniqui3D extends Group {
         }, false, 1, 1.2);
         f.agregar("chaqueta", pieza(pechera, derivado("pechera"), 0, 0, 0));
 
-        // Capa que cae por la espalda con pliegues
         TriangleMesh capa = GeneradorMallas.superficie(40, 30, (u, v) -> {
             double s = u * 2 - 1;
             double x = s * (40 + 18 * v);
@@ -529,7 +489,6 @@ public class Maniqui3D extends Group {
         botas(f, true, new double[]{13.8, 106, 13.2, 114, 12.6, 124, 10.8, 138, 9.4, 152, 9, 162, 9.6, 166});
         f.anillosCascabel = new double[][]{{136, 12.4}, {147, 11.2}};
 
-        // Máscara de diablo: cuernos curvos, ojos saltones, cejas, colmillos y orejas puntiagudas
         PhongMaterial mascara = material("mascara");
         MeshView cara = pieza(cabeza(), mascara, 0, -160, -1);
         cara.getTransforms().add(new Scale(1.3, 1.2, 1.25));
@@ -557,12 +516,11 @@ public class Maniqui3D extends Group {
     }
 
     private void tinkus(Figura f, Brazo brazo) {
-        // Camisa blanca (mangas siempre visibles) y chaleco encima
+        
         mangas(f, brazo.grosor(2.2, 1.4), camisa, null);
         f.agregar("chaqueta", pieza(torno(0.65, 0, -130.5, 10, -128.5, 19, -124.5, 31, -118.8, 36, -110, 37.2, -98,
                 35, -80, 30, -62, 29, -50, 30.5, -38, 31.5, -32, 29.5, -31.5), material("chaqueta"), 0, 0, 0));
 
-        // Pantalón corto hasta la rodilla y polainas
         PhongMaterial pantalon = material("pantalon");
         f.agregar("pantalon", pieza(torno(0.63, 27.5, -54, 30, -38, 33, -22, 33.5, -10, 28, 1, 15, 7.5, 0, 9.5), pantalon, 0, 0, 0));
         PhongMaterial botas = material("botas");
@@ -572,7 +530,7 @@ public class Maniqui3D extends Group {
                     pantalon, x, 0, 0));
             f.agregar("botas", pieza(torno(1, 13.4, 90, 13.6, 96, 13.6, 104, 12.8, 118, 10.6, 136, 9.2, 150, 8.6, 156, 8, 158),
                     botas, x, 0, 0));
-            // Abarcas: suela y tiras sobre el pie
+            
             f.agregar("botas", pieza(GeneradorMallas.superElipsoide(9, 2.2, 18.5, 0.45, 24), botas, x + lado * 0.5, 170, -6.5));
             for (double z : new double[]{-14, -2}) {
                 f.agregar("botas", pieza(GeneradorMallas.tubo(List.of(p3(x - 8, 169, z), p3(x, 161.5, z - 1), p3(x + 8, 169, z)),
@@ -581,7 +539,6 @@ public class Maniqui3D extends Group {
         }
         f.anillosCascabel = new double[][]{{140, 11.6}, {150, 10.4}};
 
-        // Montera con forma de casco y ala levantada
         sombreroAlaAncha(f, 0, -196, 9, -195.3, 14.5, -191.5, 17.5, -184, 18.5, -176, 19, -171.5, 23, -170,
                 28.5, -172.5, 30, -176.5, 28.8, -177.2, 25, -173.6, 19.8, -170.4, 17.5, -169.8, 0, -169.8);
         f.ySombrero = -196;
@@ -594,13 +551,12 @@ public class Maniqui3D extends Group {
         f.fondoCintura = 0.68;
     }
 
-    /** Cholita: blusa, mantilla, pollera con vuelo y pliegues, bombín y trenzas. */
     private void cholita(Figura f, Forma forma, Brazo brazo) {
         boolean larga = forma != Forma.CAPORAL;
         PhongMaterial chaqueta = material("chaqueta");
         f.agregar("chaqueta", pieza(torno(0.66, 0, -130.5, 9, -128.5, 17, -124.5, 29.5, -118.5, 33.5, -109, 33.5, -98,
                 30.5, -84, 25.5, -64, 24.5, -54, 25.5, -46), chaqueta, 0, 0, 0));
-        // Mangas abullonadas en el hombro
+        
         mangas(f, new Brazo(brazo.curva(), new double[]{11.5, 9.8, 7.6, 7, 6.4}), chaqueta);
         f.agregar("chaqueta", pieza(GeneradorMallas.tornoOndulado(GeneradorMallas.perfil(14, -128.5, 25, -124,
                 36, -116, 41, -104, 42.5, -90, 42, -82), SEG, 0.72, 14, v -> 0.035 * v, true), derivado("mantilla"), 0, 0, 0));
@@ -610,7 +566,7 @@ public class Maniqui3D extends Group {
             f.agregar("pollera", pieza(GeneradorMallas.tornoOndulado(GeneradorMallas.perfil(23, -58, 26, -52, 34, -42,
                     47, -22, 62, 8, 76, 44, 86, 78, 90, 96, 90.5, 100, 87, 100.5), SEG * 2, 0.92, 20,
                     v -> 0.015 + 0.075 * Math.pow(v, 1.5), false), pollera, 0, 0, 0));
-            // Enagua de encaje que asoma bajo la pollera
+            
             f.agregar("pollera", pieza(GeneradorMallas.tornoOndulado(GeneradorMallas.perfil(86, 96, 89.5, 103, 90.5, 106, 86, 106.3),
                     SEG * 2, 0.92, 20, v -> 0.06, true), encaje, 0, 0, 0));
         } else {
@@ -619,13 +575,11 @@ public class Maniqui3D extends Group {
                     v -> 0.01 + 0.08 * Math.pow(v, 1.5), false), pollera, 0, 0, 0));
         }
 
-        // Botas altas (caporal) o botines (morenada)
         botas(f, false, larga
                 ? new double[]{8.6, 144, 8.2, 150, 7.8, 160, 8.3, 166}
                 : new double[]{12.5, 86, 12, 92, 11.6, 104, 11.4, 120, 9.6, 138, 8, 152, 7.6, 162, 8.2, 166});
         f.anillosCascabel = larga ? new double[][]{{151, 9.6}, {158, 9.4}} : new double[][]{{132, 11.6}, {143, 10}};
 
-        // Bombín pequeño sobre la cabeza
         sombreroAlaAncha(f, 0, -195.5, 8, -195.5, 11, -193, 12, -187, 12.2, -181, 13.3, -179.6, 17, -178.8,
                 18.2, -177.6, 16.5, -177, 12.5, -177.6, 0, -177.6);
         f.agregar("sombrero", pieza(torno(1, 12.4, -183, 12.7, -181, 12.6, -179.8), negro, 0, 0, 0));
@@ -633,7 +587,6 @@ public class Maniqui3D extends Group {
         f.yCopa = -186;
         f.radioCopa = 12;
 
-        // Trenzas con tullmas de lana
         for (int lado : new int[]{-1, 1}) {
             f.agregar(null, pieza(GeneradorMallas.tubo(List.of(p3(lado * 7, -150, 15), p3(lado * 11, -128, 19),
                     p3(lado * 12, -104, 19), p3(lado * 11, -80, 17), p3(lado * 10, -66, 15)),
@@ -647,8 +600,6 @@ public class Maniqui3D extends Group {
         f.fondoCintura = 0.88;
         f.zPecho = -23;
     }
-
-    // ------------------------------------------------------------------ prendas comunes
 
     private void mangas(Figura f, Brazo b, PhongMaterial mat) {
         mangas(f, b, mat, "chaqueta");
@@ -665,7 +616,7 @@ public class Maniqui3D extends Group {
             MeshView h = pieza(GeneradorMallas.elipsoide(ancho, 4.5, ancho * 0.9, 32), mat, lado * x, y, 0);
             h.getTransforms().add(new Rotate(lado * 14, Rotate.Z_AXIS));
             f.agregar("chaqueta", h);
-            // Flecos dorados en el borde de la hombrera
+            
             for (int k = 0; k < 9; k++) {
                 double a = Math.toRadians(-70 + k * 17.5);
                 double fx = lado * (x + ancho * 0.85 * Math.cos(a) + 1);
@@ -702,9 +653,6 @@ public class Maniqui3D extends Group {
         f.agregar("faja", pieza(torno(0.67, perfil), material("faja"), 0, 0, 0));
     }
 
-    // ------------------------------------------------------------------ implementos
-
-    /** Dibuja los implementos elegidos; el bordado y las lentejuelas se ven en la textura de la tela. */
     public void mostrarImplementos(List<Adorno> lista) {
         adornosActuales = List.copyOf(lista);
         adornos.getChildren().clear();
@@ -793,7 +741,6 @@ public class Maniqui3D extends Group {
         }
     }
 
-    /** Altura donde se pone un implemento desconocido según la parte a la que va. */
     private static double anclaY(Figura f, String destino) {
         String d = clave(destino);
         if (d.contains("bota") && f.anillosCascabel.length > 0) {
@@ -808,7 +755,6 @@ public class Maniqui3D extends Group {
         return -80;
     }
 
-    /** Matraca: mango de madera y cuerpo redondeado, colgando de la mano. */
     private Group matraca(PhongMaterial cuerpo, Point3D mano) {
         Group g = new Group(
                 pieza(GeneradorMallas.tubo(List.of(p3(0, -4, 0), p3(0, 8, 0), p3(0, 16, 0)), new double[]{2.2, 2.2, 2.4}, 16, true), madera, 0, 0, 0),
@@ -827,8 +773,6 @@ public class Maniqui3D extends Group {
             return m;
         });
     }
-
-    // ------------------------------------------------------------------ mallas compartidas
 
     private static TriangleMesh esferita() {
         if (esferita == null) {
@@ -859,12 +803,10 @@ public class Maniqui3D extends Group {
         return pluma;
     }
 
-    /** Cabeza ovalada, más angosta hacia el mentón y con la nuca un poco más llena. */
     private static TriangleMesh cabeza() {
         return GeneradorMallas.superficie(SEG, 32, (u, v) -> puntoCabeza(u, v, 1), false, 1, 1);
     }
 
-    /** Casco de cabello: la misma forma de la cabeza, un poco más grande, cubriendo arriba y atrás. */
     private static TriangleMesh peloCasco(double limiteFrente, double limiteAtras) {
         return GeneradorMallas.superficie(SEG, 18, (u, v) -> {
             double t = Math.PI / 2 + 2 * Math.PI * u;
@@ -892,8 +834,6 @@ public class Maniqui3D extends Group {
         double y = -21.5 * Math.cos(f);
         return new Point3D(x * escala, y * escala, z * escala);
     }
-
-    // ------------------------------------------------------------------ utilidades
 
     private static MeshView pieza(TriangleMesh m, PhongMaterial mat, double x, double y, double z) {
         MeshView v = new MeshView(m);

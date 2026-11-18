@@ -23,10 +23,6 @@ import org.springframework.dao.DataAccessException;
 
 import java.util.function.Consumer;
 
-/**
- * Inicio de sesión: a la izquierda el panel de marca (degradado guindo, chakana dorada), a la derecha la
- * tarjeta para ingresar o crear una cuenta de cliente.
- */
 public class LoginView extends HBox {
 
     private final Servicios s;
@@ -47,8 +43,6 @@ public class LoginView extends HBox {
         getChildren().addAll(izquierda, derecha);
         mostrarIngreso(null);
     }
-
-    // ------------------------------------------------------------------ panel izquierdo
 
     private StackPane panelMarca() {
         Group chakana = Adornos.chakanaEnGrupo(420, "login-chakana");
@@ -90,8 +84,6 @@ public class LoginView extends HBox {
         return panel;
     }
 
-    // ------------------------------------------------------------------ ingresar
-
     private void mostrarIngreso(String usuarioSugerido) {
         TextField usuario = new TextField(usuarioSugerido == null ? "" : usuarioSugerido);
         usuario.setPromptText("Tu usuario");
@@ -120,8 +112,6 @@ public class LoginView extends HBox {
         mostrar(tarjeta);
         Platform.runLater(() -> (usuario.getText().isEmpty() ? usuario : clave).requestFocus());
     }
-
-    // ------------------------------------------------------------------ registro
 
     private void mostrarRegistro() {
         TextField nombre = new TextField();
@@ -166,8 +156,6 @@ public class LoginView extends HBox {
         Platform.runLater(nombre::requestFocus);
     }
 
-    // ------------------------------------------------------------------ piezas
-
     private void mostrar(VBox tarjeta) {
         StackPane centro = new StackPane(tarjeta);
         centro.setPadding(new Insets(40));
@@ -195,7 +183,6 @@ public class LoginView extends HBox {
         return caja;
     }
 
-    /** Campo de 44 px con ícono a la izquierda; el borde se vuelve dorado al enfocar. */
     private static VBox campo(String titulo, Ikon ikon, TextField control) {
         Label l = new Label(Ui.espaciado(titulo));
         l.getStyleClass().add("campo-titulo");
@@ -225,7 +212,6 @@ public class LoginView extends HBox {
         Usuario ejecutar();
     }
 
-    /** Ejecuta el ingreso o el registro; si falla, muestra el mensaje en rojo suave dentro de la tarjeta. */
     private void intentar(Label error, Intento intento) {
         try {
             Usuario u = intento.ejecutar();

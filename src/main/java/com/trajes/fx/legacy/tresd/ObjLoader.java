@@ -16,24 +16,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Lector simple de archivos Wavefront .obj (v, vt, vn, f, g, o y usemtl).
- * Devuelve un MeshView por grupo, para pintar cada grupo como una parte del traje.
- *
- * <p>El nombre del grupo sale de {@code usemtl} si existe y si no de {@code g} / {@code o}.
- * Las caras de más de 3 vértices se dividen en triángulos (abanico). Si el archivo no trae
- * normales se calculan suavizadas; si no trae UV se proyectan de forma cilíndrica.</p>
- *
- * <p>El OBJ usa Y hacia arriba; JavaFX usa Y hacia abajo. Se gira 180° alrededor del eje X
- * (y → -y, z → -z), que es una rotación y no un espejo, así el sentido de los triángulos se
- * conserva. Después el modelo se escala a {@code altura} y se apoya con los pies en {@code yPies}.</p>
- */
 public final class ObjLoader {
 
     private ObjLoader() {
     }
 
-    /** Lee un .obj del classpath (por ejemplo "/modelos/caporales.obj"); null si no existe. */
     public static Map<String, MeshView> desdeRecurso(String ruta, double altura, double yPies) {
         InputStream in = ObjLoader.class.getResourceAsStream(ruta);
         if (in == null) {
@@ -84,7 +71,7 @@ public final class ObjLoader {
                     }
                 }
                 default -> {
-                    // mtllib, s y otras líneas no se usan
+                    
                 }
             }
         }
@@ -92,7 +79,6 @@ public final class ObjLoader {
             throw new IOException("El archivo OBJ no tiene vértices.");
         }
 
-        // Escala y posición: el modelo mide 'altura' y se apoya en yPies, centrado en X y Z
         float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE, minZ = Float.MAX_VALUE;
         float maxX = -Float.MAX_VALUE, maxY = -Float.MAX_VALUE, maxZ = -Float.MAX_VALUE;
         for (float[] p : v) {
@@ -133,7 +119,7 @@ public final class ObjLoader {
                         tex[w * 2] = vt.get(c[k * 3 + 1])[0];
                         tex[w * 2 + 1] = vt.get(c[k * 3 + 1])[1];
                     } else {
-                        // Proyección cilíndrica alrededor del eje vertical
+                        
                         tex[w * 2] = (float) ((Math.atan2(z, x) / (2 * Math.PI)) + 0.5);
                         tex[w * 2 + 1] = (float) ((y - (yPies - altura)) / altura);
                     }
@@ -164,14 +150,13 @@ public final class ObjLoader {
             m.getNormals().setAll(normales);
             m.getFaces().setAll(f);
             MeshView vista = new MeshView(m);
-            // Los modelos hechos a mano a veces traen caras invertidas: se dibujan por los dos lados
+            
             vista.setCullFace(CullFace.NONE);
             salida.put(g.getKey(), vista);
         }
         return salida;
     }
 
-    /** "v", "v/vt", "v//vn" o "v/vt/vn" → índices desde 0 (-1 si falta). Acepta índices negativos. */
     private static int[] indices(String s, int nv, int nvt, int nvn) {
         String[] p = s.split("/", -1);
         return new int[]{indice(p[0], nv),

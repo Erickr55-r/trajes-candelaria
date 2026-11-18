@@ -11,37 +11,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 
-/**
- * Mallas suaves (TriangleMesh con VertexFormat.POINT_NORMAL_TEXCOORD) generadas por código:
- * superficies de revolución (torno), tubos a lo largo de una curva, elipsoides y láminas.
- *
- * <p>Todas se arman sobre una rejilla de filas × columnas. Las normales se suavizan promediando,
- * en cada vértice, las normales de los triángulos que lo tocan (también a través de la costura
- * de la textura), y las coordenadas UV se reparten según la longitud real de la superficie
- * para que las texturas no se estiren.</p>
- *
- * <p>Convención: Y crece hacia abajo, el frente mira hacia -Z y los triángulos se listan de forma
- * que (p1 - p0) × (p2 - p0) apunte hacia afuera (cara visible con CullFace.BACK).</p>
- */
 public final class GeneradorMallas {
 
-    /** Segmentos alrededor de cada superficie de revolución. */
     public static final int SEGMENTOS = 48;
-    /** Tamaño en unidades del mundo que cubre una repetición de textura. */
+     
     public static final double TAMANIO_TEXTURA = 150;
 
     private GeneradorMallas() {
     }
 
-    /** Deformación de un punto de la superficie según sus parámetros (u alrededor, v a lo largo). */
     @FunctionalInterface
     public interface Superficie {
         Point3D punto(double u, double v);
     }
 
-    // ------------------------------------------------------------------ curvas
-
-    /** Perfil a partir de pares (radio, altura), suavizado con Catmull-Rom. */
     public static List<Point2D> perfil(double... radioAltura) {
         List<Point2D> control = new ArrayList<>();
         for (int i = 0; i + 1 < radioAltura.length; i += 2) {
@@ -50,7 +33,6 @@ public final class GeneradorMallas {
         return catmullRom(control, 6);
     }
 
-    /** Curva Catmull-Rom que pasa por todos los puntos de control. */
     public static List<Point2D> catmullRom(List<Point2D> control, int muestras) {
         List<Point2D> salida = new ArrayList<>();
         int n = control.size();
@@ -69,7 +51,6 @@ public final class GeneradorMallas {
         return salida;
     }
 
-    /** Curva Catmull-Rom en 3D. */
     public static List<Point3D> catmullRom3D(List<Point3D> control, int muestras) {
         List<Point3D> salida = new ArrayList<>();
         int n = control.size();
@@ -95,9 +76,6 @@ public final class GeneradorMallas {
         return 0.5 * (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (-a + 3 * b - 3 * c + d) * t3);
     }
 
-    // ------------------------------------------------------------------ superficies
-
-    /** Superficie de revolución alrededor del eje Y. {@code fondo} achata la sección en Z (1 = circular). */
     public static TriangleMesh torno(List<Point2D> perfil, int segmentos, double fondo) {
         return tornoOndulado(perfil, segmentos, fondo, 0, v -> 0, false);
     }
@@ -106,10 +84,6 @@ public final class GeneradorMallas {
         return torno(perfil, SEGMENTOS, 1);
     }
 
-    /**
-     * Torno con pliegues: el radio se ondula {@code pliegues} veces alrededor, con una amplitud
-     * relativa que depende de la altura (0 = arriba del perfil, 1 = abajo). Sirve para polleras con vuelo.
-     */
     public static TriangleMesh tornoOndulado(List<Point2D> perfil, int segmentos, double fondo,
                                              int pliegues, DoubleUnaryOperator amplitud, boolean dobleCara) {
         int filas = perfil.size();
@@ -122,7 +96,7 @@ public final class GeneradorMallas {
             double a = amplitud.applyAsDouble(largo[j] / Math.max(largo[filas - 1], 1e-6));
             radioMax = Math.max(radioMax, q.getX());
             for (int i = 0; i < cols; i++) {
-                // La costura queda en la espalda (+Z)
+                
                 double t = Math.PI / 2 + 2 * Math.PI * i / segmentos;
                 double r = q.getX() * (1 + a * Math.sin(pliegues * t));
                 p[j][i] = new Point3D(r * Math.cos(t), q.getY(), r * Math.sin(t) * fondo);
@@ -134,10 +108,6 @@ public final class GeneradorMallas {
         return rejilla(p, uvRegular(filas, cols, repU, largo, repV), dobleCara);
     }
 
-    /**
-     * Tubo a lo largo de una curva 3D (brazos doblados, trenzas, cuernos). Los radios se dan por
-     * cada punto de control y se interpolan. Si {@code cerrar}, los extremos se cierran redondeados.
-     */
     public static TriangleMesh tubo(List<Point3D> control, double[] radios, int segmentos, boolean cerrar) {
         int muestras = 8;
         List<Point3D> curva = catmullRom3D(control, muestras);
@@ -149,7 +119,7 @@ public final class GeneradorMallas {
             double f = pos - i;
             r[k] = radios[i] * (1 - f) + radios[i + 1] * f;
         }
-        // Marcos de transporte paralelo para que el tubo no se retuerza
+        
         Point3D[] tangente = new Point3D[n];
         for (int k = 0; k < n; k++) {
             Point3D a = curva.get(Math.max(k - 1, 0));
@@ -195,7 +165,6 @@ public final class GeneradorMallas {
         return rejilla(p, uvRegular(filas, cols, repU, largo, Math.max(largo[filas - 1] / TAMANIO_TEXTURA, 0.25)), false);
     }
 
-    /** Elipsoide suave (cabeza, manos, cascabeles). */
     public static TriangleMesh elipsoide(double rx, double ry, double rz, int segmentos) {
         return superficie(segmentos, Math.max(8, segmentos / 2), (u, v) -> {
             double t = Math.PI / 2 + 2 * Math.PI * u;
@@ -204,7 +173,6 @@ public final class GeneradorMallas {
         }, false, 1, 1);
     }
 
-    /** Superelipsoide: con exponente menor que 1 se ve como una caja de bordes redondeados. */
     public static TriangleMesh superElipsoide(double rx, double ry, double rz, double exponente, int segmentos) {
         return superficie(segmentos, Math.max(8, segmentos / 2), (u, v) -> {
             double t = Math.PI / 2 + 2 * Math.PI * u;
@@ -215,14 +183,13 @@ public final class GeneradorMallas {
         }, false, 1, 1);
     }
 
-    /** Disco plano horizontal (mira hacia arriba, -Y) con UV planas: sirve para tarimas y sombras. */
     public static TriangleMesh discoPlano(double radio, int segmentos) {
         int filas = 2;
         int cols = segmentos + 1;
         Point3D[][] p = new Point3D[filas][cols];
         double[][][] uv = new double[filas][cols][2];
         for (int i = 0; i < cols; i++) {
-            // Con este sentido de giro la cara visible mira hacia arriba (-Y)
+            
             double t = 2 * Math.PI * i / segmentos;
             p[0][i] = new Point3D(0, 0, 0);
             p[1][i] = new Point3D(radio * Math.cos(t), 0, radio * Math.sin(t));
@@ -232,10 +199,6 @@ public final class GeneradorMallas {
         return rejilla(p, uv, false);
     }
 
-    /**
-     * Superficie genérica: la función recibe u (0..1, columnas) y v (0..1, filas).
-     * {@code dobleCara} agrega la cara de atrás (para capas, mantillas, plumas y pañuelos).
-     */
     public static TriangleMesh superficie(int columnas, int filas, Superficie f, boolean dobleCara,
                                           double repU, double repV) {
         Point3D[][] p = new Point3D[filas + 1][columnas + 1];
@@ -250,8 +213,6 @@ public final class GeneradorMallas {
         }
         return rejilla(p, uv, dobleCara);
     }
-
-    // ------------------------------------------------------------------ armado de la malla
 
     private static double[][][] uvRegular(int filas, int cols, int repU, double[] largo, double repV) {
         double total = Math.max(largo[filas - 1], 1e-6);
@@ -272,7 +233,6 @@ public final class GeneradorMallas {
         return largo;
     }
 
-    /** Arma la TriangleMesh a partir de la rejilla de puntos con normales promediadas por vértice. */
     static TriangleMesh rejilla(Point3D[][] p, double[][][] uv, boolean dobleCara) {
         int filas = p.length;
         int cols = p[0].length;
@@ -336,10 +296,6 @@ public final class GeneradorMallas {
         return m;
     }
 
-    /**
-     * Normal suave de cada vértice: promedio (ponderado por área) de las normales de sus triángulos.
-     * Los vértices que están en la misma posición (costura de la textura, polos) comparten la normal.
-     */
     static float[] normalesPromediadas(float[] puntos, List<int[]> triangulos) {
         int n = puntos.length / 3;
         Map<Long, double[]> acumulado = new HashMap<>();

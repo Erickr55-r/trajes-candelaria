@@ -7,18 +7,12 @@ import javafx.scene.shape.SVGPath;
 import java.util.Locale;
 import java.util.Map;
 
-/** Adornos andinos vectoriales (chakana y grecas) y el color de cada danza. */
 public final class Adornos {
 
-    /**
-     * Chakana (cruz andina escalonada) de 9x9 módulos con el círculo central hueco.
-     * Se dibuja con SVGPath y regla par-impar para que el círculo quede vacío.
-     */
     private static final String CHAKANA_9X9 =
             "M3 0 H6 V1 H7 V2 H8 V3 H9 V6 H8 V7 H7 V8 H6 V9 H3 V8 H2 V7 H1 V6 H0 V3 H1 V2 H2 V1 H3 Z "
                     + "M3.4 4.5 A1.1 1.1 0 1 0 5.6 4.5 A1.1 1.1 0 1 0 3.4 4.5 Z";
 
-    /** Colores base por danza (para el placeholder de las fotos). */
     private static final Map<String, String> COLOR_DANZA = Map.ofEntries(
             Map.entry("diablada", "#8E1B23"),
             Map.entry("morenada", "#5B2A86"),
@@ -38,33 +32,27 @@ public final class Adornos {
     private Adornos() {
     }
 
-    /** Chakana del tamaño pedido (lado en píxeles). */
     public static SVGPath chakana(double lado) {
         SVGPath p = new SVGPath();
         p.setContent(CHAKANA_9X9);
         p.setFillRule(FillRule.EVEN_ODD);
         p.setScaleX(lado / 9);
         p.setScaleY(lado / 9);
-        // SVGPath escala desde su centro: se envuelve en un Group para que ocupe el tamaño final.
+        
         return p;
     }
 
-    /** Chakana ya escalada dentro de un Group (para layouts que miden el tamaño real). */
     public static Group chakanaEnGrupo(double lado, String claseCss) {
         SVGPath p = chakana(lado);
         p.getStyleClass().add(claseCss);
         return new Group(p);
     }
 
-    /**
-     * Banda de grecas escalonadas (como los bordados de los trajes): un zigzag de escalones
-     * repetido {@code repeticiones} veces, con un rombo pequeño entre cada motivo.
-     */
     public static Group greca(int repeticiones, double modulo, String claseLinea, String claseRelleno) {
         StringBuilder linea = new StringBuilder("M0 ").append(fmt(3 * modulo));
         StringBuilder rombos = new StringBuilder();
         for (int i = 0; i < repeticiones; i++) {
-            // sube 3 escalones y baja 3
+            
             linea.append(" h").append(fmt(modulo)).append(" v").append(fmt(-modulo))
                     .append(" h").append(fmt(modulo)).append(" v").append(fmt(-modulo))
                     .append(" h").append(fmt(modulo)).append(" v").append(fmt(-modulo))
@@ -89,7 +77,6 @@ public final class Adornos {
         return new Group(l, r);
     }
 
-    /** Color base de una danza (si no está en la lista, uno fijo según el nombre). */
     public static String colorDanza(String danza) {
         if (danza == null) {
             return RESERVA[0];

@@ -33,20 +33,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/** Tarjeta de un traje (estilo tienda web) y utilidades para mostrarlas en cuadrícula. */
 public final class TarjetaTraje {
 
     public static final double ALTO_FOTO = 250;
 
-    /** Punto de color del chip de estado. */
     public enum Punto { VERDE, AMBAR, ROJO }
 
-    /** Todo lo que muestra una tarjeta. */
     public record Datos(TrajeFila traje, boolean masAlquilado, String estadoTexto, Punto punto,
                         List<String> piezas, String tallas, String sufijoPrecio, boolean reservable,
                         Runnable alReservar, Runnable alDobleClic, String textoBoton, boolean abrirConUnClic) {
 
-        /** Tarjeta de la tienda: botón "Reservar" y doble clic para el detalle. */
         public Datos(TrajeFila traje, boolean masAlquilado, String estadoTexto, Punto punto, List<String> piezas,
                      String tallas, String sufijoPrecio, boolean reservable, Runnable alReservar, Runnable alDobleClic) {
             this(traje, masAlquilado, estadoTexto, punto, piezas, tallas, sufijoPrecio, reservable, alReservar,
@@ -60,7 +56,6 @@ public final class TarjetaTraje {
     public static VBox crear(Datos d) {
         TrajeFila t = d.traje();
 
-        // ---------------- foto
         StackPane foto = foto(t);
         if (d.masAlquilado()) {
             Label top = new Label(Ui.espaciado("Más alquilado"), Ui.icono(Feather.AWARD));
@@ -82,7 +77,6 @@ public final class TarjetaTraje {
         StackPane.setMargin(estado, new Insets(14));
         foto.getChildren().add(estado);
 
-        // ---------------- cuerpo
         Label meta = new Label(Ui.espaciado(t.danza()) + "  •  " + Ui.espaciado(t.color() == null ? "—" : t.color()));
         meta.getStyleClass().add("traje-meta");
         meta.setMinWidth(0);
@@ -106,7 +100,7 @@ public final class TarjetaTraje {
         desc.setWrapText(true);
         desc.setMinHeight(40);
         desc.setPrefHeight(40);
-        desc.setMaxHeight(40);   // dos líneas
+        desc.setMaxHeight(40);   
 
         Region sep1 = separador();
         String incluye = d.piezas().isEmpty() ? "Sin piezas registradas" : String.join(", ", d.piezas());
@@ -145,7 +139,6 @@ public final class TarjetaTraje {
         card.setMaxWidth(Double.MAX_VALUE);
         card.setMinWidth(0);
 
-        // Al pasar el mouse sube 4 px y crece la sombra (150 ms).
         TranslateTransition sube = new TranslateTransition(Duration.millis(150), card);
         card.hoverProperty().addListener((o, antes, encima) -> {
             sube.stop();
@@ -170,8 +163,6 @@ public final class TarjetaTraje {
         return card;
     }
 
-    // ------------------------------------------------------------------ foto
-
     private static StackPane foto(TrajeFila t) {
         StackPane caja = new StackPane();
         caja.setMinHeight(ALTO_FOTO);
@@ -180,7 +171,7 @@ public final class TarjetaTraje {
 
         URL url = urlFoto(t.idTraje());
         if (url != null) {
-            // "cover": llena el recuadro y recorta lo que sobra, sin deformar.
+            
             caja.setStyle("-fx-background-image: url('" + url.toExternalForm() + "');"
                     + "-fx-background-size: cover; -fx-background-position: center;");
         } else {
@@ -200,7 +191,6 @@ public final class TarjetaTraje {
             caja.getChildren().addAll(chakana, textos);
         }
 
-        // Esquinas superiores redondeadas: rectángulo con arcos + franja recta abajo.
         Rectangle redondo = new Rectangle();
         redondo.setArcWidth(36);
         redondo.setArcHeight(36);
@@ -247,9 +237,6 @@ public final class TarjetaTraje {
                 + ", listo para la festividad. Se entrega revisado pieza por pieza.";
     }
 
-    // ------------------------------------------------------------------ utilidades
-
-    /** "M · también S, L": la talla del traje y las de los trajes iguales (misma danza, personaje y color). */
     public static String tallas(TrajeFila t, List<TrajeFila> todos) {
         List<String> otras = new ArrayList<>();
         for (String talla : Ui.TALLAS) {
@@ -266,10 +253,6 @@ public final class TarjetaTraje {
         return otras.isEmpty() ? t.talla() : t.talla() + " · también " + String.join(", ", otras);
     }
 
-    /**
-     * Primer día (desde hoy) en que cada traje no está comprometido en un alquiler reservado o entregado.
-     * Un alquiler entregado y vencido se cuenta hasta hoy (el traje aún no volvió).
-     */
     public static Map<Integer, LocalDate> proximaFechaLibre(List<Ocupacion> ocupaciones, LocalDate hoy) {
         Map<Integer, List<Ocupacion>> porTraje = new HashMap<>();
         for (Ocupacion o : ocupaciones) {
@@ -297,7 +280,6 @@ public final class TarjetaTraje {
         return libre;
     }
 
-    /** Cuadrícula de tarjetas: 3 columnas, o 2 si el ancho disponible es angosto. */
     public static final class Cuadricula extends GridPane {
 
         private static final double ANCHO_MINIMO_3 = 1100;
@@ -325,7 +307,7 @@ public final class TarjetaTraje {
             getChildren().clear();
             getColumnConstraints().clear();
             for (int i = 0; i < c; i++) {
-                // Columnas iguales: mismo ancho preferido y todas crecen (sin percentWidth).
+                
                 ColumnConstraints cc = new ColumnConstraints();
                 cc.setMinWidth(0);
                 cc.setPrefWidth(100);

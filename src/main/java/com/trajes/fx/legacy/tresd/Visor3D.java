@@ -44,12 +44,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Visor 3D tipo estudio fotográfico: SubScene con depthBuffer y antialiasing, cámara en perspectiva
- * a la altura del pecho, iluminación de 3 puntos (principal cálida, relleno frío y contorno detrás)
- * con luz ambiental baja, fondo degradado, tarima de madera y sombra suave bajo los pies.
- * Se gira arrastrando el mouse (con inercia), se acerca con la rueda y tiene vistas de frente, lado y espalda.
- */
 public class Visor3D extends BorderPane {
 
     private static final RadialGradient FONDO = new RadialGradient(0, 0, 0.5, 0.42, 0.8, true, CycleMethod.NO_CYCLE,
@@ -72,7 +66,6 @@ public class Visor3D extends BorderPane {
     private int indiceVista = -1;
     private Timeline transicion;
 
-    // Inercia del giro con el mouse
     private double xAnterior;
     private double yAnterior;
     private double velocidadY;
@@ -98,14 +91,12 @@ public class Visor3D extends BorderPane {
         Group modelo = new Group(giroAutomatico);
         modelo.getTransforms().addAll(giroX, giroY);
 
-        // Iluminación de 3 puntos y ambiente bajo
         AmbientLight ambiente = new AmbientLight(Color.rgb(64, 60, 64));
         PointLight principal = luz(Color.rgb(255, 232, 205), -430, -380, -640);
         PointLight relleno = luz(Color.rgb(105, 120, 150), 520, -110, -380);
         PointLight contorno = luz(Color.rgb(255, 250, 240), 260, -330, 560);
         PointLight contorno2 = luz(Color.rgb(150, 150, 165), -300, -150, 520);
 
-        // Cámara a la altura del pecho, mirando un poco hacia abajo al centro de la figura
         camara.setNearClip(1);
         camara.setFieldOfView(30);
         camara.setFarClip(6000);
@@ -116,7 +107,7 @@ public class Visor3D extends BorderPane {
 
         Group raiz = new Group(tarima(), modelo, ambiente, principal, relleno, contorno, contorno2, brazoCamara);
         subEscena = new SubScene(raiz, ancho, alto, true, SceneAntialiasing.BALANCED);
-        // El fondo degradado lo pinta el panel (así la foto ×2 también lo lleva completo)
+        
         subEscena.setFill(Color.TRANSPARENT);
         subEscena.setCamera(camara);
 
@@ -180,7 +171,6 @@ public class Visor3D extends BorderPane {
         return maniqui;
     }
 
-    /** Vista de tres cuartos con la que empieza el visor. */
     public void vistaInicial() {
         detenerMovimientos();
         giroAutomatico.setRotate(0);
@@ -191,12 +181,11 @@ public class Visor3D extends BorderPane {
         vista.setText("Vista: frente");
     }
 
-    /** Pasa a la siguiente vista (frente → lado → espalda) con una transición suave. */
     private void siguienteVista() {
         detenerMovimientos();
         indiceVista = (indiceVista + 1) % VISTAS.length;
         vista.setText("Vista: " + VISTAS[(indiceVista + 1) % VISTAS.length]);
-        // Se toma el camino más corto desde el ángulo actual, sumando el giro automático
+        
         double actual = giroY.getAngle() - giroAutomatico.getRotate();
         giroAutomatico.setRotate(0);
         double destino = ANGULO_VISTA[indiceVista];
@@ -219,7 +208,6 @@ public class Visor3D extends BorderPane {
         }
     }
 
-    /** Detiene las animaciones (al cerrar la pantalla). */
     public void detener() {
         animacion.stop();
         inercia.stop();
@@ -228,7 +216,6 @@ public class Visor3D extends BorderPane {
         }
     }
 
-    /** Foto de lo que se ve en el visor, a {@code escala} veces su tamaño en pantalla. */
     public WritableImage captura(double escala) {
         SnapshotParameters p = new SnapshotParameters();
         p.setFill(FONDO);
@@ -236,7 +223,6 @@ public class Visor3D extends BorderPane {
         return subEscena.snapshot(p, null);
     }
 
-    /** Guarda la vista actual del maniquí como PNG en alta resolución (×2). */
     public void guardarPng(File archivo) {
         WritableImage imagen = captura(2);
         int w = (int) imagen.getWidth();
@@ -252,9 +238,6 @@ public class Visor3D extends BorderPane {
         }
     }
 
-    // ------------------------------------------------------------------ escena
-
-    /** Tarima circular de madera con borde y una sombra suave bajo los pies. */
     private static Group tarima() {
         PhongMaterial madera = GeneradorTexturas.material(GeneradorTexturas.Tipo.MADERA, Color.web("#6B4730"));
         MeshView canto = new MeshView(GeneradorMallas.torno(GeneradorMallas.perfil(118, 176, 121, 177.2, 122, 180,

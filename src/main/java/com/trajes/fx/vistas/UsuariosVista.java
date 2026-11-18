@@ -21,7 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Consumer;
 
-/** Usuarios del sistema (solo ADMIN): crear cuentas de la tienda, activar/desactivar y restablecer contraseñas. */
 public class UsuariosVista extends VBox {
 
     private static final DateTimeFormatter FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");

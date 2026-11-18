@@ -15,23 +15,10 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Texturas procedurales de 512×512 generadas por código (WritableImage y Canvas), con caché:
- * tela, terciopelo, cuero, piel, laca, metal, madera, aguayo, encaje y plumas, más dos capas que se
- * superponen a la chaqueta o la pollera: bordado dorado andino (grecas, rombos, soles y espirales)
- * y lentejuelas.
- *
- * <p>De cada textura salen tres mapas para el PhongMaterial: diffuseMap (teñido con el color que eligió
- * el cliente), specularMap (dónde brilla) y bumpMap (mapa de normales calculado del relieve).
- * Solo el diffuseMap depende del color, así que cambiar un color regenera solo esa imagen.</p>
- *
- * <p>Se usa desde el hilo de JavaFX (el bordado se dibuja en un Canvas).</p>
- */
 public final class GeneradorTexturas {
 
     public static final int N = 512;
 
-    /** Tipo de material: brillo base, potencia especular y fuerza del relieve. */
     public enum Tipo {
         TELA(0.10, 8, 0.45),
         TERCIOPELO(0.16, 5, 0.9),
@@ -65,7 +52,6 @@ public final class GeneradorTexturas {
     private GeneradorTexturas() {
     }
 
-    /** Aplica los tres mapas al material (el color va teñido en el diffuseMap). */
     public static void aplicar(PhongMaterial m, Tipo tipo, Color color, boolean conBordado, boolean conLentejuelas) {
         m.setDiffuseColor(Color.WHITE);
         m.setDiffuseMap(difusa(tipo, color, conBordado, conLentejuelas));
@@ -85,12 +71,9 @@ public final class GeneradorTexturas {
         return m;
     }
 
-    /** Cantidad de imágenes generadas (para comprobar que la caché funciona). */
     public static int imagenesEnCache() {
         return CACHE.size();
     }
-
-    // ------------------------------------------------------------------ mapas
 
     public static Image difusa(Tipo tipo, Color c, boolean conBordado, boolean conLentejuelas) {
         String clave = "D|" + tipo + "|" + c + "|" + conBordado + "|" + conLentejuelas;
@@ -115,7 +98,7 @@ public final class GeneradorTexturas {
                     bl = franja[2];
                 }
                 if (s != null && s[i] > 0) {
-                    // Lentejuela: el mismo color más claro, con un brillo distinto en cada una
+                    
                     double luz = 0.75 + 0.55 * sb[i];
                     double lr = (r0 * 0.75 + 0.25) * luz;
                     double lg = (g0 * 0.75 + 0.25) * luz;
@@ -166,7 +149,6 @@ public final class GeneradorTexturas {
         });
     }
 
-    /** Mapa de normales (lo que JavaFX usa como bumpMap) calculado del relieve de la textura. */
     public static Image relieve(Tipo tipo, boolean conBordado, boolean conLentejuelas) {
         String clave = "B|" + tipo + "|" + conBordado + "|" + conLentejuelas;
         return CACHE.computeIfAbsent(clave, k -> {
@@ -188,7 +170,6 @@ public final class GeneradorTexturas {
         });
     }
 
-    /** Pluma con transparencia (canal alfa), teñida del color pedido. */
     public static Image pluma(Color c) {
         return CACHE.computeIfAbsent("PLUMA|" + c, k -> {
             float[] ruido = altura(Tipo.PLUMA);
@@ -218,7 +199,6 @@ public final class GeneradorTexturas {
         });
     }
 
-    /** Sombra falsa: degradado radial negro semitransparente. */
     public static Image sombra() {
         return CACHE.computeIfAbsent("SOMBRA", k -> {
             int[] px = new int[N * N];
@@ -235,8 +215,6 @@ public final class GeneradorTexturas {
         });
     }
 
-    // ------------------------------------------------------------------ patrones base
-
     private static double sombreado(Tipo tipo, double h) {
         return switch (tipo) {
             case TELA -> 0.90 + 0.13 * h;
@@ -252,7 +230,6 @@ public final class GeneradorTexturas {
         };
     }
 
-    /** Relieve (0..1) de cada tipo de material; se calcula una sola vez. */
     private static float[] altura(Tipo tipo) {
         return ALTURAS.computeIfAbsent(tipo, t -> switch (t) {
             case TELA, AGUAYO -> trama(128, 0.22, 11);
@@ -267,7 +244,6 @@ public final class GeneradorTexturas {
         });
     }
 
-    /** Tejido llano: hilos que pasan por encima y por debajo, con ruido suave. */
     private static float[] trama(int hilos, double pesoHilo, int semilla) {
         float[] r = fbm(8, 4, semilla);
         float[] out = new float[N * N];
@@ -285,7 +261,6 @@ public final class GeneradorTexturas {
         return out;
     }
 
-    /** Cuero: grano con celdas (ruido de Worley) y pliegues suaves. */
     private static float[] cuero() {
         int celdas = 52;
         float[] base = fbm(6, 4, 31);
@@ -324,14 +299,13 @@ public final class GeneradorTexturas {
         float[] fino = new float[N * N];
         for (int y = 0; y < N; y++) {
             for (int x = 0; x < N; x++) {
-                // Líneas horizontales finas: ruido muy estirado en X
+                
                 fino[y * N + x] = ruido(x * 2.0 / N, y * 160.0 / N, 2, 160, 81);
             }
         }
         return combinar(fino, fbm(4, 3, 82), 0.6);
     }
 
-    /** Tablas de madera (vetas a lo largo de Y) con un tono distinto por tabla. */
     private static float[] madera() {
         float[] out = new float[N * N];
         int tablas = 8;
@@ -349,21 +323,20 @@ public final class GeneradorTexturas {
         return out;
     }
 
-    /** Franjas del aguayo: el color elegido, su tono oscuro y líneas de colores andinos. */
     private static double[] franjaAguayo(int y, int x, double r, double g, double b) {
         int banda = (y * 16 / N);
         double local = (y * 16.0 / N) - banda;
         Color[] acentos = {Color.web("#B71C1C"), Color.web("#1B7F3A"), Color.web("#E0B43A"), Color.web("#F2EDE4")};
         switch (banda % 4) {
             case 1 -> {
-                // Franja delgada de color
+                
                 if (local > 0.3 && local < 0.7) {
                     Color a = acentos[(banda / 4) % acentos.length];
                     return new double[]{a.getRed() * 0.9, a.getGreen() * 0.9, a.getBlue() * 0.9};
                 }
             }
             case 2 -> {
-                // Franja ancha oscura con rombos pequeños
+                
                 double cx = (x % 32) / 32.0 - 0.5;
                 double cy = local - 0.5;
                 if (Math.abs(cx) + Math.abs(cy) < 0.32 && Math.abs(cx) + Math.abs(cy) > 0.18) {
@@ -378,7 +351,6 @@ public final class GeneradorTexturas {
         return new double[]{r, g, b};
     }
 
-    /** Agujeros y borde festoneado del encaje (canal alfa). */
     private static void aplicarAlfaEncaje(int[] px) {
         for (int y = 0; y < N; y++) {
             for (int x = 0; x < N; x++) {
@@ -398,9 +370,6 @@ public final class GeneradorTexturas {
         }
     }
 
-    // ------------------------------------------------------------------ bordado y lentejuelas
-
-    /** Máscara del bordado andino dibujada en un Canvas: grecas, rombos, soles y espirales. */
     private static float[] bordado() {
         if (bordado != null) {
             return bordado;
@@ -414,7 +383,6 @@ public final class GeneradorTexturas {
         g.setLineCap(StrokeLineCap.ROUND);
         g.setLineJoin(StrokeLineJoin.ROUND);
 
-        // Grecas escalonadas arriba y abajo (se repiten cada 64 px, así la textura empalma)
         g.setLineWidth(5);
         for (int lado = 0; lado < 2; lado++) {
             double base = lado == 0 ? 0 : N;
@@ -432,7 +400,6 @@ public final class GeneradorTexturas {
             }
         }
 
-        // Fila de en medio: rombos, soles y espirales alternados (celdas de 128 px)
         g.setLineWidth(4.5);
         for (int fila = 0; fila < 2; fila++) {
             double cy = 100 + 78 + fila * 156;
@@ -490,7 +457,6 @@ public final class GeneradorTexturas {
         g.strokePolyline(xs, ys, n);
     }
 
-    /** Lentejuelas: círculos pequeños en filas desfasadas, cada uno con un brillo propio. */
     private static float[] lentejuela() {
         if (lentejuela != null) {
             return lentejuela;
@@ -515,7 +481,7 @@ public final class GeneradorTexturas {
                     int i = y * N + x;
                     lentejuela[i] = (float) suave(radio + 1, radio - 1, d);
                     double propio = hash(Math.floorMod(col, cols), fila, 101);
-                    // Punto de luz desplazado: cada lentejuela parece inclinada distinto
+                    
                     double brillo = Math.max(0, 1 - Math.hypot(x - cx + radio * 0.35, y - cy + radio * 0.35) / radio);
                     brilloLentejuela[i] = (float) Math.min(1, 0.45 * propio + 0.9 * brillo * brillo);
                 }
@@ -524,9 +490,6 @@ public final class GeneradorTexturas {
         return lentejuela;
     }
 
-    // ------------------------------------------------------------------ ruido y utilidades
-
-    /** Ruido fractal (fBm) que empalma en los bordes, normalizado a 0..1. */
     private static float[] fbm(int frecuencia, int octavas, int semilla) {
         float[] out = new float[N * N];
         float min = Float.MAX_VALUE;
@@ -564,7 +527,6 @@ public final class GeneradorTexturas {
         return out;
     }
 
-    /** Ruido de valor periódico (periodo en celdas en X y en Y) con interpolación suave. */
     private static float ruido(double x, double y, int periodoX, int periodoY, int semilla) {
         int x0 = (int) Math.floor(x);
         int y0 = (int) Math.floor(y);
@@ -624,7 +586,6 @@ public final class GeneradorTexturas {
         return a + (b - a) * t;
     }
 
-    /** Paso suave entre los bordes e0 y e1 (acepta e0 > e1 para invertir). */
     private static double suave(double e0, double e1, double x) {
         double t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
         return t * t * (3 - 2 * t);

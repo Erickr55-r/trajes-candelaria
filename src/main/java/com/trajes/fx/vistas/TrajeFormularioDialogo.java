@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import java.math.BigDecimal;
 import java.util.List;
 
-/** Formulario para registrar o editar un traje. */
 public class TrajeFormularioDialogo {
 
     private final Servicios s;
@@ -30,7 +29,6 @@ public class TrajeFormularioDialogo {
         this.idTraje = idTraje;
     }
 
-    /** Muestra el formulario; devuelve el id del traje guardado o null si se canceló. */
     public Integer mostrar() {
         Ui.ejecutar(this::abrir);
         return guardado;

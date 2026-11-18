@@ -8,17 +8,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import org.kordamp.ikonli.feather.Feather;
 
-/**
- * La acción que toca según el estado de un pedido personalizado:
- * PENDIENTE → Cotizar (precio) · APROBADO → Iniciar confección · EN_CONFECCION → Marcar listo · LISTO → Entregar.
- * COTIZADO espera la respuesta del cliente en su portal.
- */
 public final class AccionPedido {
 
     private AccionPedido() {
     }
 
-    /** Botón (o etiqueta) de la acción; {@code despues} se ejecuta si la acción se completó. */
     public static Node crear(Servicios s, PedidoResumen p, Runnable despues) {
         return switch (p.estado()) {
             case "PENDIENTE" -> boton("Cotizar", Feather.DOLLAR_SIGN, () -> cotizar(s, p, despues));
@@ -64,7 +58,6 @@ public final class AccionPedido {
         }
     }
 
-    /** Para entregar, el pedido debe estar pagado: si falta saldo, ofrece registrarlo antes. */
     private static void entregar(Servicios s, PedidoResumen p, Runnable despues) {
         String pregunta = p.saldo().signum() > 0
                 ? "Falta cobrar " + Ui.soles(p.saldo()) + " del pedido N° " + p.idPedido() + ".\n"

@@ -44,10 +44,8 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-/** Ayudas comunes de la interfaz: formatos, tablas, estados, formularios y mensajes. */
 public final class Ui {
 
-    /** Temas disponibles: nombre visible -> hoja de estilos (cada tema importa estilos.css). */
     public static final java.util.Map<String, String> TEMAS = new java.util.LinkedHashMap<>();
 
     static {
@@ -55,7 +53,6 @@ public final class Ui {
         TEMAS.put("Marino", Ui.class.getResource("/tema-marino.css").toExternalForm());
     }
 
-    /** Hoja de estilos del tema activo (la usan la ventana principal y todos los diálogos). */
     public static String CSS = TEMAS.get("Guindo");
     private static String temaActual = "Guindo";
 
@@ -63,7 +60,6 @@ public final class Ui {
         return temaActual;
     }
 
-    /** Cambia el tema en todas las ventanas abiertas y en las que se abran después. */
     public static void cambiarTema(String nombre) {
         String nueva = TEMAS.get(nombre);
         if (nueva == null || nueva.equals(CSS)) {
@@ -87,9 +83,6 @@ public final class Ui {
     private Ui() {
     }
 
-    // ------------------------------------------------------------------ formatos
-
-    /** S/ 1,234.50 */
     public static String soles(BigDecimal monto) {
         if (monto == null) {
             return "—";
@@ -97,12 +90,10 @@ public final class Ui {
         return "S/ " + String.format(Locale.US, "%,.2f", monto.setScale(2, RoundingMode.HALF_UP));
     }
 
-    /** dd/MM/yyyy */
     public static String fecha(LocalDate fecha) {
         return fecha == null ? "—" : fecha.format(FECHA);
     }
 
-    /** Texto para cualquier valor (se usa en los reportes). */
     public static String texto(Object valor) {
         if (valor == null) {
             return "—";
@@ -119,7 +110,6 @@ public final class Ui {
         return valor.toString();
     }
 
-    /** Lee un monto escrito por el usuario (acepta "1,234.50", "12,5" o "S/ 30"). Vacío = null. */
     public static BigDecimal monto(String texto) {
         if (texto == null || texto.isBlank()) {
             return null;
@@ -133,7 +123,6 @@ public final class Ui {
         }
     }
 
-    /** Valor obligatorio de un campo de texto. */
     public static String requerido(TextField campo, String nombre) {
         String valor = campo.getText();
         if (valor == null || valor.isBlank()) {
@@ -143,7 +132,6 @@ public final class Ui {
         return valor.trim();
     }
 
-    /** Valor obligatorio de una lista desplegable. */
     public static <T> T requerido(ComboBox<T> combo, String nombre) {
         T valor = combo.getValue();
         if (valor == null) {
@@ -153,7 +141,6 @@ public final class Ui {
         return valor;
     }
 
-    /** Fecha obligatoria de un DatePicker (confirma lo que se haya escrito a mano). */
     public static LocalDate requerido(DatePicker picker, String nombre) {
         LocalDate valor = fechaDe(picker);
         if (valor == null) {
@@ -163,7 +150,6 @@ public final class Ui {
         return valor;
     }
 
-    /** Fecha de un DatePicker; si el texto se escribió a mano y no se confirmó, lo lee igual. */
     public static LocalDate fechaDe(DatePicker picker) {
         String escrito = picker.getEditor().getText();
         if (escrito != null && !escrito.isBlank()) {
@@ -176,15 +162,11 @@ public final class Ui {
         return picker.getValue();
     }
 
-    // ------------------------------------------------------------------ errores y mensajes
-
-    /** Acción que puede lanzar errores del negocio o de la base de datos. */
     @FunctionalInterface
     public interface Accion {
         void ejecutar();
     }
 
-    /** Ejecuta la acción y, si falla por una regla del negocio o la base de datos, muestra el error. */
     public static boolean ejecutar(Accion accion) {
         try {
             accion.ejecutar();
@@ -195,7 +177,6 @@ public final class Ui {
         }
     }
 
-    /** Convierte un error en un mensaje legible (para PostgreSQL, la primera línea sin "ERROR:"). */
     public static String mensaje(Exception e) {
         if (e instanceof DataAccessException dae) {
             String m = primeraLinea(dae);
@@ -218,7 +199,6 @@ public final class Ui {
         return e.getMessage();
     }
 
-    /** Primera línea del error más interno, sin el prefijo "ERROR:" de PostgreSQL. */
     public static String primeraLinea(Throwable e) {
         Throwable causa = e;
         while (causa.getCause() != null && causa.getCause() != causa) {
@@ -245,10 +225,6 @@ public final class Ui {
         return a.showAndWait().orElse(ButtonType.NO) == ButtonType.YES;
     }
 
-    /**
-     * Pide un texto en un diálogo (por ejemplo, el motivo de un rechazo o un precio). El botón Aceptar
-     * solo se habilita cuando hay algo escrito. Devuelve vacío si se cancela.
-     */
     public static java.util.Optional<String> pedirTexto(String titulo, String mensaje, String etiqueta,
                                                         String inicial, String ayuda) {
         javafx.scene.control.Dialog<ButtonType> d = new javafx.scene.control.Dialog<>();
@@ -295,7 +271,6 @@ public final class Ui {
                 .orElse(Window.getWindows().isEmpty() ? null : Window.getWindows().get(0));
     }
 
-    /** Ventana modal con el estilo de la aplicación. */
     public static Stage ventana(String titulo, Parent raiz, double ancho, double alto) {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -310,9 +285,6 @@ public final class Ui {
         return stage;
     }
 
-    // ------------------------------------------------------------------ estados
-
-    /** Clase de color para cada estado. */
     public static String colorEstado(String estado) {
         if (estado == null) {
             return "badge-gris";
@@ -340,7 +312,6 @@ public final class Ui {
                 && a.fechaDevolucionPrevista().isBefore(LocalDate.now());
     }
 
-    /** Estado del alquiler; si está entregado y ya pasó la fecha, se agrega VENCIDO. */
     public static HBox badgesAlquiler(AlquilerResumen a) {
         HBox caja = new HBox(4, badge(a.estado()));
         if (vencido(a)) {
@@ -349,8 +320,6 @@ public final class Ui {
         caja.setAlignment(Pos.CENTER_LEFT);
         return caja;
     }
-
-    // ------------------------------------------------------------------ tablas
 
     public static <S, T> TableColumn<S, T> columna(String titulo, Function<S, T> valor,
                                                    Function<? super T, String> formato, double ancho) {
@@ -404,7 +373,6 @@ public final class Ui {
         return col;
     }
 
-    /** Columna de estado de un alquiler (con VENCIDO si corresponde). */
     public static TableColumn<AlquilerResumen, AlquilerResumen> colEstadoAlquiler(double ancho) {
         TableColumn<AlquilerResumen, AlquilerResumen> col = new TableColumn<>(cabeceraColumna("Estado"));
         col.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue()));
@@ -422,7 +390,6 @@ public final class Ui {
         return col;
     }
 
-    /** Ejecuta la acción al hacer doble clic en una fila. */
     public static <S> void alDobleClic(TableView<S> tabla, Consumer<S> accion) {
         tabla.setRowFactory(t -> {
             TableRow<S> fila = new TableRow<>();
@@ -442,12 +409,6 @@ public final class Ui {
         return t;
     }
 
-    // ------------------------------------------------------------------ controles
-
-    /**
-     * Lista desplegable. Si {@code vacio} no es null, la primera opción es null y se muestra con ese texto
-     * (por ejemplo "Todas" o "— Sin conjunto —").
-     */
     public static <T> ComboBox<T> combo(List<T> items, Function<T, String> texto, String vacio) {
         List<T> lista = new ArrayList<>();
         if (vacio != null) {
@@ -490,7 +451,6 @@ public final class Ui {
         return combo(items, s -> s, vacio);
     }
 
-    /** DatePicker que muestra y lee fechas como dd/MM/yyyy. */
     public static DatePicker fechaPicker(LocalDate inicial) {
         DatePicker p = new DatePicker(inicial);
         p.setPromptText("dd/mm/aaaa");
@@ -522,14 +482,10 @@ public final class Ui {
         return t;
     }
 
-    /** Texto de un monto para un campo editable (sin "S/"). */
     public static String montoEditable(BigDecimal monto) {
         return monto == null ? "" : monto.setScale(2, RoundingMode.HALF_UP).toPlainString();
     }
 
-    // ------------------------------------------------------------------ bloques visuales
-
-    /** Imagen de JavaFX a bytes PNG (para guardarla en la base). */
     public static byte[] png(javafx.scene.image.WritableImage imagen) {
         int w = (int) imagen.getWidth();
         int h = (int) imagen.getHeight();
@@ -545,12 +501,10 @@ public final class Ui {
         }
     }
 
-    /** Encabezado de columna: mayúsculas pequeñas, como en el resto del diseño. */
     public static String cabeceraColumna(String titulo) {
         return titulo == null ? null : titulo.toUpperCase(Locale.ROOT);
     }
 
-    /** Ícono Feather (Ikonli). El color y el tamaño vienen del CSS. */
     public static FontIcon icono(Ikon ikon) {
         return new FontIcon(ikon);
     }
@@ -561,10 +515,6 @@ public final class Ui {
         return i;
     }
 
-    /**
-     * Texto en MAYÚSCULAS con espaciado de letras. JavaFX no tiene letter-spacing en CSS, así que se
-     * intercala un espacio fino (U+2009) entre letras.
-     */
     public static String espaciado(String texto) {
         String mayus = texto.toUpperCase(new Locale("es", "PE"));
         StringBuilder sb = new StringBuilder(mayus.length() * 2);
@@ -577,7 +527,6 @@ public final class Ui {
         return sb.toString();
     }
 
-    /** Subtítulo de pantalla: 13 px, mayúsculas, dorado y con espaciado de letras. */
     public static Label sobretitulo(String texto) {
         Label l = new Label(espaciado(texto));
         l.getStyleClass().add("sobretitulo");
@@ -591,7 +540,6 @@ public final class Ui {
         return l;
     }
 
-    /** Encabezado de pantalla: subtítulo dorado, título serif y una línea de ayuda opcional. */
     public static VBox encabezado(String sobretitulo, String titulo, String descripcion) {
         VBox caja = new VBox(sobretitulo(sobretitulo), titulo(titulo));
         if (descripcion != null && !descripcion.isBlank()) {
@@ -601,17 +549,16 @@ public final class Ui {
         return caja;
     }
 
-    /** Tarjeta de indicador con ícono (pantalla de inicio). */
     public static HBox tarjeta(String titulo, String valor, String color, Ikon ikon) {
         StackPane cuadro = new StackPane(icono(ikon));
         cuadro.getStyleClass().add("tarjeta-icono");
         Label t = new Label(titulo);
         t.getStyleClass().add("tarjeta-titulo");
         t.setWrapText(true);
-        t.setMinHeight(Region.USE_PREF_SIZE);   // si no cabe en una línea, pasa a dos (no se corta)
+        t.setMinHeight(Region.USE_PREF_SIZE);   
         Label v = new Label(valor);
         v.getStyleClass().add("tarjeta-valor");
-        v.setMinWidth(Region.USE_PREF_SIZE);    // el número nunca se recorta
+        v.setMinWidth(Region.USE_PREF_SIZE);    
         VBox textos = new VBox(2, t, v);
         HBox.setHgrow(textos, Priority.ALWAYS);
         HBox caja = new HBox(14, cuadro, textos);
@@ -647,7 +594,6 @@ public final class Ui {
         return l;
     }
 
-    /** Tarjeta con un indicador (color: verde, azul, naranja, rojo, gris, dorado, granate). */
     public static VBox tarjeta(String titulo, String valor, String color) {
         Label t = new Label(titulo);
         t.getStyleClass().add("tarjeta-titulo");
@@ -661,14 +607,12 @@ public final class Ui {
         return caja;
     }
 
-    /** Panel blanco con borde. */
     public static VBox panel(Node... hijos) {
         VBox caja = new VBox(10, hijos);
         caja.getStyleClass().add("panel");
         return caja;
     }
 
-    /** Rejilla de formulario de dos columnas (etiqueta | control). */
     public static GridPane formulario() {
         GridPane g = new GridPane();
         g.setHgap(12);

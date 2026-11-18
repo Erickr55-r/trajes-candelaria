@@ -20,14 +20,10 @@ import org.kordamp.ikonli.feather.Feather;
 
 import java.util.List;
 
-/**
- * Pedidos de diseño (los que envían los clientes desde «Diseña tu traje» y los antiguos de la tienda):
- * cliente, fecha, modalidad y estado, con la acción que toca en cada fila. Doble clic abre el diseño.
- */
 public class PedidosVista extends VBox {
 
     private final Servicios s;
-    /** Avisa al panel para actualizar la insignia de pendientes. */
+     
     private final Runnable alCambiar;
     private final ComboBox<String> estado = Ui.comboTexto(PersonalizadorService.ESTADOS, "Todos");
     private final TextField texto = Ui.campo("", "Cliente, danza o N°...");

@@ -33,10 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-/**
- * Portal del cliente (rol CLIENTE), con el tema guindo: Inicio · Catálogo · Diseña tu traje · Mis reservas ·
- * Mis diseños, el detalle de cada traje y el perfil. Todo lo que muestra se filtra por el cliente de la sesión.
- */
 public class PortalClienteView extends StackPane {
 
     public static final String INICIO = "Inicio";
@@ -51,13 +47,13 @@ public class PortalClienteView extends StackPane {
     private final BorderPane marco = new BorderPane();
     private final Map<String, Button> botones = new LinkedHashMap<>();
     private final ScrollPane area = new ScrollPane();
-    /** Pantalla a la que vuelve el detalle de un traje. */
+     
     private String origen = INICIO;
 
     public PortalClienteView(Servicios s, Runnable alCerrarSesion) {
         this.s = s;
         this.alCerrarSesion = alCerrarSesion;
-        Ui.cambiarTema("Guindo");   // el portal siempre usa la paleta guindo
+        Ui.cambiarTema("Guindo");   
         area.setFitToWidth(true);
         area.setFitToHeight(true);
         area.getStyleClass().add("area-contenido");
@@ -66,8 +62,6 @@ public class PortalClienteView extends StackPane {
         getChildren().add(marco);
         ir(INICIO);
     }
-
-    // ------------------------------------------------------------------ barra superior
 
     private HBox barraSuperior() {
         HBox menu = new HBox();
@@ -90,7 +84,6 @@ public class PortalClienteView extends StackPane {
         return barra;
     }
 
-    /** Avatar con el nombre del cliente; al hacer clic, menú Perfil / Cerrar sesión. */
     private HBox usuario() {
         Usuario u = Sesion.get().usuario();
         Circle circulo = new Circle(18);
@@ -118,13 +111,10 @@ public class PortalClienteView extends StackPane {
         return caja;
     }
 
-    /** Después de editar el perfil: el nombre del avatar cambia. */
     public void refrescarCabecera() {
         marco.setTop(barraSuperior());
         marcarActivo(PERFIL);
     }
-
-    // ------------------------------------------------------------------ navegación
 
     public void ir(String pantalla) {
         if (INICIO.equals(pantalla) || CATALOGO.equals(pantalla)) {
@@ -140,17 +130,14 @@ public class PortalClienteView extends StackPane {
         });
     }
 
-    /** Abre el detalle del traje (con las fechas del buscador si las hay). */
     public void verTraje(TrajeFila t, LocalDate desde, LocalDate hasta) {
         cambiar(null, () -> new DetalleTrajeVista(s, this, t, desde, hasta));
     }
 
-    /** Vuelve del detalle a la lista de la que vino (Inicio o Catálogo). */
     public void volver() {
         ir(origen);
     }
 
-    /** Confirmación elegante con check animado encima de todo el portal. */
     public void confirmar(String titulo, String mensaje, ConfirmacionCheck.Opcion... opciones) {
         ConfirmacionCheck.mostrar(this, titulo, mensaje, opciones);
     }

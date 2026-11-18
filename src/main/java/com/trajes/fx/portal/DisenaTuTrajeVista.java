@@ -56,24 +56,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Diseña tu traje (portal del cliente): personalizador por capas sobre los renders de render/&lt;danza&gt;/&lt;ángulo&gt;/.
- * Pasos: ① Danza ② Prenda ③ Color ④ Implementos ⑤ Modalidad. Al enviar se crea el pedido PENDIENTE con cada prenda
- * y su color (hex), los implementos y la imagen del diseño (en la base y en la carpeta disenos/).
- */
 public class DisenaTuTrajeVista extends HBox {
 
-    /** Igual que el trigger fn_recalcular_pedido: ALQUILER paga el 30% del costo de confección. */
     private static final BigDecimal FACTOR_ALQUILER = PersonalizadorService.FACTOR_ALQUILER;
     private static final Path CARPETA_DISENOS = Path.of(System.getProperty("user.dir"), "disenos");
 
-    /** Fondo de estudio para la imagen que se guarda (en pantalla lo pone el CSS .estudio). */
     private static final Background FONDO_ESTUDIO = new Background(new BackgroundFill(
             new RadialGradient(0, 0, 0.5, 0.42, 0.75, true, CycleMethod.NO_CYCLE,
                     new Stop(0, Color.web("#5A2A34")), new Stop(0.55, Color.web("#2B0F15")), new Stop(1, Color.web("#12070A"))),
             null, null));
 
-    /** Color elegido para una prenda: de la paleta (con id) o libre (ColorPicker). */
     private record ColorElegido(Color color, Integer idColor, String nombre) {
         String hex() {
             return String.format("#%02X%02X%02X", Math.round(color.getRed() * 255), Math.round(color.getGreen() * 255),
@@ -87,19 +79,17 @@ public class DisenaTuTrajeVista extends HBox {
     private final List<ColorTraje> paleta;
     private final List<Implemento> implementos;
 
-    // estado del diseño
     private Opcion danza;
     private final Map<String, RenderCapas> angulos = new LinkedHashMap<>();
     private List<String> nombresAngulos = List.of();
     private int angulo;
-    /** clave de prenda ("pantalon") → parte_traje de la danza (null si la tienda no la cobra). */
+     
     private final Map<String, ParteTraje> partePorPrenda = new LinkedHashMap<>();
     private final Map<String, String> nombrePrenda = new LinkedHashMap<>();
     private final Map<String, ColorElegido> colores = new LinkedHashMap<>();
     private String prendaActual;
     private final Map<Integer, CheckBox> marcasImplementos = new LinkedHashMap<>();
 
-    // nodos
     private final StackPane escenario = new StackPane();
     private final StackPane capas = new StackPane();
     private final Label lAngulo = new Label();
@@ -147,7 +137,7 @@ public class DisenaTuTrajeVista extends HBox {
                 elegirColor(new ColorElegido(b, null, "Personalizado"));
             }
         });
-        // primera danza con render
+        
         Opcion primera = null;
         for (Node n : chipsDanza.getChildren()) {
             if (!n.isDisabled()) {
@@ -163,8 +153,6 @@ public class DisenaTuTrajeVista extends HBox {
             aviso.setVisible(true);
         }
     }
-
-    // ------------------------------------------------------------------ estudio (foto grande)
 
     private StackPane estudio() {
         escenario.getStyleClass().add("estudio");
@@ -206,7 +194,7 @@ public class DisenaTuTrajeVista extends HBox {
         String a = nombresAngulos.get(angulo);
         lAngulo.setText(a.substring(0, 1).toUpperCase(Locale.ROOT) + a.substring(1)
                 + (varios ? "  ·  " + (angulo + 1) + " de " + nombresAngulos.size() : ""));
-        // render sin transparencia: se avisa (se teñiría el cuadro entero)
+        
         boolean opaco = r.prendas().stream().anyMatch(p -> p.fraccionTransparente() < 0.05);
         aviso.setText("Vista previa aproximada: este render aún no tiene fondo transparente.");
         aviso.setVisible(opaco);
@@ -227,8 +215,6 @@ public class DisenaTuTrajeVista extends HBox {
         angulo = Math.floorMod(angulo + paso, nombresAngulos.size());
         mostrarAngulo();
     }
-
-    // ------------------------------------------------------------------ pasos
 
     private VBox tarjetaPasos() {
         for (Opcion d : s.trajes().danzas()) {
@@ -252,7 +238,6 @@ public class DisenaTuTrajeVista extends HBox {
             chipsDanza.getChildren().add(b);
         }
 
-        // paleta de la tabla color
         for (ColorTraje c : paleta) {
             Circle circ = new Circle(15, Color.web(c.hex()));
             circ.getStyleClass().add("circulo-color");
@@ -272,7 +257,6 @@ public class DisenaTuTrajeVista extends HBox {
         lColor.setWrapText(true);
         VBox lineaPicker = new VBox(8, filaPicker, lColor);
 
-        // implementos
         VBox cajaImpl = new VBox(8);
         for (Implemento imp : implementos) {
             int n = cantidadSugerida(imp.nombre());
@@ -290,7 +274,6 @@ public class DisenaTuTrajeVista extends HBox {
             marcasImplementos.put(imp.idImplemento(), cb);
         }
 
-        // modalidad, talla y entrega
         ToggleButton confeccion = tarjetaModalidad("CONFECCION", "Confeccionar", "El traje es tuyo", Feather.SCISSORS);
         ToggleButton alquilar = tarjetaModalidad("ALQUILER", "Alquilar", "30% del costo de confección", Feather.REPEAT);
         confeccion.setSelected(true);
@@ -321,11 +304,10 @@ public class DisenaTuTrajeVista extends HBox {
             }
         });
         entrega.setPrefWidth(170);
-        // talla y entrega una debajo de la otra: así las 5 tallas caben sin recortarse
+        
         VBox tallaEntrega = new VBox(12, new VBox(6, Ui.etiqueta("TALLA"), cajaTallas),
                 new VBox(6, Ui.etiqueta("ENTREGA"), entrega));
 
-        // resumen
         Label tituloResumen = new Label("Precio estimado");
         tituloResumen.getStyleClass().add("resumen-titulo");
         total.getStyleClass().add("resumen-total");
@@ -380,8 +362,6 @@ public class DisenaTuTrajeVista extends HBox {
         return v;
     }
 
-    // ------------------------------------------------------------------ lógica
-
     private void elegirDanza(Opcion d) {
         String carpeta = CatalogoRender.carpetaDe(d.nombre(), renders);
         if (carpeta == null) {
@@ -395,7 +375,6 @@ public class DisenaTuTrajeVista extends HBox {
         nombresAngulos = List.copyOf(angulos.keySet());
         angulo = 0;
 
-        // prendas del primer ángulo ↔ partes de la danza (por nombre, sin tildes)
         partePorPrenda.clear();
         nombrePrenda.clear();
         colores.clear();
@@ -448,7 +427,6 @@ public class DisenaTuTrajeVista extends HBox {
         recalcular();
     }
 
-    /** Tiñe la prenda en todos los ángulos (así al girar se ve igual). */
     private void tenirPrenda(String clave) {
         Color c = colores.get(clave).color();
         for (RenderCapas r : angulos.values()) {
@@ -482,7 +460,6 @@ public class DisenaTuTrajeVista extends HBox {
         return modalidad.getSelectedToggle() == null ? "CONFECCION" : (String) modalidad.getSelectedToggle().getUserData();
     }
 
-    /** Misma fórmula que el trigger fn_recalcular_pedido. */
     private void recalcular() {
         lineasResumen.getChildren().clear();
         BigDecimal partes = BigDecimal.ZERO;
@@ -546,7 +523,6 @@ public class DisenaTuTrajeVista extends HBox {
         int id = s.personalizador().crearPedidoDiseno(idCliente, danza.id(), talla, tipo(), entrega.getValue(),
                 partes, impl, null);
 
-        // imagen final: el ángulo que se está viendo, a la resolución del render
         byte[] png = Ui.png(componer());
         s.personalizador().guardarImagen(id, idCliente, png);
         try {
@@ -555,7 +531,7 @@ public class DisenaTuTrajeVista extends HBox {
             Files.write(archivo, png);
             s.personalizador().guardarRutaImagen(id, idCliente, "disenos/" + archivo.getFileName());
         } catch (IOException e) {
-            // la imagen ya quedó en la base; la copia en disco es un respaldo
+            
         }
         portal.confirmar("¡Diseño enviado!",
                 "Tu diseño N° " + id + " llegó a la tienda con un precio estimado de " + total.getText()

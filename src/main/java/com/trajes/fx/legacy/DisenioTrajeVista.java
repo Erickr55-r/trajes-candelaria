@@ -38,16 +38,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * LEGADO: personalizador 3D con figuras básicas (TriangleMesh). Ya no aparece en ningún menú;
- * se reemplazó por el personalizador por capas (fx/portal/DisenaTuTrajeVista). Se conserva por si acaso.
- */
 public class DisenioTrajeVista extends VBox {
 
     private static final String VARON = "Varón";
     private static final String CHOLITA = "Cholita (pollera)";
 
-    /** Color con el que empieza cada parte. */
     private static final Map<String, String> COLOR_INICIAL = Map.of(
             "chaqueta", "Rojo", "pantalon", "Negro", "pollera", "Rosado", "botas", "Blanco",
             "sombrero", "Blanco", "capa", "Morado", "mascara", "Rojo", "faja", "Dorado");
@@ -76,7 +71,6 @@ public class DisenioTrajeVista extends VBox {
     private final Label lTotal = new Label();
     private final TextField adelanto = Ui.campo("", "0.00");
 
-    /** Una parte del traje: si se incluye y con qué color. */
     private static final class FilaParte {
         ParteTraje parte;
         String clave;
@@ -97,16 +91,14 @@ public class DisenioTrajeVista extends VBox {
         Spinner<Integer> cantidad;
     }
 
-    /** Cliente fijo del portal (null en la tienda, donde se elige de la lista). */
     private final Integer idClienteFijo;
-    /** Portal: qué hacer después de enviar el diseño (recibe el N° de pedido). */
+     
     private final java.util.function.IntConsumer alEnviar;
 
     public DisenioTrajeVista(Servicios s, PanelVendedorView ventana) {
         this(s, ventana, null, null);
     }
 
-    /** Personalizador del portal: el pedido se crea a nombre del cliente de la sesión, sin adelanto. */
     public static DisenioTrajeVista paraCliente(Servicios s, java.util.function.IntConsumer alEnviar) {
         return new DisenioTrajeVista(s, null, com.trajes.fx.Sesion.get().getCliente(), alEnviar);
     }
@@ -120,7 +112,7 @@ public class DisenioTrajeVista extends VBox {
         getStyleClass().add("contenido");
 
         colores = s.personalizador().colores();
-        // En el portal no se carga la lista de clientes: el cliente es siempre el de la sesión.
+        
         cliente = Ui.combo(idClienteFijo == null ? s.clientes().opciones() : List.of(), Opcion::nombre, null);
         cliente.getSelectionModel().clearSelection();
         cliente.setPromptText("Elige un cliente...");
@@ -142,7 +134,6 @@ public class DisenioTrajeVista extends VBox {
                                         + "tienda y te enviaremos el precio para que lo apruebes."),
                 columnas, totales(), acciones());
 
-        // Al salir de la pantalla se detiene el giro automático.
         sceneProperty().addListener((o, antes, ahora) -> {
             if (ahora == null) {
                 visor.detener();
@@ -150,8 +141,6 @@ public class DisenioTrajeVista extends VBox {
         });
         cargarPartes();
     }
-
-    // ------------------------------------------------------------------ columnas
 
     private VBox columnaDatos() {
         observacion.setPromptText("Ej.: con iniciales bordadas");
@@ -166,7 +155,7 @@ public class DisenioTrajeVista extends VBox {
                 Ui.subtitulo("ALQUILER: el traje se confecciona para la fecha y se paga el 30% del costo. "
                         + "CONFECCION: el traje queda para el cliente."));
         if (idClienteFijo != null) {
-            caja.getChildren().subList(1, 3).clear();   // sin "Cliente *" ni su lista
+            caja.getChildren().subList(1, 3).clear();   
         }
         caja.setSpacing(6);
         caja.setPrefWidth(250);
@@ -192,7 +181,7 @@ public class DisenioTrajeVista extends VBox {
             f.cantidad.setEditable(true);
             f.cantidad.setPrefWidth(78);
             f.cantidad.setDisable(true);
-            // Lo que se escribe a mano también cuenta, sin tener que pulsar Enter.
+            
             f.cantidad.getEditor().textProperty().addListener((o, a, b) -> {
                 try {
                     int n = Integer.parseInt(b.trim());
@@ -200,7 +189,7 @@ public class DisenioTrajeVista extends VBox {
                         f.cantidad.getValueFactory().setValue(n);
                     }
                 } catch (NumberFormatException ignorado) {
-                    // se queda con el último valor válido
+                    
                 }
             });
             f.marca.setOnAction(e -> {
@@ -254,9 +243,6 @@ public class DisenioTrajeVista extends VBox {
         return caja;
     }
 
-    // ------------------------------------------------------------------ partes y colores
-
-    /** Carga las partes de la danza elegida y arma el maniquí con los colores iniciales. */
     private void cargarPartes() {
         filasPartes.clear();
         cajaPartes.getChildren().clear();
@@ -306,7 +292,6 @@ public class DisenioTrajeVista extends VBox {
         actualizar();
     }
 
-    /** Varón usa pantalón; cholita usa pollera y no lleva máscara. Lo oculto no se cobra. */
     private void aplicarFigura() {
         boolean cholita = CHOLITA.equals(figura.getValue());
         for (FilaParte f : filasPartes) {
@@ -338,7 +323,6 @@ public class DisenioTrajeVista extends VBox {
         return filasImplementos.stream().filter(f -> f.marca.isSelected()).toList();
     }
 
-    /** Vuelve a armar el maniquí con las partes incluidas y recalcula el precio. */
     private void actualizar() {
         Opcion d = danza.getValue();
         visor.maniqui().armar(d == null ? null : d.nombre(),
@@ -354,7 +338,6 @@ public class DisenioTrajeVista extends VBox {
         recalcular();
     }
 
-    /** Precio en vivo: mismo cálculo que el trigger trg_recalcular_pedido_* de la base de datos. */
     private void recalcular() {
         BigDecimal partes = partesIncluidas().stream().map(f -> f.parte.precioBase())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -390,8 +373,6 @@ public class DisenioTrajeVista extends VBox {
         }
         return 1;
     }
-
-    // ------------------------------------------------------------------ acciones
 
     private void guardarImagen() {
         FileChooser fc = new FileChooser();
@@ -432,7 +413,7 @@ public class DisenioTrajeVista extends VBox {
         }
 
         if (idClienteFijo != null) {
-            // Portal: sin adelanto; se guarda la imagen del diseño para la tienda.
+            
             int id = s.personalizador().crearPedido(idCliente, d.id(), t, tp, fecha, partes, implementos,
                     null, observacion.getText());
             s.personalizador().guardarImagen(id, idCliente, Ui.png(visor.captura(1.5)));

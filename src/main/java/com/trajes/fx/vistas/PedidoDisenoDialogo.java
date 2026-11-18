@@ -34,10 +34,6 @@ import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * Detalle de un pedido de diseño para la tienda: imagen grande del diseño, prendas con su color (muestra y hex),
- * implementos, precios y la acción según el estado (Cotizar, Iniciar confección, Marcar listo, Entregar).
- */
 public class PedidoDisenoDialogo {
 
     private final Servicios s;
@@ -62,7 +58,6 @@ public class PedidoDisenoDialogo {
         PedidoDetalle d = s.personalizador().detallePedido(idPedido);
         PedidoResumen p = d.resumen();
 
-        // cabecera
         Label titulo = Ui.titulo("Pedido de diseño N° " + p.idPedido());
         HBox linea = new HBox(12, titulo, Ui.badge(p.estado()), Ui.badge(p.tipo()));
         linea.setAlignment(Pos.CENTER_LEFT);
@@ -75,7 +70,6 @@ public class PedidoDisenoDialogo {
         cabecera.getStyleClass().add("cabecera");
         raiz.setTop(cabecera);
 
-        // izquierda: imagen grande
         StackPane imagen = new StackPane();
         imagen.getStyleClass().add("estudio");
         imagen.setPrefSize(470, 560);
@@ -101,7 +95,6 @@ public class PedidoDisenoDialogo {
         clip.heightProperty().bind(imagen.heightProperty());
         imagen.setClip(clip);
 
-        // derecha: prendas, implementos, precios y acciones
         VBox derecha = new VBox(16,
                 Ui.seccion("Prendas y colores"), tablaPrendas(d.partes()),
                 Ui.seccion("Implementos"), tablaImplementos(d.implementos()),

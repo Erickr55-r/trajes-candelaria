@@ -17,7 +17,6 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 import java.util.function.Consumer;
 
-/** Lista de clientes con búsqueda por nombre o documento. */
 public class ClientesVista extends VBox {
 
     private final Servicios s;

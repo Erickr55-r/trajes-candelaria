@@ -20,10 +20,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-/**
- * Aplicación JavaFX. En init() arranca Spring (conexión a PostgreSQL y servicios),
- * en start() abre la ventana y en stop() cierra Spring.
- */
 public class AppFx extends Application {
 
     private ConfigurableApplicationContext contexto;
@@ -38,7 +34,7 @@ public class AppFx extends Application {
             contexto = new SpringApplicationBuilder(AlquilerTrajesApplication.class)
                     .web(WebApplicationType.NONE)
                     .run(getParameters().getRaw().toArray(new String[0]));
-            // Prueba la conexión (y que exista la tabla) antes de abrir la ventana.
+            
             contexto.getBean(JdbcTemplate.class).queryForObject("SELECT COUNT(*) FROM traje", Long.class);
         } catch (Exception e) {
             errorInicio = e;
@@ -79,14 +75,12 @@ public class AppFx extends Application {
         stage.show();
     }
 
-    /** Pantalla de inicio de sesión (también al cerrar sesión). */
     public void mostrarLogin() {
         Sesion.get().cerrar();
         escena.setRoot(new LoginView(servicios, this::ingresar));
         stage.setTitle("Trajes Candelaria · Iniciar sesión");
     }
 
-    /** Guarda la sesión y abre la pantalla de su rol: CLIENTE → portal; ADMIN o VENDEDOR → panel de la tienda. */
     public void ingresar(Usuario u) {
         Sesion.get().iniciar(u);
         Parent raiz = u.esCliente()

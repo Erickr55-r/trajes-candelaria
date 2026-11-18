@@ -33,10 +33,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Nueva reserva: elegir cliente y fechas, buscar trajes libres, marcarlos y registrar. */
 public class NuevaReservaVista extends VBox {
 
-    /** Mismo descuento que AlquilerService: 10% para conjuntos con 5 trajes o más. */
     private static final BigDecimal DESCUENTO_CONJUNTO = new BigDecimal("0.90");
     private static final int MINIMO_DESCUENTO = 5;
 
@@ -63,7 +61,6 @@ public class NuevaReservaVista extends VBox {
     private final ComboBox<String> metodo = Ui.comboTexto(Ui.METODOS, null);
     private final TextField observacion = Ui.campo("", "Opcional");
 
-    /** Fechas con las que se hizo la última búsqueda. */
     private LocalDate buscadoDesde;
     private LocalDate buscadoHasta;
 
@@ -78,7 +75,7 @@ public class NuevaReservaVista extends VBox {
         conjunto = Ui.combo(s.clientes().opcionesConjunto(), Opcion::nombre, "— Sin conjunto —");
         danza = Ui.combo(s.trajes().danzas(), Opcion::nombre, "Todas");
         conjunto.setOnAction(e -> recalcular());
-        // Si cambian las fechas, la lista de trajes libres ya no vale.
+        
         salida.valueProperty().addListener((o, a, b) -> limpiarResultados());
         devolucion.valueProperty().addListener((o, a, b) -> limpiarResultados());
 
@@ -130,7 +127,7 @@ public class NuevaReservaVista extends VBox {
         tabla.getColumns().add(Ui.colTexto("Color", TrajeDisponible::color, 120));
         tabla.getColumns().add(Ui.colSoles("Precio", TrajeDisponible::precioAlquiler, 100));
         tabla.getColumns().add(Ui.colSoles("Garantía", TrajeDisponible::garantia, 100));
-        // Doble clic en la fila también marca o desmarca el traje.
+        
         Ui.alDobleClic(tabla, t -> marca(t).set(!marca(t).get()));
         tabla.setMinHeight(200);
         VBox.setVgrow(tabla, Priority.ALWAYS);
@@ -160,10 +157,6 @@ public class NuevaReservaVista extends VBox {
         return caja;
     }
 
-    /**
-     * Viene de Inicio o del Catálogo: pone las fechas (y el conjunto y la observación si llegan),
-     * busca los trajes libres y deja marcado el elegido.
-     */
     public void preparar(int idTraje, LocalDate desde, LocalDate hasta, Opcion conjuntoElegido, String nota) {
         if (conjuntoElegido != null) {
             conjunto.getItems().stream().filter(o -> o != null && o.id().equals(conjuntoElegido.id()))
@@ -181,8 +174,6 @@ public class NuevaReservaVista extends VBox {
             tabla.scrollTo(t);
         });
     }
-
-    // ------------------------------------------------------------------ lógica
 
     private void buscar() {
         LocalDate desde = Ui.requerido(salida, "Salida");
@@ -212,7 +203,6 @@ public class NuevaReservaVista extends VBox {
         recalcular();
     }
 
-    /** Casilla de un traje (se crea la primera vez y recalcula los totales al cambiar). */
     private BooleanProperty marca(TrajeDisponible t) {
         return marcados.computeIfAbsent(t.idTraje(), id -> {
             BooleanProperty p = new SimpleBooleanProperty(false);
@@ -231,7 +221,6 @@ public class NuevaReservaVista extends VBox {
         return lista;
     }
 
-    /** Recalcula los totales en vivo (mismo redondeo que el INSERT del servicio). */
     private void recalcular() {
         List<TrajeDisponible> sel = seleccionados();
         boolean descuento = conjunto.getValue() != null && sel.size() >= MINIMO_DESCUENTO;

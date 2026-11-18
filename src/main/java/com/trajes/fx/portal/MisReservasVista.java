@@ -22,7 +22,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
-/** Mis reservas: una tarjeta por reserva con su línea de tiempo (Solicitado → Reservado → Entregado → Devuelto). */
 public class MisReservasVista extends VBox {
 
     private static final List<String> PASOS = List.of("SOLICITADO", "RESERVADO", "ENTREGADO", "DEVUELTO");
@@ -35,7 +34,7 @@ public class MisReservasVista extends VBox {
         this.s = s;
         this.portal = portal;
         getStyleClass().add("contenido");
-        int idCliente = Sesion.get().getCliente();   // todo se filtra por el cliente de la sesión
+        int idCliente = Sesion.get().getCliente();   
 
         List<AlquilerResumen> lista = s.alquileres().delCliente(idCliente);
         Map<Integer, String> motivos = s.alquileres().motivosRechazo(idCliente);
@@ -90,7 +89,6 @@ public class MisReservasVista extends VBox {
             caja.getChildren().add(m);
         }
 
-        // Datos: fechas, trajes y montos
         long dias = Math.max(1, ChronoUnit.DAYS.between(a.fechaSalida(), a.fechaDevolucionPrevista()));
         VBox fechas = dato("Fechas", Ui.fecha(a.fechaSalida()) + "  →  " + Ui.fecha(a.fechaDevolucionPrevista()),
                 dias + (dias == 1 ? " día" : " días") + (a.conjunto() != null && !"PARTICULAR".equals(a.conjunto())
@@ -123,12 +121,11 @@ public class MisReservasVista extends VBox {
         return caja;
     }
 
-    /** Pasos con el actual en dorado; los anteriores, completados; si fue rechazado o cancelado, se marca. */
     private static HBox lineaDeTiempo(String estado) {
         int actual = PASOS.indexOf(estado);
         boolean corte = "RECHAZADO".equals(estado) || "ANULADO".equals(estado);
         if (corte) {
-            actual = 0;   // se quedó en la solicitud
+            actual = 0;   
         }
         HBox linea = new HBox();
         linea.setAlignment(Pos.CENTER_LEFT);

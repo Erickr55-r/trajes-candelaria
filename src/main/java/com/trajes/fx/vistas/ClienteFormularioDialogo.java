@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
-/** Formulario para registrar o editar un cliente. */
 public class ClienteFormularioDialogo {
 
     private final Servicios s;
@@ -26,7 +25,6 @@ public class ClienteFormularioDialogo {
         this.idCliente = idCliente;
     }
 
-    /** Muestra el formulario; devuelve el id del cliente guardado o null si se canceló. */
     public Integer mostrar() {
         Ui.ejecutar(this::abrir);
         return guardado;

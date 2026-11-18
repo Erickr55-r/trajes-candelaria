@@ -17,16 +17,14 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.feather.Feather;
 
-/** Perfil del cliente: sus datos de contacto y el cambio de contraseña. */
 public class PerfilVista extends VBox {
 
     public PerfilVista(Servicios s, PortalClienteView portal) {
         getStyleClass().add("contenido");
-        int idCliente = Sesion.get().getCliente();   // solo sus propios datos
+        int idCliente = Sesion.get().getCliente();   
         Usuario u = Sesion.get().usuario();
         Cliente c = s.clientes().buscar(idCliente);
 
-        // ---------------- datos
         TextField documento = Ui.campo(c.tipoDocumento() + " " + c.numeroDocumento(), "");
         documento.setEditable(false);
         documento.getStyleClass().add("campo-bloqueado");
@@ -69,7 +67,6 @@ public class PerfilVista extends VBox {
         datos.getStyleClass().add("tarjeta-blanca");
         HBox.setHgrow(datos, Priority.ALWAYS);
 
-        // ---------------- contraseña
         PasswordField actual = new PasswordField();
         PasswordField nueva = new PasswordField();
         PasswordField repetir = new PasswordField();

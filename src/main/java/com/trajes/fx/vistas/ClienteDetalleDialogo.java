@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import java.math.BigDecimal;
 import java.util.List;
 
-/** Detalle de un cliente con sus alquileres. */
 public class ClienteDetalleDialogo {
 
     private final Servicios s;

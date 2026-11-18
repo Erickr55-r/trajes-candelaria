@@ -31,10 +31,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 
-/**
- * LEGADO: personalizador 3D con figuras básicas (TriangleMesh). Ya no aparece en ningún menú;
- * se reemplazó por el personalizador por capas (fx/portal/DisenaTuTrajeVista). Se conserva por si acaso.
- */
 public class PedidoDetalleDialogo {
 
     private final Servicios s;
@@ -48,7 +44,6 @@ public class PedidoDetalleDialogo {
         this.idPedido = idPedido;
     }
 
-    /** Abre el diálogo y espera a que se cierre. */
     public void mostrar() {
         if (!Ui.ejecutar(this::cargar)) {
             return;
@@ -62,7 +57,6 @@ public class PedidoDetalleDialogo {
         PedidoDetalle d = s.personalizador().detallePedido(idPedido);
         PedidoResumen p = d.resumen();
 
-        // Maniquí con los colores e implementos guardados
         for (PedidoParte parte : d.partes()) {
             visor.maniqui().colorear(parte.parte(), Color.web(parte.hex()));
         }
@@ -122,7 +116,7 @@ public class PedidoDetalleDialogo {
     private VBox acciones(PedidoResumen p) {
         HBox fila1 = new HBox(10);
         fila1.setAlignment(Pos.CENTER_LEFT);
-        // misma acción que en la tabla de Pedidos (Cotizar, Iniciar confección, Marcar listo, Entregar)
+        
         fila1.getChildren().add(AccionPedido.crear(s, p, () -> hacer(() -> { }, "Pedido actualizado.")));
         Button anular = Ui.estilo(new Button("Cancelar pedido"), "boton-peligro");
         anular.setOnAction(e -> {
@@ -146,7 +140,6 @@ public class PedidoDetalleDialogo {
                 fila1, fila2);
     }
 
-    /** Ejecuta una acción, recarga el diálogo y muestra el mensaje de éxito. */
     private void hacer(Ui.Accion accion, String exito) {
         if (Ui.ejecutar(() -> {
             accion.ejecutar();
@@ -167,8 +160,6 @@ public class PedidoDetalleDialogo {
             Ui.info("Diseño guardado en:\n" + archivo.getAbsolutePath());
         }
     }
-
-    // ------------------------------------------------------------------ tablas
 
     private TableView<PedidoParte> tablaPartes(PedidoDetalle d) {
         TableView<PedidoParte> t = Ui.tabla("Sin partes.");

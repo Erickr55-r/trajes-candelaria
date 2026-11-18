@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Inventario de trajes: catálogo, piezas, mantenimiento y estado. */
 @Service
 public class TrajeService {
 
@@ -39,8 +38,6 @@ public class TrajeService {
             Filas.fecha(rs, "fecha_adquisicion"), rs.getString("estado"));
 
     private static final RowMapper<Opcion> OPCION = (rs, i) -> new Opcion(rs.getInt("id"), rs.getString("nombre"));
-
-    // ------------------------------------------------------------------ consultas
 
     public List<TrajeFila> listar(Integer idDanza, String estado, String talla, String texto) {
         StringBuilder sql = new StringBuilder("""
@@ -132,9 +129,6 @@ public class TrajeService {
                 rs.getBigDecimal("costo"), rs.getString("detalle")), idTraje);
     }
 
-    // ------------------------------------------------------------------ cambios
-
-    /** Crea un traje nuevo (idTraje null) o actualiza uno existente. Devuelve su id. */
     public int guardar(Integer idTraje, String codigo, int idDanza, String personaje, String genero, String talla,
                        String color, BigDecimal precio, BigDecimal garantia, LocalDate fechaAdquisicion) {
         String codigoLimpio = codigo.trim().toUpperCase();
@@ -168,7 +162,6 @@ public class TrajeService {
         jdbc.update("DELETE FROM pieza WHERE id_pieza = ?", idPieza);
     }
 
-    /** Envía el traje a lavado o reparación: queda bloqueado para alquilar. */
     @Transactional
     public void enviarAMantenimiento(int idTraje, String tipo, String detalle) {
         validarSinAlquileresActivos(idTraje, "enviar a mantenimiento");
@@ -179,7 +172,6 @@ public class TrajeService {
         jdbc.update("UPDATE traje SET estado = 'MANTENIMIENTO' WHERE id_traje = ?", idTraje);
     }
 
-    /** Cierra el mantenimiento abierto, registra su costo y deja el traje disponible. */
     @Transactional
     public void terminarMantenimiento(int idTraje, BigDecimal costo) {
         jdbc.update("""

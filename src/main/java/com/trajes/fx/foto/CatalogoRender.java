@@ -13,20 +13,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * Descubre los renders por capas que hay en el classpath:
- * {@code render/<danza>/<ángulo>/base.png} (+ un PNG por prenda). No hay que tocar código para agregar
- * una danza o un ángulo: basta con crear la carpeta.
- */
 public final class CatalogoRender {
 
-    /** Orden en que se recorren los ángulos con las flechas ◀ ▶ (los demás van después, por nombre). */
     private static final List<String> ORDEN_ANGULOS = List.of("frente", "perfil", "espalda");
 
     private CatalogoRender() {
     }
 
-    /** carpeta de danza → ángulos disponibles (en orden), p. ej. "caporal" → [frente, perfil, espalda]. */
     public static Map<String, List<String>> danzas() {
         Resource[] bases;
         try {
@@ -63,7 +56,6 @@ public final class CatalogoRender {
         return ordenado;
     }
 
-    /** Carpeta de render que corresponde a una danza de la base ("Caporales" ↔ render/caporal). */
     public static String carpetaDe(String danza, Map<String, List<String>> disponibles) {
         String d = clave(danza);
         for (String carpeta : disponibles.keySet()) {
@@ -75,7 +67,6 @@ public final class CatalogoRender {
         return null;
     }
 
-    /** "Pantalón" → "pantalon"; sin tildes, en minúsculas y sin espacios. */
     public static String clave(String texto) {
         if (texto == null) {
             return "";

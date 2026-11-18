@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Mis diseños: los pedidos personalizados del cliente, con su imagen, estado y precio cotizado. */
 public class MisDisenosVista extends VBox {
 
     private static final double ALTO_IMAGEN = 230;
@@ -39,7 +38,7 @@ public class MisDisenosVista extends VBox {
         this.s = s;
         this.portal = portal;
         getStyleClass().add("contenido");
-        int idCliente = Sesion.get().getCliente();   // solo los diseños de este cliente
+        int idCliente = Sesion.get().getCliente();   
 
         Button nuevo = Ui.estilo(new Button("Diseñar un traje", Ui.icono(Feather.SCISSORS)), "boton-primario");
         nuevo.setOnAction(e -> portal.ir(PortalClienteView.DISENIO));
@@ -112,7 +111,7 @@ public class MisDisenosVista extends VBox {
 
         Region sep = new Region();
         sep.getStyleClass().add("traje-separador");
-        // Precio estimado (al enviar el diseño) y, cuando la tienda cotiza, el precio final.
+        
         BigDecimal estimado = p.precioEstimado() == null ? p.montoTotal() : p.precioEstimado();
         boolean cotizado = !List.of("PENDIENTE", "CANCELADO").contains(p.estado());
         Label lEstimado = new Label("Precio estimado  " + Ui.soles(estimado));

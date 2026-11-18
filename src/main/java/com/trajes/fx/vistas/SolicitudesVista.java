@@ -18,14 +18,10 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-/**
- * Solicitudes de clientes hechas desde el portal (estado SOLICITADO), de la más antigua a la más reciente.
- * Aprobar → RESERVADO; Rechazar → RECHAZADO con un motivo que el cliente verá.
- */
 public class SolicitudesVista extends VBox {
 
     private final Servicios s;
-    /** Avisa al panel para actualizar la insignia del menú. */
+     
     private final Runnable alCambiar;
     private final VBox lista = new VBox(16);
     private final Label cantidad = Ui.subtitulo("");
@@ -70,14 +66,13 @@ public class SolicitudesVista extends VBox {
         Label hace = new Label(antiguedad(f.creadoEn()), Ui.icono(Feather.CLOCK, 13));
         hace.getStyleClass().addAll("chip", "chip-hace");
         if (Duration.between(f.creadoEn(), LocalDateTime.now()).toHours() >= 24) {
-            hace.getStyleClass().add("chip-hace-viejo");   // más de un día esperando: resalta
+            hace.getStyleClass().add("chip-hace-viejo");   
         }
         Label numero = new Label("N° " + f.idAlquiler());
         numero.getStyleClass().add("traje-codigo");
         HBox cabecera = new HBox(12, new VBox(4, cliente, contacto), Ui.espacio(), numero, hace);
         cabecera.setAlignment(Pos.CENTER_LEFT);
 
-        // trajes
         VBox trajes = new VBox(4);
         for (AlquilerDetalleTraje t : s.alquileres().trajes(f.idAlquiler())) {
             Label l = new Label(t.personaje() + " · " + t.danza() + "  (talla " + t.talla() + ", " + t.codigo() + ")",
@@ -145,7 +140,6 @@ public class SolicitudesVista extends VBox {
         return caja;
     }
 
-    /** "hace 5 min", "hace 2 h", "hace 3 días". */
     static String antiguedad(LocalDateTime desde) {
         Duration d = Duration.between(desde, LocalDateTime.now());
         long min = Math.max(0, d.toMinutes());

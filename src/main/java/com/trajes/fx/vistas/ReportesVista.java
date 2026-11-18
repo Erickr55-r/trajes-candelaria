@@ -14,7 +14,6 @@ import javafx.scene.layout.VBox;
 
 import java.util.List;
 
-/** Reportes del negocio: una pestaña por cada consulta. */
 public class ReportesVista extends VBox {
 
     public ReportesVista(Servicios s) {

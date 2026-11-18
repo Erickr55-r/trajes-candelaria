@@ -20,16 +20,8 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.util.Duration;
 
-/**
- * Capa de confirmación: fondo velado y una tarjeta con un check animado
- * (el círculo aparece con un pequeño rebote y luego se "dibuja" el check).
- */
 public final class ConfirmacionCheck extends StackPane {
 
-    /**
-     * "Ease-out-back": pasa un poco del tamaño final y vuelve (el rebote del círculo).
-     * Interpolator.SPLINE no sirve: sus puntos de control deben estar entre 0 y 1.
-     */
     private static final Interpolator REBOTE = new Interpolator() {
         @Override
         protected double curve(double t) {
@@ -39,7 +31,6 @@ public final class ConfirmacionCheck extends StackPane {
         }
     };
 
-    /** Un botón de la confirmación. */
     public record Opcion(String texto, boolean principal, Runnable accion) {}
 
     private ConfirmacionCheck(String titulo, String mensaje, Opcion... opciones) {
@@ -83,7 +74,6 @@ public final class ConfirmacionCheck extends StackPane {
         tarjeta.setMaxSize(460, Region.USE_PREF_SIZE);
         getChildren().add(tarjeta);
 
-        // Animación: velo y tarjeta aparecen, el círculo rebota y el check se dibuja.
         setOpacity(0);
         circulo.setScaleX(0);
         circulo.setScaleY(0);
@@ -98,7 +88,6 @@ public final class ConfirmacionCheck extends StackPane {
         new SequentialTransition(aparece, rebote, dibuja).play();
     }
 
-    /** Muestra la confirmación encima de {@code capa} (un StackPane que cubre la ventana). */
     public static void mostrar(StackPane capa, String titulo, String mensaje, Opcion... opciones) {
         capa.getChildren().removeIf(n -> n instanceof ConfirmacionCheck);
         capa.getChildren().add(new ConfirmacionCheck(titulo, mensaje, opciones));

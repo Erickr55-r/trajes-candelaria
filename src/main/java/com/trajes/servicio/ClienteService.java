@@ -14,7 +14,6 @@ import java.util.List;
 import static com.trajes.servicio.TrajeService.tieneTexto;
 import static com.trajes.servicio.TrajeService.vacioANulo;
 
-/** Clientes y conjuntos de danza. */
 @Service
 public class ClienteService {
 
@@ -30,8 +29,6 @@ public class ClienteService {
             rs.getString("email"), rs.getString("direccion"), Filas.fecha(rs, "fecha_registro"));
 
     private static final RowMapper<Opcion> OPCION = (rs, i) -> new Opcion(rs.getInt("id"), rs.getString("nombre"));
-
-    // ------------------------------------------------------------------ clientes
 
     public List<ClienteFila> listar(String texto) {
         StringBuilder sql = new StringBuilder("""
@@ -65,7 +62,6 @@ public class ClienteService {
         return lista.get(0);
     }
 
-    /** Crea un cliente (idCliente null) o actualiza uno existente. Devuelve su id. */
     public int guardar(Integer idCliente, String tipoDocumento, String numeroDocumento, String nombres,
                        String apellidos, String telefono, String email, String direccion) {
         if ("DNI".equals(tipoDocumento) && !numeroDocumento.trim().matches("\\d{8}")) {
@@ -102,8 +98,6 @@ public class ClienteService {
                 """, OPCION);
     }
 
-    // ------------------------------------------------------------------ conjuntos
-
     public List<ConjuntoFila> conjuntos() {
         return jdbc.query("""
                 SELECT cj.id_conjunto, cj.nombre, d.nombre AS danza,
@@ -127,13 +121,11 @@ public class ClienteService {
                 """, nombre.trim(), idDanza, idDelegado, vacioANulo(telefono));
     }
 
-    /** Conjuntos de los que el cliente es delegado (puede reservar a su nombre desde el portal). */
     public List<Opcion> conjuntosDelDelegado(int idCliente) {
         return jdbc.query("SELECT id_conjunto AS id, nombre FROM conjunto WHERE id_delegado = ? ORDER BY nombre",
                 OPCION, idCliente);
     }
 
-    /** El cliente actualiza sus datos de contacto desde su perfil (el documento no se cambia aquí). */
     public void actualizarPerfil(int idCliente, String nombres, String apellidos, String telefono, String email,
                                  String direccion) {
         if (nombres == null || nombres.isBlank()) {

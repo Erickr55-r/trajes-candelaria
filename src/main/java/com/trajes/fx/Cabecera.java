@@ -23,13 +23,11 @@ import org.kordamp.ikonli.feather.Feather;
 
 import java.util.Locale;
 
-/** Piezas comunes de la barra superior: el logo y el avatar del usuario con su menú. */
 public final class Cabecera {
 
     private Cabecera() {
     }
 
-    /** Cuadro dorado con tijeras + "Trajes Candelaria" + "ALQUILER Y CONFECCIÓN". */
     public static HBox marca(Runnable alHacerClic) {
         StackPane logo = new StackPane(Ui.icono(Feather.SCISSORS));
         logo.getStyleClass().add("logo-cuadro");
@@ -50,7 +48,6 @@ public final class Cabecera {
         return marca;
     }
 
-    /** Avatar circular con las iniciales del usuario de la sesión y el menú Tema / Cerrar sesión / Salir. */
     public static StackPane avatar(Runnable alCerrarSesion) {
         Usuario u = Sesion.get().usuario();
         Circle circulo = new Circle(19);
@@ -62,7 +59,6 @@ public final class Cabecera {
         avatar.setMinWidth(Region.USE_PREF_SIZE);
         Tooltip.install(avatar, new Tooltip(u.nombreVisible() + " · " + u.rolVisible()));
 
-        // Encabezado del menú: nombre y rol (no se puede elegir)
         Label nombre = new Label(u.nombreVisible());
         nombre.getStyleClass().add("menu-usuario-nombre");
         Label rol = new Label(Ui.espaciado(u.rolVisible()) + "  ·  @" + u.username());
@@ -90,7 +86,6 @@ public final class Cabecera {
         return avatar;
     }
 
-    /** Botón visible "Cerrar sesión" para la barra superior. */
     public static javafx.scene.control.Button botonCerrarSesion(Runnable alCerrarSesion) {
         javafx.scene.control.Button b = new javafx.scene.control.Button(null, Ui.icono(Feather.LOG_OUT));
         b.getStyleClass().add("boton-salir");

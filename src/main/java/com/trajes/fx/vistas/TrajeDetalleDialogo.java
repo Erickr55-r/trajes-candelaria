@@ -22,7 +22,6 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
-/** Detalle de un traje: piezas, estado y mantenimiento, e historial de alquileres. */
 public class TrajeDetalleDialogo {
 
     private final Servicios s;
@@ -84,15 +83,12 @@ public class TrajeDetalleDialogo {
         raiz.setBottom(pie);
     }
 
-    /** Ejecuta una acción y recarga el diálogo. */
     private void hacer(Ui.Accion accion) {
         Ui.ejecutar(() -> {
             accion.ejecutar();
             cargar();
         });
     }
-
-    // ------------------------------------------------------------------ piezas
 
     private VBox piezas() {
         TableView<PiezaFila> tabla = Ui.tabla("Este traje no tiene piezas registradas.");
@@ -130,8 +126,6 @@ public class TrajeDetalleDialogo {
         HBox acciones = new HBox(quitar);
         return new VBox(10, tabla, acciones, Ui.seccion("Agregar pieza"), formulario);
     }
-
-    // ------------------------------------------------------------------ estado
 
     private VBox estado(Traje t) {
         VBox acciones = new VBox(10);
@@ -188,8 +182,6 @@ public class TrajeDetalleDialogo {
 
         return new VBox(12, Ui.panel(acciones), Ui.seccion("Historial de mantenimiento"), tabla);
     }
-
-    // ------------------------------------------------------------------ historial
 
     private VBox historial() {
         TableView<HistorialTraje> tabla = Ui.tabla("Este traje todavía no se ha alquilado.");

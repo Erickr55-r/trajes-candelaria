@@ -17,7 +17,6 @@ import javafx.scene.layout.VBox;
 
 import java.util.List;
 
-/** Lista de alquileres con filtro por estado y búsqueda por cliente o conjunto. */
 public class AlquileresVista extends VBox {
 
     private final Servicios s;

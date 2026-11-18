@@ -29,11 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Catálogo completo (todos los trajes activos) en tarjetas, con su estado de hoy:
- * listo en tienda, disponible desde una fecha o en mantenimiento.
- * Fotos: src/main/resources/img/trajes/&lt;id_traje&gt;.png (si no hay, se dibuja un placeholder).
- */
 public class CatalogoVista extends VBox {
 
     private static final int TOP_MAS_ALQUILADOS = 3;
@@ -52,9 +47,9 @@ public class CatalogoVista extends VBox {
     private enum Estado { HOY, LUEGO, MANTENIMIENTO }
 
     private final Servicios s;
-    /** Botón de la tarjeta: la tienda abre Nueva reserva; el cliente, el detalle del traje. */
+     
     private final java.util.function.BiConsumer<TrajeFila, LocalDate> alReservar;
-    /** Clic en la tarjeta: la tienda abre el diálogo del traje (doble clic); el cliente, el detalle (un clic). */
+     
     private final java.util.function.Consumer<TrajeFila> alAbrir;
     private final boolean tienda;
 
@@ -147,8 +142,6 @@ public class CatalogoVista extends VBox {
         barra.getStyleClass().add("barra-filtros");
         return barra;
     }
-
-    // ------------------------------------------------------------------ datos
 
     private void cargar() {
         Opcion d = fDanza.getValue();

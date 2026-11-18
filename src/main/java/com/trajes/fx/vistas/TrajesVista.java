@@ -18,7 +18,6 @@ import javafx.scene.layout.VBox;
 
 import java.util.List;
 
-/** Inventario de trajes con filtros. */
 public class TrajesVista extends VBox {
 
     private final Servicios s;

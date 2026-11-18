@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/** Reportes para la gestión del negocio. Cada reporte es una consulta SQL. */
 @Service
 public class ReporteService {
 
@@ -134,7 +133,6 @@ public class ReporteService {
         );
     }
 
-    /** Reporte sobre las tablas del personalizador: si aún no se ejecutó personalizador.sql, lo avisa. */
     private Tabla tablaPersonalizador(String titulo, String descripcion, String sql) {
         try {
             return tabla(titulo, descripcion, sql);

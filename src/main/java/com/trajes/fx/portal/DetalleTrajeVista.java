@@ -49,13 +49,8 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
-/**
- * Detalle de un traje en el portal del cliente: fotos, piezas, tallas, calendario de ocupación,
- * fechas y cantidad, y una tarjeta resumen fija con el botón "Solicitar reserva" (crea el alquiler SOLICITADO).
- */
 public class DetalleTrajeVista extends BorderPane {
 
-    /** Igual que AlquilerService: 10% para conjuntos que alquilan 5 trajes o más. */
     private static final BigDecimal DESCUENTO_CONJUNTO = new BigDecimal("0.90");
     private static final int MINIMO_DESCUENTO = 5;
     private static final Locale ES = new Locale("es", "PE");
@@ -63,7 +58,7 @@ public class DetalleTrajeVista extends BorderPane {
     private final Servicios s;
     private final PortalClienteView portal;
     private final TrajeFila traje;
-    /** Trajes del mismo modelo (misma danza, personaje, color y género), activos. */
+     
     private final List<TrajeFila> modelo;
     private final Set<LocalDate> ocupados = new HashSet<>();
 
@@ -78,7 +73,6 @@ public class DetalleTrajeVista extends BorderPane {
     private final Label mesTitulo = new Label();
     private YearMonth mes;
 
-    // resumen
     private final Label rAlquilerTexto = new Label();
     private final Label rAlquiler = new Label();
     private final Label rDescuentoTexto = new Label();
@@ -89,7 +83,6 @@ public class DetalleTrajeVista extends BorderPane {
     private final Label rAviso = new Label();
     private final Button solicitar = new Button("Solicitar reserva");
 
-    /** Trajes que se apartarían con la selección actual. */
     private List<TrajeFila> elegidos = List.of();
 
     public DetalleTrajeVista(Servicios s, PortalClienteView portal, TrajeFila traje, LocalDate desde, LocalDate hasta) {
@@ -136,7 +129,7 @@ public class DetalleTrajeVista extends BorderPane {
 
         VBox resumen = resumen();
         BorderPane.setMargin(resumen, new Insets(18, 38, 30, 6));
-        setRight(resumen);   // fija: no se mueve con el scroll
+        setRight(resumen);   
 
         recojo.valueProperty().addListener((o, a, b) -> {
             if (b != null) {
@@ -154,8 +147,6 @@ public class DetalleTrajeVista extends BorderPane {
         return a.danza().equals(b.danza()) && a.personaje().equals(b.personaje())
                 && Objects.equals(a.color(), b.color()) && Objects.equals(a.genero(), b.genero());
     }
-
-    // ------------------------------------------------------------------ fotos
 
     private VBox columnaFotos() {
         List<URL> fotos = new ArrayList<>();
@@ -229,8 +220,6 @@ public class DetalleTrajeVista extends BorderPane {
         p.getChildren().setAll(chakana, t);
     }
 
-    // ------------------------------------------------------------------ información
-
     private VBox columnaInfo() {
         Label meta = new Label(Ui.espaciado(traje.danza()) + "  •  " + Ui.espaciado(traje.color() == null ? "—" : traje.color()));
         meta.getStyleClass().add("traje-meta");
@@ -253,7 +242,6 @@ public class DetalleTrajeVista extends BorderPane {
         desc.setWrapText(true);
         desc.setMinHeight(Region.USE_PREF_SIZE);
 
-        // Piezas
         VBox piezas = new VBox(8);
         List<PiezaFila> lista = s.trajes().piezas(traje.idTraje());
         if (lista.isEmpty()) {
@@ -267,7 +255,6 @@ public class DetalleTrajeVista extends BorderPane {
             piezas.getChildren().add(l);
         }
 
-        // Tallas del modelo (clic para ver otra talla)
         FlowPane tallas = new FlowPane(8, 8);
         for (String t : Ui.TALLAS) {
             List<TrajeFila> deTalla = modelo.stream().filter(m -> t.equals(m.talla())).toList();
@@ -284,7 +271,6 @@ public class DetalleTrajeVista extends BorderPane {
             tallas.getChildren().add(b);
         }
 
-        // Fechas, cantidad, conjunto
         GridPane fechas = new GridPane();
         fechas.setHgap(14);
         fechas.setVgap(6);
@@ -325,8 +311,6 @@ public class DetalleTrajeVista extends BorderPane {
         VBox.setMargin(l, new Insets(10, 0, 0, 0));
         return l;
     }
-
-    // ------------------------------------------------------------------ calendario
 
     private VBox calendarioCaja() {
         Button antes = new Button(null, Ui.icono(Feather.CHEVRON_LEFT));
@@ -399,8 +383,6 @@ public class DetalleTrajeVista extends BorderPane {
         }
     }
 
-    // ------------------------------------------------------------------ resumen
-
     private VBox resumen() {
         Label titulo = new Label("Resumen de tu reserva");
         titulo.getStyleClass().add("resumen-titulo");
@@ -447,7 +429,6 @@ public class DetalleTrajeVista extends BorderPane {
         return h;
     }
 
-    /** Fechas cambiaron: vuelve a ver cuántos trajes del modelo están libres (fn_trajes_disponibles). */
     private void recalcular() {
         pintarCalendario();
         LocalDate a = recojo.getValue();
@@ -462,7 +443,7 @@ public class DetalleTrajeVista extends BorderPane {
             duracion.setText("Revisa las fechas");
         }
         boolean esteLibre = libres.stream().anyMatch(t -> t.idTraje().equals(traje.idTraje()));
-        // el traje elegido va primero; después los del mismo modelo
+        
         List<TrajeFila> orden = new ArrayList<>(libres);
         orden.sort(Comparator.comparing((TrajeFila t) -> !t.idTraje().equals(traje.idTraje())));
         elegidos = orden;
