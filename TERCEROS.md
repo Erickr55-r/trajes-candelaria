@@ -42,16 +42,20 @@ Trajes Candelaria (archivo `LICENSE`) no se aplica a ellos.
 
 ## Recursos de los renders del personalizador (src/main/resources/render)
 
-Las imágenes por capas del personalizador son renders propios del autor, hechos en Blender a partir de un
-personaje base generado con MPFB. No se distribuye ningún archivo de Blender ni de MPFB: solo las imágenes
-resultantes.
+Los renders del personalizador (`base.png` y las capas de prendas de cada danza y ángulo) los hizo el autor,
+Erick Reison Huanca Tiña, en Blender, usando los recursos de la tabla siguiente. No se distribuye ningún
+archivo de Blender, de MPFB ni de los paquetes de MakeHuman: solo las imágenes resultantes.
 
 | Recurso | Versión | Licencia | Enlace |
 |---|---|---|---|
-| MPFB (MakeHuman Plugin for Blender), complemento usado para generar el personaje | 2.0.18 | GPL v3 o posterior (el complemento); los modelos que genera no quedan sujetos a la GPL | https://static.makehumancommunity.org/mpfb.html |
-| MakeHuman System Assets (malla base, ojos, cejas, pestañas, dientes, lengua y cabello) | paquete instalado con MPFB 2.0.18 | CC0 1.0 (dominio público) | https://www.makehumancommunity.org |
-| MakeHuman Skins 01 (textura de piel de la comunidad, si se usó) | paquete instalado con MPFB 2.0.18 | Según cada piel (CC0 o CC-BY); ver la ficha de la piel usada | https://www.makehumancommunity.org |
-| Blender (herramienta de modelado y render; no se distribuye) | 5.2 | GPL v2 o posterior (el programa; los renders son del autor) | https://www.blender.org |
+| MPFB (MakeHuman Plugin for Blender), complemento con el que se generó el personaje base | 2.0.18 | GPL v3 o posterior (el complemento); los modelos que genera no quedan sujetos a la GPL | https://static.makehumancommunity.org/mpfb.html |
+| MakeHuman System Assets (malla base, ojos, cejas, pestañas, dientes, lengua y cabello) | paquete de recursos de MakeHuman | CC0 1.0 (dominio público) | https://static.makehumancommunity.org/assets/assetpacks.html |
+| MakeHuman Skins 01 (textura de piel del personaje; en Blender el material se llama «Human.body», nombre genérico de MPFB) | paquete de recursos de MakeHuman | CC0 1.0 (dominio público; no exige atribución) | https://static.makehumancommunity.org/assets/assetpacks.html |
+| MakeHuman System Hair Materials 01 (materiales del cabello) | paquete de recursos de MakeHuman | CC0 1.0 (dominio público) | https://static.makehumancommunity.org/assets/assetpacks.html |
+| Blender (herramienta de modelado y render; no se distribuye) | 5.2.3 | GPL v2 o posterior (el programa; los renders son del autor) | https://www.blender.org |
+
+Agradecimiento: aunque estos recursos son CC0 y no exigen atribución, el autor agradece a la comunidad
+MakeHuman (https://www.makehumancommunity.org) por crear y compartir MakeHuman, MPFB y sus paquetes de recursos.
 
 ## Herramientas de compilación (no se distribuyen con el programa)
 
