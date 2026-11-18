@@ -25,3 +25,6 @@ desktop.ini
 # ---- Configuración local con contraseñas (por si alguien la crea) ----
 application-local.properties
 .env
+
+# ---- Paquete para el registro de la obra (ZIP y PDF del código): no se sube ----
+REGISTRO/

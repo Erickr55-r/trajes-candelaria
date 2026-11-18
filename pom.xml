@@ -11,13 +11,37 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.trajes</groupId>
+    <groupId>pe.ehuanca.trajes</groupId>
     <artifactId>alquiler-trajes</artifactId>
     <version>1.0.0</version>
-    <name>alquiler-trajes</name>
-    <description>Sistema de alquiler de trajes de danza (escritorio JavaFX) con PostgreSQL</description>
+    <name>Trajes Candelaria</name>
+    <description>Sistema de alquiler y personalización de trajes de danza (escritorio JavaFX) con PostgreSQL</description>
+    <inceptionYear>2026</inceptionYear>
+
+    <developers>
+        <developer>
+            <name>Erick Reison Huanca Tiña</name>
+            <email>erickrhuanca@gmail.com</email>
+            <roles>
+                <role>Autor y desarrollador</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Propietaria – Todos los derechos reservados</name>
+            <url>LICENSE</url>
+            <distribution>manual</distribution>
+            <comments>© 2026 Erick Reison Huanca Tiña. Prohibida la reproducción, modificación o distribución sin autorización escrita del autor.</comments>
+        </license>
+    </licenses>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Fecha de compilación que muestra la ventana «Acerca de» (archivo acerca.properties) -->
+        <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss'Z'</maven.build.timestamp.format>
+        <fecha.compilacion>${maven.build.timestamp}</fecha.compilacion>
         <java.version>17</java.version>
         <javafx.version>21.0.5</javafx.version>
         <ikonli.version>12.3.1</ikonli.version>
@@ -70,6 +94,37 @@
     </dependencies>
 
     <build>
+        <resources>
+            <!-- Igual que spring-boot-starter-parent, más acerca.properties (fecha de compilación con @...@) -->
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/application*.yml</include>
+                    <include>**/application*.yaml</include>
+                    <include>**/application*.properties</include>
+                    <include>acerca.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <excludes>
+                    <exclude>**/application*.yml</exclude>
+                    <exclude>**/application*.yaml</exclude>
+                    <exclude>**/application*.properties</exclude>
+                    <exclude>acerca.properties</exclude>
+                </excludes>
+            </resource>
+            <!-- La ventana «Acerca de» muestra la licencia y los componentes de terceros -->
+            <resource>
+                <directory>${basedir}</directory>
+                <targetPath>legal</targetPath>
+                <includes>
+                    <include>LICENSE</include>
+                    <include>TERCEROS.md</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <!-- mvn javafx:run -->
             <plugin>
@@ -77,7 +132,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>com.trajes.Launcher</mainClass>
+                    <mainClass>pe.ehuanca.trajes.Lanzador</mainClass>
                 </configuration>
             </plugin>
             <!-- mvn package genera un .jar ejecutable que arranca con Launcher -->
@@ -85,7 +140,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.trajes.Launcher</mainClass>
+                    <mainClass>pe.ehuanca.trajes.Lanzador</mainClass>
                 </configuration>
             </plugin>
         </plugins>

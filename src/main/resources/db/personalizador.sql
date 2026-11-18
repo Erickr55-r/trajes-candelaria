@@ -1,3 +1,5 @@
+-- Trajes Candelaria v1.0 · © 2026 Erick Reison Huanca Tiña. Todos los derechos reservados. Uso, copia o distribución solo con autorización escrita del autor.
+
 -- =====================================================================
 -- PERSONALIZADOR DE TRAJES EN 3D (PostgreSQL)
 -- El cliente diseña su traje eligiendo el color de cada parte y los

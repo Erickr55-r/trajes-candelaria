@@ -88,7 +88,8 @@ restricciones, triggers y funciones.
 
 5. **Ejecutar**
 
-   - IntelliJ: abrir `src/main/java/com/trajes/Launcher.java` y pulsar ▶ (ejecuta siempre `Launcher`, no `AppFx`).
+   - IntelliJ: abrir `src/main/java/pe/ehuanca/trajes/Lanzador.java` y pulsar ▶ (ejecuta siempre `Lanzador`, no
+     `AplicacionFx`), o usar la Run Configuration **Trajes Candelaria**.
    - Terminal: `./mvnw javafx:run` (en Windows: `mvnw javafx:run`).
 
 ## Usuarios de prueba
@@ -107,29 +108,39 @@ Son cuentas de demostración que crean los scripts SQL; cámbialas antes de usar
 ```
 trajes-candelaria/
 ├── pom.xml, mvnw, mvnw.cmd, .mvn/        Maven
+├── LICENSE                               licencia propietaria
+├── TERCEROS.md                           componentes de terceros y sus licencias
 ├── capturas/                             capturas de pantalla
 ├── LEEME.md                              guía detallada (flujos, reglas de la base de datos, problemas comunes)
-└── src/main/
-    ├── java/com/trajes/
-    │   ├── Launcher.java                 punto de entrada
+└── src/
+    ├── main/java/pe/ehuanca/trajes/
+    │   ├── Lanzador.java                 punto de entrada
+    │   ├── AplicacionAlquilerTrajes.java configuración de Spring (conexión, servicios y transacciones)
     │   ├── modelo/                       records con los datos de cada pantalla
-    │   ├── servicio/                     SQL con JdbcTemplate y @Transactional
+    │   ├── servicio/                     SQL con JdbcTemplate y @Transactional (AlquilerServicio, TrajeServicio, ...)
     │   └── fx/
-    │       ├── LoginView, PortalClienteView, PanelVendedorView, Sesion, Ui, ...
+    │       ├── AplicacionFx, VistaInicioSesion, VistaPortalCliente, VistaPanelVendedor, AcercaDe,
+    │       │   UtilidadesInterfaz, Cabecera, Sesion, ...
     │       ├── portal/                   pantallas del portal del cliente
     │       ├── vistas/                   pantallas del panel de la tienda
     │       ├── foto/                     personalizador por capas (teñido de los renders)
-    │       └── legacy/                   personalizador 3D anterior (ya no se usa)
-    └── resources/
-        ├── application.properties        conexión (lee DB_PASSWORD de una variable de entorno)
-        ├── application-example.properties
-        ├── estilos.css, tema-guindo.css, tema-marino.css
-        ├── fonts/                        Playfair Display y Plus Jakarta Sans (licencia OFL)
-        ├── render/<danza>/<ángulo>/      renders por capas (base.png + un PNG por prenda)
-        └── db/                           scripts SQL y migraciones
+    │       └── anterior/                 personalizador 3D anterior (ya no se usa)
+    ├── main/resources/
+    │   ├── application.properties        conexión (lee DB_PASSWORD de una variable de entorno)
+    │   ├── application-example.properties
+    │   ├── acerca.properties             versión y fecha de compilación de la ventana «Acerca de»
+    │   ├── estilos.css, tema-guindo.css, tema-marino.css
+    │   ├── fonts/                        Playfair Display y Plus Jakarta Sans (licencia OFL)
+    │   ├── render/<danza>/<ángulo>/      renders por capas (base.png + un PNG por prenda)
+    │   └── db/                           scripts SQL y migraciones
+    └── test/java/pe/ehuanca/trajes/
+        └── GenerarCapturas.java          recorre y verifica la interfaz y genera las capturas (ver LEEME.md)
 ```
 
-## Autor
+## Autor y licencia
 
-**Erick Reison Huanca Tiña** – Ingeniería de Software y Sistemas, Universidad Nacional de Juliaca (UNAJ) –
-curso Base de Datos.
+**Erick Reison Huanca Tiña** · erickrhuanca@gmail.com
+
+© 2026 Erick Reison Huanca Tiña. Todos los derechos reservados. Software propietario: no se permite su reproducción,
+modificación, distribución ni uso comercial sin autorización escrita del autor (ver [LICENSE](LICENSE)). Los
+componentes de terceros se rigen por sus propias licencias (ver [TERCEROS.md](TERCEROS.md)).

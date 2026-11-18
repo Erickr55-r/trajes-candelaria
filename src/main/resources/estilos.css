@@ -1,3 +1,5 @@
+/* Trajes Candelaria v1.0 · © 2026 Erick Reison Huanca Tiña. Todos los derechos reservados. Uso, copia o distribución solo con autorización escrita del autor. */
+
 /* =====================================================================
    Trajes Candelaria · estructura y componentes
    Los colores salen de variables -c-* definidas en tema-guindo.css / tema-marino.css
@@ -144,7 +146,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 18, 0, 0, 3);
 }
 .menu-marca { -fx-spacing: 11; -fx-alignment: center-left; }
-.logo-cuadro {
+.logotipo-cuadro {
     -fx-background-color: linear-gradient(to bottom right, -c-oro-claro, -c-oro 45%, -c-oro-osc);
     -fx-background-radius: 12;
     -fx-min-width: 40; -fx-min-height: 40;
@@ -152,7 +154,7 @@
     -fx-max-width: 40; -fx-max-height: 40;
     -fx-alignment: center;
 }
-.logo-cuadro .ikonli-font-icon { -fx-icon-color: -c-side; -fx-icon-size: 19px; }
+.logotipo-cuadro .ikonli-font-icon { -fx-icon-color: -c-side; -fx-icon-size: 19px; }
 .menu-titulo {
     -fx-font-family: "Playfair Display";
     -fx-font-weight: bold;
@@ -164,8 +166,8 @@
     -fx-font-size: 9px;
     -fx-font-family: "Plus Jakarta Sans SemiBold";
 }
-.nav-menu { -fx-spacing: 2; -fx-alignment: center; }
-.nav-item, .nav-mas {
+.navegacion-menu { -fx-spacing: 2; -fx-alignment: center; }
+.navegacion-opcion, .navegacion-mas {
     -fx-background-color: transparent;
     -fx-background-radius: 0;
     -fx-border-color: transparent;
@@ -177,22 +179,22 @@
     -fx-font-size: 13.5px;
     -fx-effect: null;
 }
-.nav-item:hover, .nav-mas:hover, .nav-mas:showing {
+.navegacion-opcion:hover, .navegacion-mas:hover, .navegacion-mas:showing {
     -fx-background-color: transparent;
     -fx-text-fill: white;
     -fx-border-color: transparent transparent rgba(255,255,255,0.25) transparent;
 }
-.nav-item:focused, .nav-mas:focused { -fx-border-color: transparent; }
-.nav-item.activo, .nav-mas.activo, .nav-item.activo:focused, .nav-mas.activo:focused {
+.navegacion-opcion:focused, .navegacion-mas:focused { -fx-border-color: transparent; }
+.navegacion-opcion.activo, .navegacion-mas.activo, .navegacion-opcion.activo:focused, .navegacion-mas.activo:focused {
     -fx-text-fill: white;
     -fx-font-family: "Plus Jakarta Sans";
     -fx-font-weight: bold;
     -fx-border-color: transparent transparent -c-oro transparent;
 }
-.nav-mas > .label { -fx-text-fill: rgba(255,255,255,0.68); }
-.nav-mas:hover > .label, .nav-mas:showing > .label, .nav-mas.activo > .label { -fx-text-fill: white; }
-.nav-mas > .arrow-button { -fx-padding: 0 0 0 6; -fx-background-color: transparent; }
-.nav-mas > .arrow-button > .arrow { -fx-background-color: rgba(255,255,255,0.68); }
+.navegacion-mas > .label { -fx-text-fill: rgba(255,255,255,0.68); }
+.navegacion-mas:hover > .label, .navegacion-mas:showing > .label, .navegacion-mas.activo > .label { -fx-text-fill: white; }
+.navegacion-mas > .arrow-button { -fx-padding: 0 0 0 6; -fx-background-color: transparent; }
+.navegacion-mas > .arrow-button > .arrow { -fx-background-color: rgba(255,255,255,0.68); }
 .avatar { -fx-cursor: hand; }
 .avatar-circulo { -fx-fill: linear-gradient(to bottom right, -c-oro-claro, -c-oro-osc); }
 .avatar-texto { -fx-fill: -c-side; -fx-font-weight: bold; -fx-font-size: 13px; }
@@ -312,36 +314,36 @@
 .tarjeta.con-icono { -fx-border-width: 0; }
 
 /* ---------- Chips de estado ---------- */
-.badge, .chip {
+.insignia-estado, .etiqueta-opcion {
     -fx-padding: 4 10 4 10;
     -fx-background-radius: 20;
     -fx-font-size: 10.5px;
     -fx-font-family: "Plus Jakarta Sans";
     -fx-font-weight: bold;
 }
-.badge { -fx-padding: 3 8 3 8; -fx-font-size: 10px; }
-.badge-verde   { -fx-background-color: #E3F4EC; -fx-text-fill: -c-verde; }
-.badge-azul    { -fx-background-color: #E6EAF3; -fx-text-fill: -c-side-2; }
-.badge-naranja { -fx-background-color: #FBEFDD; -fx-text-fill: #B36A0B; }
-.badge-gris    { -fx-background-color: #EEF0F3; -fx-text-fill: -c-texto-2; }
-.badge-morado  { -fx-background-color: #EEE6F6; -fx-text-fill: #6A3D99; }
-.badge-rojo    { -fx-background-color: #F9E5E2; -fx-text-fill: -c-rojo; }
+.insignia-estado { -fx-padding: 3 8 3 8; -fx-font-size: 10px; }
+.insignia-estado-verde   { -fx-background-color: #E3F4EC; -fx-text-fill: -c-verde; }
+.insignia-estado-azul    { -fx-background-color: #E6EAF3; -fx-text-fill: -c-side-2; }
+.insignia-estado-naranja { -fx-background-color: #FBEFDD; -fx-text-fill: #B36A0B; }
+.insignia-estado-gris    { -fx-background-color: #EEF0F3; -fx-text-fill: -c-texto-2; }
+.insignia-estado-morado  { -fx-background-color: #EEE6F6; -fx-text-fill: #6A3D99; }
+.insignia-estado-rojo    { -fx-background-color: #F9E5E2; -fx-text-fill: -c-rojo; }
 
-.chip-oro {
+.etiqueta-opcion-oro {
     -fx-background-color: linear-gradient(to right, -c-oro-claro, -c-oro);
     -fx-text-fill: -c-side;
 }
-.chip-oro .ikonli-font-icon { -fx-icon-color: -c-side; -fx-icon-size: 11px; }
-.chip-blanco {
+.etiqueta-opcion-oro .ikonli-font-icon { -fx-icon-color: -c-side; -fx-icon-size: 11px; }
+.etiqueta-opcion-blanco {
     -fx-background-color: rgba(255,255,255,0.95);
     -fx-text-fill: -c-texto;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 2);
 }
-.chip-verde { -fx-background-color: #E3F4EC; -fx-text-fill: -c-verde; -fx-font-size: 12px; -fx-padding: 9 14 9 14; }
-.chip-verde .ikonli-font-icon { -fx-icon-color: -c-verde; -fx-icon-size: 14px; }
-.chip-rojo { -fx-background-color: #F9E5E2; -fx-text-fill: -c-rojo; -fx-font-size: 12px; -fx-padding: 9 14 9 14; }
-.chip-rojo .ikonli-font-icon { -fx-icon-color: -c-rojo; -fx-icon-size: 14px; }
-.chip-banner {
+.etiqueta-opcion-verde { -fx-background-color: #E3F4EC; -fx-text-fill: -c-verde; -fx-font-size: 12px; -fx-padding: 9 14 9 14; }
+.etiqueta-opcion-verde .ikonli-font-icon { -fx-icon-color: -c-verde; -fx-icon-size: 14px; }
+.etiqueta-opcion-rojo { -fx-background-color: #F9E5E2; -fx-text-fill: -c-rojo; -fx-font-size: 12px; -fx-padding: 9 14 9 14; }
+.etiqueta-opcion-rojo .ikonli-font-icon { -fx-icon-color: -c-rojo; -fx-icon-size: 14px; }
+.etiqueta-opcion-portada {
     -fx-background-color: rgba(201,162,74,0.16);
     -fx-border-color: rgba(201,162,74,0.55);
     -fx-border-radius: 20;
@@ -349,7 +351,7 @@
     -fx-font-size: 11.5px;
     -fx-padding: 6 14 6 14;
 }
-.chip-banner .ikonli-font-icon { -fx-icon-color: -c-oro; -fx-icon-size: 12px; }
+.etiqueta-opcion-portada .ikonli-font-icon { -fx-icon-color: -c-oro; -fx-icon-size: 12px; }
 
 /* =====================================================================
    Tablas modernas
@@ -456,19 +458,19 @@
    ===================================================================== */
 .inicio { -fx-padding: 0 0 44 0; -fx-spacing: 0; -fx-background-color: -c-fondo; }
 .inicio-seccion { -fx-padding: 0 44 0 44; }
-.banner {
+.portada {
     -fx-background-color: linear-gradient(to right, -c-hero1 0%, -c-hero2 100%);
     -fx-padding: 54 56 128 56;
 }
-.banner-titulo {
+.portada-titulo {
     -fx-font-family: "Playfair Display";
     -fx-font-weight: bold;
     -fx-font-size: 52px;
 }
-.banner-blanco { -fx-fill: white; }
-.banner-dorado { -fx-fill: -c-oro; }
-.banner-parrafo { -fx-fill: rgba(255,255,255,0.78); -fx-font-size: 15px; }
-.banner-negrita { -fx-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; }
+.portada-blanco { -fx-fill: white; }
+.portada-dorado { -fx-fill: -c-oro; }
+.portada-parrafo { -fx-fill: rgba(255,255,255,0.78); -fx-font-size: 15px; }
+.portada-negrita { -fx-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; }
 .adorno { -fx-fill: -c-oro; -fx-stroke: transparent; }
 .adorno-linea { -fx-fill: transparent; -fx-stroke: -c-oro; -fx-stroke-width: 3; }
 .buscador {
@@ -504,7 +506,7 @@
 }
 .nota { -fx-text-fill: -c-texto-2; -fx-font-size: 12px; }
 
-.chip-filtro {
+.etiqueta-opcion-filtro {
     -fx-background-color: white;
     -fx-background-radius: 20;
     -fx-border-color: -c-borde;
@@ -515,8 +517,8 @@
     -fx-text-fill: -c-texto;
     -fx-effect: null;
 }
-.chip-filtro:hover { -fx-border-color: -c-oro; -fx-background-color: white; }
-.chip-filtro:selected {
+.etiqueta-opcion-filtro:hover { -fx-border-color: -c-oro; -fx-background-color: white; }
+.etiqueta-opcion-filtro:selected {
     -fx-background-color: -c-guindo;
     -fx-border-color: -c-guindo;
     -fx-text-fill: white;
@@ -531,14 +533,14 @@
 /* =====================================================================
    Tarjeta de traje (Inicio y Catálogo)
    ===================================================================== */
-.traje-card {
+.traje-tarjeta {
     -fx-background-color: white;
     -fx-background-radius: 18;
     -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.10), 24, 0, 0, 6);
 }
-.traje-card.elevada { -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.24), 38, 0, 0, 16); }
+.traje-tarjeta.elevada { -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.24), 38, 0, 0, 16); }
 .traje-cuerpo { -fx-padding: 18 20 20 20; -fx-spacing: 7; }
-.traje-meta {
+.traje-datos {
     -fx-text-fill: -c-oro-osc;
     -fx-font-size: 10.5px;
     -fx-font-family: "Plus Jakarta Sans";
@@ -573,7 +575,7 @@
 }
 .boton-guindo:hover { -fx-background-color: derive(-c-guindo, -18%); -fx-border-color: transparent; }
 .boton-guindo .ikonli-font-icon { -fx-icon-color: white; }
-.placeholder-danza {
+.marcador-danza {
     -fx-font-family: "Playfair Display";
     -fx-font-weight: bold;
     -fx-font-size: 30px;
@@ -581,7 +583,7 @@
     -fx-text-alignment: center;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 12, 0, 0, 2);
 }
-.placeholder-sub { -fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 10px; -fx-font-weight: bold; }
+.marcador-sub { -fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 10px; -fx-font-weight: bold; }
 .chakana-tenue { -fx-fill: white; -fx-opacity: 0.13; }
 .punto-verde { -fx-fill: -c-verde; }
 .punto-rojo { -fx-fill: -c-rojo; }
@@ -636,45 +638,45 @@
 /* =====================================================================
    Inicio de sesión
    ===================================================================== */
-.login { -fx-background-color: -c-fondo; }
-.login-izq {
+.inicio-sesion { -fx-background-color: -c-fondo; }
+.inicio-sesion-izq {
     -fx-background-color: linear-gradient(to bottom right, -c-hero1 0%, -c-hero2 100%);
 }
-.login-chakana { -fx-fill: -c-oro; -fx-opacity: 0.22; }
-.logo-grande {
+.inicio-sesion-chakana { -fx-fill: -c-oro; -fx-opacity: 0.22; }
+.logotipo-grande {
     -fx-min-width: 58; -fx-min-height: 58; -fx-pref-width: 58; -fx-pref-height: 58;
     -fx-max-width: 58; -fx-max-height: 58;
     -fx-background-radius: 16;
 }
-.logo-grande .ikonli-font-icon { -fx-icon-size: 27px; }
-.login-marca {
+.logotipo-grande .ikonli-font-icon { -fx-icon-size: 27px; }
+.inicio-sesion-marca {
     -fx-font-family: "Playfair Display";
     -fx-font-weight: bold;
     -fx-font-size: 44px;
     -fx-text-fill: white;
 }
-.login-frase {
+.inicio-sesion-frase {
     -fx-text-fill: -c-oro;
     -fx-font-family: "Plus Jakarta Sans SemiBold";
     -fx-font-size: 15px;
 }
-.login-texto { -fx-text-fill: rgba(255,255,255,0.72); -fx-font-size: 14px; -fx-line-spacing: 3; }
-.login-pie { -fx-text-fill: rgba(255,255,255,0.45); -fx-font-size: 10.5px; }
-.login-der { -fx-background-color: -c-fondo; }
-.login-scroll, .login-scroll > .viewport { -fx-background-color: transparent; }
-.login-tarjeta {
+.inicio-sesion-texto { -fx-text-fill: rgba(255,255,255,0.72); -fx-font-size: 14px; -fx-line-spacing: 3; }
+.inicio-sesion-pie { -fx-text-fill: rgba(255,255,255,0.45); -fx-font-size: 10.5px; }
+.inicio-sesion-der { -fx-background-color: -c-fondo; }
+.inicio-sesion-scroll, .inicio-sesion-scroll > .viewport { -fx-background-color: transparent; }
+.inicio-sesion-tarjeta {
     -fx-background-color: white;
     -fx-background-radius: 22;
     -fx-padding: 36 38 32 38;
     -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.14), 40, 0, 0, 12);
 }
-.login-titulo {
+.inicio-sesion-titulo {
     -fx-font-family: "Playfair Display";
     -fx-font-weight: bold;
     -fx-font-size: 34px;
     -fx-text-fill: -c-texto;
 }
-.login-ayuda .label { -fx-text-fill: -c-texto-2; }
+.inicio-sesion-ayuda .label { -fx-text-fill: -c-texto-2; }
 .enlace {
     -fx-text-fill: -c-guindo;
     -fx-font-family: "Plus Jakarta Sans";
@@ -750,7 +752,7 @@
     -fx-border-color: -c-borde;
     -fx-text-fill: -c-texto;
 }
-.ok-suave {
+.exito-suave {
     -fx-background-color: #E6F5EE;
     -fx-background-radius: 10;
     -fx-text-fill: -c-verde;
@@ -788,7 +790,7 @@
     -fx-font-size: 38px;
     -fx-text-fill: -c-texto;
 }
-.detalle-desc { -fx-text-fill: -c-texto-2; -fx-font-size: 14px; -fx-line-spacing: 3; }
+.detalle-descripcion { -fx-text-fill: -c-texto-2; -fx-font-size: 14px; -fx-line-spacing: 3; }
 .detalle-seccion {
     -fx-font-family: "Playfair Display";
     -fx-font-weight: bold;
@@ -797,7 +799,7 @@
 }
 .pieza-item { -fx-text-fill: -c-texto; -fx-font-size: 13px; }
 .pieza-item .ikonli-font-icon { -fx-icon-color: -c-oro-osc; -fx-icon-size: 15px; }
-.talla-chip {
+.talla-etiqueta {
     -fx-background-color: white;
     -fx-background-radius: 10;
     -fx-border-color: -c-borde;
@@ -807,7 +809,7 @@
     -fx-font-weight: bold;
     -fx-effect: null;
 }
-.talla-chip.elegida { -fx-background-color: -c-guindo; -fx-border-color: -c-guindo; -fx-text-fill: white; }
+.talla-etiqueta.elegida { -fx-background-color: -c-guindo; -fx-border-color: -c-guindo; -fx-text-fill: white; }
 
 /* Mini calendario */
 .cal-caja {
@@ -862,8 +864,8 @@
     -fx-padding: 36 40 32 40;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 50, 0, 0, 18);
 }
-.check-circulo { -fx-fill: linear-gradient(to bottom right, -c-oro-claro, -c-oro 50%, -c-oro-osc); }
-.check-trazo { -fx-stroke: white; -fx-stroke-width: 6; -fx-fill: transparent; }
+.visto-circulo { -fx-fill: linear-gradient(to bottom right, -c-oro-claro, -c-oro 50%, -c-oro-osc); }
+.visto-trazo { -fx-stroke: white; -fx-stroke-width: 6; -fx-fill: transparent; }
 .confirmacion-titulo { -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 28px; }
 .confirmacion-texto { -fx-text-fill: -c-texto-2; -fx-font-size: 14px; -fx-text-alignment: center; -fx-alignment: center; }
 
@@ -962,10 +964,10 @@
 
 /* ---------- Solicitudes / pedidos / inicio ---------- */
 .solicitud-cliente { -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 21px; }
-.chip-hace { -fx-background-color: #F3ECE0; -fx-text-fill: -c-oro-osc; -fx-font-size: 11.5px; -fx-padding: 6 12 6 10; }
-.chip-hace .ikonli-font-icon { -fx-icon-color: -c-oro-osc; }
-.chip-hace-viejo { -fx-background-color: #FBE9E7; -fx-text-fill: -c-rojo; }
-.chip-hace-viejo .ikonli-font-icon { -fx-icon-color: -c-rojo; }
+.etiqueta-opcion-hace { -fx-background-color: #F3ECE0; -fx-text-fill: -c-oro-osc; -fx-font-size: 11.5px; -fx-padding: 6 12 6 10; }
+.etiqueta-opcion-hace .ikonli-font-icon { -fx-icon-color: -c-oro-osc; }
+.etiqueta-opcion-hace-viejo { -fx-background-color: #FBE9E7; -fx-text-fill: -c-rojo; }
+.etiqueta-opcion-hace-viejo .ikonli-font-icon { -fx-icon-color: -c-rojo; }
 .boton-fila { -fx-padding: 6 12 6 10; -fx-font-size: 12px; -fx-effect: null; }
 .tarjeta-clic { -fx-cursor: hand; }
 .tarjeta-clic:hover { -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.20), 30, 0, 0, 10); }
