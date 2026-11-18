@@ -1,3 +1,5 @@
+-- Trajes Candelaria v1.0 · © 2026 Erick Reison Huanca Tiña. Todos los derechos reservados. Uso, copia o distribución solo con autorización escrita del autor.
+
 -- =====================================================================
 -- PANEL DEL VENDEDOR (PostgreSQL)
 -- Migración para una base que ya tiene base_datos.sql, personalizador.sql,

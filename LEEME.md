@@ -76,7 +76,8 @@ La contraseña **no** se escribe en el código: la aplicación la lee de la vari
 1. **File → Open** y elige la carpeta `alquiler-trajes` (la que tiene el `pom.xml`).
 2. Espera a que Maven descargue las dependencias (barra de abajo). Si algo sale en rojo: clic derecho en `pom.xml` → **Maven → Reload project**.
 3. Si pide el JDK: **File → Project Structure → SDK** y elige 17 o 21.
-4. Abre `src/main/java/com/trajes/Launcher.java` y pulsa el botón verde ▶ junto a `main`.
+4. Abre `src/main/java/pe/ehuanca/trajes/Lanzador.java` y pulsa el botón verde ▶ junto a `main`
+   (o usa la Run Configuration **Trajes Candelaria**).
 5. Se abre la ventana **Trajes Candelaria** en la pantalla de inicio de sesión.
 
 ### 5. Ingresar
@@ -95,7 +96,7 @@ no deja que otro cliente lo pida en esas fechas) hasta que la tienda lo **aprueb
 **rechaza** con un motivo que el cliente ve en «Mis reservas». En el panel de la tienda las solicitudes aparecen
 arriba de «Próximos movimientos» como *Por aprobar*; doble clic para aprobarlas o rechazarlas.
 
-> **Importante:** ejecuta siempre **`Launcher`**, no `AppFx`. `Launcher` no extiende `Application`, y así se evita el error
+> **Importante:** ejecuta siempre **`Lanzador`**, no `AplicacionFx`. `Lanzador` no extiende `Application`, y así se evita el error
 > *"JavaFX runtime components are missing"* sin tener que configurar `--module-path`.
 
 También se puede ejecutar desde la ventana **Maven** de IntelliJ: **Plugins → javafx → javafx:run**, o en una terminal:
@@ -149,7 +150,7 @@ aprueba o rechaza el precio en **Mis diseños**.
 
 ## Personalizador de trajes en 3D (legado)
 
-> Ya no aparece en ningún menú: su código quedó en `fx/legacy` por si se necesita. Lo que sigue describe
+> Ya no aparece en ningún menú: su código quedó en `fx/anterior` por si se necesita. Lo que sigue describe
 > cómo funcionaba.
 
 **Maniquí.** Es una figura estilizada de unas 8 cabezas de alto, hecha con **mallas suaves** (`TriangleMesh` con
@@ -233,39 +234,48 @@ Si intentas reservar un traje ocupado, el sistema muestra el mensaje del trigger
 
 ```
 alquiler-trajes/
-├── pom.xml
-└── src/main/
-    ├── java/com/trajes/
-    │   ├── Launcher.java                    ← se ejecuta este
-    │   ├── AlquilerTrajesApplication.java   (configuración de Spring: conexión y servicios)
+├── pom.xml, mvnw, mvnw.cmd, .mvn/           Maven
+├── LICENSE                                  licencia propietaria
+├── TERCEROS.md                              componentes de terceros y sus licencias
+├── capturas/                                capturas del manual
+└── src/
+    ├── main/java/pe/ehuanca/trajes/
+    │   ├── Lanzador.java                    ← se ejecuta este
+    │   ├── AplicacionAlquilerTrajes.java    (configuración de Spring: conexión y servicios)
     │   ├── modelo/      (records con los datos de cada pantalla)
-    │   ├── servicio/    (consultas SQL con JdbcTemplate y reglas del negocio)
+    │   ├── servicio/    (consultas SQL con JdbcTemplate y reglas del negocio: AlquilerServicio, TrajeServicio,
+    │   │                 ClienteServicio, PersonalizadorServicio, ReporteServicio, UsuarioServicio)
     │   └── fx/
-    │       ├── AppFx.java              (arranca y cierra Spring, abre la ventana)
-    │       ├── VentanaPrincipal.java   (menú lateral + pantalla del centro)
-    │       ├── Ui.java                 (formatos S/ y dd/MM/yyyy, tablas, estados, mensajes)
-    │       ├── Servicios.java
-    │       ├── tresd/
-    │       │   ├── Maniqui3D.java         (danzante 3D por danza y figura, materiales por parte e implementos)
-    │       │   ├── Visor3D.java           (estudio: cámara, 3 luces, tarima, sombra, inercia, vistas y foto ×2)
-    │       │   ├── GeneradorMallas.java   (torno, tubo, elipsoide y láminas con normales suaves y UV)
-    │       │   ├── GeneradorTexturas.java (texturas procedurales 512×512 con caché: difusa, especular y relieve)
-    │       │   └── ObjLoader.java         (lector de .obj con v, vt, vn, f, g y usemtl: un MeshView por grupo)
-    │       └── vistas/     (una clase por pantalla o diálogo; DisenioTrajeVista, PedidosVista, PedidoDetalleDialogo...)
-    └── resources/
-        ├── application.properties           ← conexión a PostgreSQL
-        ├── estilos.css                      ← estructura y componentes (colores por variables -c-*)
-        ├── tema-guindo.css / tema-marino.css ← paletas; se elige en el menú del avatar (Tema)
-        ├── fonts/                           ← Playfair Display y Plus Jakarta Sans (licencia OFL)
-        ├── modelos/                         ← (opcional) modelos .obj por danza, ver «Usar un modelo 3D propio»
-        ├── db/base_datos.sql                ← script de la base de datos (1.º)
-        ├── db/personalizador.sql            ← personalizador 3D (2.º, después de base_datos.sql)
-        └── db/consultas_ejemplo.sql         ← 15 consultas para la exposición
+    │       ├── AplicacionFx.java            (arranca y cierra Spring, abre la ventana)
+    │       ├── VistaInicioSesion.java       (inicio de sesión y registro de clientes)
+    │       ├── VistaPortalCliente.java      (portal del cliente)
+    │       ├── VistaPanelVendedor.java      (panel de la tienda: menú lateral + pantalla del centro)
+    │       ├── AcercaDe.java                (ventana «Acerca de»: versión, autoría y componentes de terceros)
+    │       ├── UtilidadesInterfaz.java      (formatos S/ y dd/MM/yyyy, tablas, estados, mensajes, temas)
+    │       ├── Cabecera.java, Adornos.java, Fuentes.java, Sesion.java, Servicios.java
+    │       ├── portal/      (pantallas del portal: DetalleTrajeVista, DisenaTuTrajeVista, MisReservasVista...)
+    │       ├── vistas/      (pantallas y diálogos del panel: InicioVista, SolicitudesVista, AlquileresVista...)
+    │       ├── foto/        (personalizador por capas: RenderizadoCapas, PrendaTenible, CatalogoRenderizados)
+    │       └── anterior/    (personalizador 3D anterior, ya no se usa)
+    │           └── tresd/   (Maniqui3D, Visor3D, GeneradorMallas, GeneradorTexturas, CargadorObj)
+    ├── main/resources/
+    │   ├── application.properties           ← conexión a PostgreSQL (lee DB_PASSWORD)
+    │   ├── acerca.properties                ← versión y fecha de compilación (las completa Maven)
+    │   ├── estilos.css                      ← estructura y componentes (colores por variables -c-*)
+    │   ├── tema-guindo.css / tema-marino.css ← paletas; se elige en el menú del avatar (Tema)
+    │   ├── fonts/                           ← Playfair Display y Plus Jakarta Sans (licencia OFL)
+    │   ├── render/<danza>/<ángulo>/         ← renders por capas del personalizador
+    │   ├── db/base_datos.sql                ← script de la base de datos (1.º)
+    │   ├── db/personalizador.sql            ← personalizador (2.º, después de base_datos.sql)
+    │   └── db/consultas_ejemplo.sql         ← 15 consultas de ejemplo
+    └── test/java/pe/ehuanca/trajes/
+        └── GenerarCapturas.java             ← recorre la interfaz, la verifica y genera las capturas
 ```
 
 ## Capturas del manual
 
-Las capturas de `capturas/` (21_… a 43_…) se generan solas con `src/test/java/com/trajes/GenerarCapturas.java`,
+Las capturas de `capturas/` (login, 21_… a 44_…, detalle del traje, solicitudes y «Acerca de») se generan solas con
+`src/test/java/pe/ehuanca/trajes/GenerarCapturas.java`,
 a 1440×900, sobre una base de **demostración** (nunca sobre la real: el programa se niega si la URL no contiene
 «demo», porque crea diseños y registra una devolución):
 
@@ -279,6 +289,10 @@ psql -U postgres -d trajes_demo -f src/main/resources/db/datos_demo.sql
 Luego, en IntelliJ, ejecuta `GenerarCapturas` con la variable `DB_PASSWORD` y el argumento
 `--spring.datasource.url=jdbc:postgresql://localhost:5432/trajes_demo`.
 
+Además de las capturas, el recorrido verifica que funcionen el inicio de sesión de `cliente`, `admin` y `vendedor`,
+la solicitud de una reserva desde el detalle del traje, el personalizador y la ventana «Acerca de»; si algo falla,
+lo indica en la consola con `[capturas] Error`.
+
 ## Problemas comunes
 
 | Mensaje | Solución |
@@ -288,5 +302,10 @@ Luego, en IntelliJ, ejecuta `GenerarCapturas` con la variable `DB_PASSWORD` y el
 | `relation "traje" does not exist` | Falta el paso 2 (ejecutar `base_datos.sql` sobre `alquiler_trajes`) |
 | "Faltan las tablas del personalizador" al abrir *Diseña tu traje* | Ejecuta `personalizador.sql` después de `base_datos.sql` |
 | El maniquí no se ve (zona gris) | La tarjeta gráfica no soporta 3D: actualiza el controlador de video |
-| `JavaFX runtime components are missing` | Estás ejecutando `AppFx`; ejecuta `Launcher` |
+| `JavaFX runtime components are missing` | Estás ejecutando `AplicacionFx`; ejecuta `Lanzador` |
 | Rojo en los `import org.springframework...` | Clic derecho en `pom.xml` → **Maven → Reload project** |
+
+## Autor y licencia
+
+Erick Reison Huanca Tiña · erickrhuanca@gmail.com. Software propietario, todos los derechos reservados: ver
+`LICENSE`. Los componentes de terceros (bibliotecas, fuentes y recursos de los renders) se detallan en `TERCEROS.md`.

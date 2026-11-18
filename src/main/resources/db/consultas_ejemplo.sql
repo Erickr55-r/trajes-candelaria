@@ -1,3 +1,5 @@
+-- Trajes Candelaria v1.0 · © 2026 Erick Reison Huanca Tiña. Todos los derechos reservados. Uso, copia o distribución solo con autorización escrita del autor.
+
 -- Consultas de ejemplo y pruebas de reglas sobre la base alquiler_trajes
 
 -- =====================================================================

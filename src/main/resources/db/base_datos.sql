@@ -1,3 +1,5 @@
+-- Trajes Candelaria v1.0 · © 2026 Erick Reison Huanca Tiña. Todos los derechos reservados. Uso, copia o distribución solo con autorización escrita del autor.
+
 -- =====================================================================
 -- SISTEMA DE ALQUILER DE TRAJES DE DANZA (PostgreSQL)
 -- Alquiler de trajes para la festividad de la Virgen de la Candelaria
