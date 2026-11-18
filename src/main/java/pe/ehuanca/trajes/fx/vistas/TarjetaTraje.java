@@ -69,160 +69,160 @@ public final class TarjetaTraje {
         TrajeFila t = d.traje();
 
         // ---------------- foto
-        StackPane foto = foto(t);
+        StackPane fotoErht = fotoErht(t);
         if (d.masAlquilado()) {
-            Label etiquetaMasAlquilado = new Label(UtilidadesInterfaz.espaciado("Más alquilado"), UtilidadesInterfaz.icono(Feather.AWARD));
-            etiquetaMasAlquilado.getStyleClass().addAll("etiqueta-opcion", "etiqueta-opcion-oro");
-            StackPane.setAlignment(etiquetaMasAlquilado, Pos.TOP_LEFT);
-            StackPane.setMargin(etiquetaMasAlquilado, new Insets(14));
-            foto.getChildren().add(etiquetaMasAlquilado);
+            Label etiquetaMasAlquiladoErht = new Label(UtilidadesInterfaz.espaciado("Más alquilado"), UtilidadesInterfaz.icono(Feather.AWARD));
+            etiquetaMasAlquiladoErht.getStyleClass().addAll("etiqueta-opcion", "etiqueta-opcion-oro");
+            StackPane.setAlignment(etiquetaMasAlquiladoErht, Pos.TOP_LEFT);
+            StackPane.setMargin(etiquetaMasAlquiladoErht, new Insets(14));
+            fotoErht.getChildren().add(etiquetaMasAlquiladoErht);
         }
-        Circle punto = new Circle(4);
-        punto.getStyleClass().add(switch (d.punto()) {
+        Circle puntoErht = new Circle(4);
+        puntoErht.getStyleClass().add(switch (d.punto()) {
             case VERDE -> "punto-verde";
             case AMBAR -> "punto-ambar";
             case ROJO -> "punto-rojo";
         });
-        Label estado = new Label(d.estadoTexto(), punto);
-        estado.setGraphicTextGap(7);
-        estado.getStyleClass().addAll("etiqueta-opcion", "etiqueta-opcion-blanco");
-        StackPane.setAlignment(estado, Pos.BOTTOM_LEFT);
-        StackPane.setMargin(estado, new Insets(14));
-        foto.getChildren().add(estado);
+        Label estadoErht = new Label(d.estadoTexto(), puntoErht);
+        estadoErht.setGraphicTextGap(7);
+        estadoErht.getStyleClass().addAll("etiqueta-opcion", "etiqueta-opcion-blanco");
+        StackPane.setAlignment(estadoErht, Pos.BOTTOM_LEFT);
+        StackPane.setMargin(estadoErht, new Insets(14));
+        fotoErht.getChildren().add(estadoErht);
 
         // ---------------- cuerpo
-        Label meta = new Label(UtilidadesInterfaz.espaciado(t.danza()) + "  •  " + UtilidadesInterfaz.espaciado(t.color() == null ? "—" : t.color()));
-        meta.getStyleClass().add("traje-datos");
-        meta.setMinWidth(0);
+        Label metaErht = new Label(UtilidadesInterfaz.espaciado(t.danza()) + "  •  " + UtilidadesInterfaz.espaciado(t.color() == null ? "—" : t.color()));
+        metaErht.getStyleClass().add("traje-datos");
+        metaErht.setMinWidth(0);
         long n = t.vecesAlquilado();
-        Label veces = new Label("Alquilado " + n + (n == 1 ? " vez" : " veces"));
-        veces.getStyleClass().add("traje-veces");
-        veces.setMinWidth(Region.USE_PREF_SIZE);
-        HBox lineaMeta = new HBox(8, meta, UtilidadesInterfaz.espacio(), veces);
-        lineaMeta.setAlignment(Pos.CENTER_LEFT);
+        Label vecesErht = new Label("Alquilado " + n + (n == 1 ? " vez" : " veces"));
+        vecesErht.getStyleClass().add("traje-veces");
+        vecesErht.setMinWidth(Region.USE_PREF_SIZE);
+        HBox lineaMetaErht = new HBox(8, metaErht, UtilidadesInterfaz.espacio(), vecesErht);
+        lineaMetaErht.setAlignment(Pos.CENTER_LEFT);
 
-        Label nombre = new Label(t.personaje());
-        nombre.getStyleClass().add("traje-nombre");
-        Label codigo = new Label(t.codigo());
-        codigo.getStyleClass().add("traje-codigo");
-        codigo.setMinWidth(Region.USE_PREF_SIZE);
-        HBox lineaNombre = new HBox(8, nombre, UtilidadesInterfaz.espacio(), codigo);
-        lineaNombre.setAlignment(Pos.BASELINE_LEFT);
+        Label nombreErht = new Label(t.personaje());
+        nombreErht.getStyleClass().add("traje-nombre");
+        Label codigoErht = new Label(t.codigo());
+        codigoErht.getStyleClass().add("traje-codigo");
+        codigoErht.setMinWidth(Region.USE_PREF_SIZE);
+        HBox lineaNombreErht = new HBox(8, nombreErht, UtilidadesInterfaz.espacio(), codigoErht);
+        lineaNombreErht.setAlignment(Pos.BASELINE_LEFT);
 
-        Label desc = new Label(descripcion(t));
-        desc.getStyleClass().add("traje-desc");
-        desc.setWrapText(true);
-        desc.setMinHeight(40);
-        desc.setPrefHeight(40);
-        desc.setMaxHeight(40);   // dos líneas
+        Label descErht = new Label(descripcionErht(t));
+        descErht.getStyleClass().add("traje-desc");
+        descErht.setWrapText(true);
+        descErht.setMinHeight(40);
+        descErht.setPrefHeight(40);
+        descErht.setMaxHeight(40);   // dos líneas
 
-        Region sep1 = separador();
-        String incluye = d.piezas().isEmpty() ? "Sin piezas registradas" : String.join(", ", d.piezas());
-        Label lIncluye = detalle(Feather.PACKAGE, "Incluye: ", incluye);
-        lIncluye.setTooltip(new Tooltip(incluye));
-        VBox detalles = new VBox(7,
-                lIncluye,
-                detalle(Feather.MAXIMIZE_2, "Tallas: ", d.tallas()),
-                detalle(Feather.SHIELD, "Garantía: ", UtilidadesInterfaz.soles(t.garantia()) + " (se devuelve sin daños)"));
+        Region sep1Erht = separadorErht();
+        String incluyeErht = d.piezas().isEmpty() ? "Sin piezas registradas" : String.join(", ", d.piezas());
+        Label lIncluyeErht = detalleErht(Feather.PACKAGE, "Incluye: ", incluyeErht);
+        lIncluyeErht.setTooltip(new Tooltip(incluyeErht));
+        VBox detallesErht = new VBox(7,
+                lIncluyeErht,
+                detalleErht(Feather.MAXIMIZE_2, "Tallas: ", d.tallas()),
+                detalleErht(Feather.SHIELD, "Garantía: ", UtilidadesInterfaz.soles(t.garantia()) + " (se devuelve sin daños)"));
 
-        Region sep2 = separador();
-        Label precio = new Label(UtilidadesInterfaz.soles(t.precioAlquiler()));
-        precio.getStyleClass().add("traje-precio");
-        precio.setMinWidth(Region.USE_PREF_SIZE);
-        Label sufijo = new Label(d.sufijoPrecio());
-        sufijo.getStyleClass().add("traje-precio-nota");
-        sufijo.setMinWidth(Region.USE_PREF_SIZE);
-        HBox lineaPrecio = new HBox(6, precio, sufijo);
-        lineaPrecio.setAlignment(Pos.BASELINE_LEFT);
+        Region sep2Erht = separadorErht();
+        Label precioErht = new Label(UtilidadesInterfaz.soles(t.precioAlquiler()));
+        precioErht.getStyleClass().add("traje-precio");
+        precioErht.setMinWidth(Region.USE_PREF_SIZE);
+        Label sufijoErht = new Label(d.sufijoPrecio());
+        sufijoErht.getStyleClass().add("traje-precio-nota");
+        sufijoErht.setMinWidth(Region.USE_PREF_SIZE);
+        HBox lineaPrecioErht = new HBox(6, precioErht, sufijoErht);
+        lineaPrecioErht.setAlignment(Pos.BASELINE_LEFT);
 
-        Button reservar = UtilidadesInterfaz.estilo(new Button(d.textoBoton(), UtilidadesInterfaz.icono(Feather.ARROW_RIGHT)), "boton-guindo");
-        reservar.setContentDisplay(ContentDisplay.RIGHT);
-        reservar.setMinWidth(Region.USE_PREF_SIZE);
-        reservar.setDisable(!d.reservable());
-        reservar.setOnAction(e -> d.alReservar().run());
-        HBox pie = new HBox(10, lineaPrecio, UtilidadesInterfaz.espacio(), reservar);
-        pie.setAlignment(Pos.CENTER_LEFT);
+        Button reservarErht = UtilidadesInterfaz.estilo(new Button(d.textoBoton(), UtilidadesInterfaz.icono(Feather.ARROW_RIGHT)), "boton-guindo");
+        reservarErht.setContentDisplay(ContentDisplay.RIGHT);
+        reservarErht.setMinWidth(Region.USE_PREF_SIZE);
+        reservarErht.setDisable(!d.reservable());
+        reservarErht.setOnAction(e -> d.alReservar().run());
+        HBox pieErht = new HBox(10, lineaPrecioErht, UtilidadesInterfaz.espacio(), reservarErht);
+        pieErht.setAlignment(Pos.CENTER_LEFT);
 
-        VBox cuerpo = new VBox(lineaMeta, lineaNombre, desc, sep1, detalles, sep2, pie);
-        cuerpo.getStyleClass().add("traje-cuerpo");
-        VBox.setMargin(sep1, new Insets(4, 0, 4, 0));
-        VBox.setMargin(sep2, new Insets(4, 0, 2, 0));
+        VBox cuerpoErht = new VBox(lineaMetaErht, lineaNombreErht, descErht, sep1Erht, detallesErht, sep2Erht, pieErht);
+        cuerpoErht.getStyleClass().add("traje-cuerpo");
+        VBox.setMargin(sep1Erht, new Insets(4, 0, 4, 0));
+        VBox.setMargin(sep2Erht, new Insets(4, 0, 2, 0));
 
-        VBox tarjeta = new VBox(foto, cuerpo);
-        tarjeta.getStyleClass().add("traje-tarjeta");
-        tarjeta.setMaxWidth(Double.MAX_VALUE);
-        tarjeta.setMinWidth(0);
+        VBox tarjetaErht = new VBox(fotoErht, cuerpoErht);
+        tarjetaErht.getStyleClass().add("traje-tarjeta");
+        tarjetaErht.setMaxWidth(Double.MAX_VALUE);
+        tarjetaErht.setMinWidth(0);
 
         // Al pasar el mouse sube 4 px y crece la sombra (150 ms).
-        TranslateTransition sube = new TranslateTransition(Duration.millis(150), tarjeta);
-        tarjeta.hoverProperty().addListener((o, antes, encima) -> {
-            sube.stop();
-            sube.setToY(encima ? -4 : 0);
-            sube.play();
+        TranslateTransition subeErht = new TranslateTransition(Duration.millis(150), tarjetaErht);
+        tarjetaErht.hoverProperty().addListener((o, antes, encima) -> {
+            subeErht.stop();
+            subeErht.setToY(encima ? -4 : 0);
+            subeErht.play();
             if (encima) {
-                tarjeta.getStyleClass().add("elevada");
+                tarjetaErht.getStyleClass().add("elevada");
             } else {
-                tarjeta.getStyleClass().remove("elevada");
+                tarjetaErht.getStyleClass().remove("elevada");
             }
         });
         if (d.alDobleClic() != null) {
             if (d.abrirConUnClic()) {
-                tarjeta.setStyle("-fx-cursor: hand;");
+                tarjetaErht.setStyle("-fx-cursor: hand;");
             }
-            tarjeta.setOnMouseClicked(e -> {
+            tarjetaErht.setOnMouseClicked(e -> {
                 if (e.getClickCount() == (d.abrirConUnClic() ? 1 : 2)) {
                     d.alDobleClic().run();
                 }
             });
         }
-        return tarjeta;
+        return tarjetaErht;
     }
 
     // ------------------------------------------------------------------ foto
 
-    private static StackPane foto(TrajeFila t) {
-        StackPane caja = new StackPane();
-        caja.setMinHeight(ALTO_FOTO);
-        caja.setPrefHeight(ALTO_FOTO);
-        caja.setMaxHeight(ALTO_FOTO);
+    private static StackPane fotoErht(TrajeFila t) {
+        StackPane cajaErht = new StackPane();
+        cajaErht.setMinHeight(ALTO_FOTO);
+        cajaErht.setPrefHeight(ALTO_FOTO);
+        cajaErht.setMaxHeight(ALTO_FOTO);
 
-        URL ruta = rutaFoto(t.idTraje());
-        if (ruta != null) {
+        URL rutaErht = rutaFotoErht(t.idTraje());
+        if (rutaErht != null) {
             // "cover": llena el recuadro y recorta lo que sobra, sin deformar.
-            caja.setStyle("-fx-background-image: url('" + ruta.toExternalForm() + "');"
+            cajaErht.setStyle("-fx-background-image: url('" + rutaErht.toExternalForm() + "');"
                     + "-fx-background-size: cover; -fx-background-position: center;");
         } else {
-            String color = Adornos.colorDanza(t.danza());
-            caja.setStyle("-fx-background-color: linear-gradient(to bottom right, derive(" + color + ", 18%), "
-                    + "derive(" + color + ", -42%));");
-            Group chakana = Adornos.chakanaEnGrupo(230, "chakana-tenue");
-            StackPane.setAlignment(chakana, Pos.CENTER_RIGHT);
-            StackPane.setMargin(chakana, new Insets(0, -70, 0, 0));
-            Label danza = new Label(t.danza());
-            danza.getStyleClass().add("marcador-danza");
-            danza.setWrapText(true);
-            Label sub = new Label(UtilidadesInterfaz.espaciado(t.personaje()));
-            sub.getStyleClass().add("marcador-sub");
-            VBox textos = new VBox(4, danza, sub);
-            textos.setAlignment(Pos.CENTER);
-            caja.getChildren().addAll(chakana, textos);
+            String colorErht = Adornos.colorDanza(t.danza());
+            cajaErht.setStyle("-fx-background-color: linear-gradient(to bottom right, derive(" + colorErht + ", 18%), "
+                    + "derive(" + colorErht + ", -42%));");
+            Group chakanaErht = Adornos.chakanaEnGrupo(230, "chakana-tenue");
+            StackPane.setAlignment(chakanaErht, Pos.CENTER_RIGHT);
+            StackPane.setMargin(chakanaErht, new Insets(0, -70, 0, 0));
+            Label danzaErht = new Label(t.danza());
+            danzaErht.getStyleClass().add("marcador-danza");
+            danzaErht.setWrapText(true);
+            Label subErht = new Label(UtilidadesInterfaz.espaciado(t.personaje()));
+            subErht.getStyleClass().add("marcador-sub");
+            VBox textosErht = new VBox(4, danzaErht, subErht);
+            textosErht.setAlignment(Pos.CENTER);
+            cajaErht.getChildren().addAll(chakanaErht, textosErht);
         }
 
         // Esquinas superiores redondeadas: rectángulo con arcos + franja recta abajo.
-        Rectangle redondo = new Rectangle();
-        redondo.setArcWidth(36);
-        redondo.setArcHeight(36);
-        redondo.widthProperty().bind(caja.widthProperty());
-        redondo.setHeight(ALTO_FOTO);
-        Rectangle recto = new Rectangle(0, ALTO_FOTO - 20, 0, 20);
-        recto.widthProperty().bind(caja.widthProperty());
-        caja.setClip(new Group(redondo, recto));
-        return caja;
+        Rectangle redondoErht = new Rectangle();
+        redondoErht.setArcWidth(36);
+        redondoErht.setArcHeight(36);
+        redondoErht.widthProperty().bind(cajaErht.widthProperty());
+        redondoErht.setHeight(ALTO_FOTO);
+        Rectangle rectoErht = new Rectangle(0, ALTO_FOTO - 20, 0, 20);
+        rectoErht.widthProperty().bind(cajaErht.widthProperty());
+        cajaErht.setClip(new Group(redondoErht, rectoErht));
+        return cajaErht;
     }
 
-    private static URL rutaFoto(int idTraje) {
-        for (String extension : new String[]{"png", "jpg"}) {
-            URL u = TarjetaTraje.class.getResource("/img/trajes/" + idTraje + "." + extension);
+    private static URL rutaFotoErht(int idTraje) {
+        for (String extensionErht : new String[]{"png", "jpg"}) {
+            URL u = TarjetaTraje.class.getResource("/img/trajes/" + idTraje + "." + extensionErht);
             if (u != null) {
                 return u;
             }
@@ -230,13 +230,13 @@ public final class TarjetaTraje {
         return null;
     }
 
-    private static Region separador() {
+    private static Region separadorErht() {
         Region r = new Region();
         r.getStyleClass().add("traje-separador");
         return r;
     }
 
-    private static Label detalle(Feather ikon, String titulo, String valor) {
+    private static Label detalleErht(Feather ikon, String titulo, String valor) {
         Label l = new Label(titulo + valor, UtilidadesInterfaz.icono(ikon));
         l.setGraphicTextGap(8);
         l.getStyleClass().add("traje-detalle");
@@ -244,14 +244,14 @@ public final class TarjetaTraje {
         return l;
     }
 
-    private static String descripcion(TrajeFila t) {
-        String genero = switch (t.genero() == null ? "" : t.genero()) {
+    private static String descripcionErht(TrajeFila t) {
+        String generoErht = switch (t.genero() == null ? "" : t.genero()) {
             case "VARON" -> "para varón";
             case "MUJER" -> "para dama";
             default -> "unisex";
         };
-        String color = t.color() == null ? "" : " en " + t.color().toLowerCase(Locale.ROOT);
-        return "Traje completo de " + t.danza().toLowerCase(Locale.ROOT) + " " + genero + color
+        String colorErht = t.color() == null ? "" : " en " + t.color().toLowerCase(Locale.ROOT);
+        return "Traje completo de " + t.danza().toLowerCase(Locale.ROOT) + " " + generoErht + colorErht
                 + ", listo para la festividad. Se entrega revisado pieza por pieza.";
     }
 
@@ -259,19 +259,19 @@ public final class TarjetaTraje {
 
     /** "M · también S, L": la talla del traje y las de los trajes iguales (misma danza, personaje y color). */
     public static String tallas(TrajeFila t, List<TrajeFila> todos) {
-        List<String> otras = new ArrayList<>();
-        for (String talla : UtilidadesInterfaz.TALLAS) {
-            if (talla.equals(t.talla())) {
+        List<String> otrasErht = new ArrayList<>();
+        for (String tallaErht : UtilidadesInterfaz.TALLAS) {
+            if (tallaErht.equals(t.talla())) {
                 continue;
             }
-            boolean hay = todos.stream().anyMatch(o -> talla.equals(o.talla())
+            boolean hayErht = todos.stream().anyMatch(o -> tallaErht.equals(o.talla())
                     && o.danza().equals(t.danza()) && o.personaje().equals(t.personaje())
                     && java.util.Objects.equals(o.color(), t.color()) && o.genero().equals(t.genero()));
-            if (hay) {
-                otras.add(talla);
+            if (hayErht) {
+                otrasErht.add(tallaErht);
             }
         }
-        return otras.isEmpty() ? t.talla() : t.talla() + " · también " + String.join(", ", otras);
+        return otrasErht.isEmpty() ? t.talla() : t.talla() + " · también " + String.join(", ", otrasErht);
     }
 
     /**
@@ -279,57 +279,57 @@ public final class TarjetaTraje {
      * Un alquiler entregado y vencido se cuenta hasta hoy (el traje aún no volvió).
      */
     public static Map<Integer, LocalDate> proximaFechaLibre(List<Ocupacion> ocupaciones, LocalDate hoy) {
-        Map<Integer, List<Ocupacion>> porTraje = new HashMap<>();
+        Map<Integer, List<Ocupacion>> porTrajeErht = new HashMap<>();
         for (Ocupacion o : ocupaciones) {
-            porTraje.computeIfAbsent(o.idTraje(), k -> new ArrayList<>()).add(o);
+            porTrajeErht.computeIfAbsent(o.idTraje(), k -> new ArrayList<>()).add(o);
         }
-        Map<Integer, LocalDate> libre = new HashMap<>();
-        porTraje.forEach((id, lista) -> {
+        Map<Integer, LocalDate> libreErht = new HashMap<>();
+        porTrajeErht.forEach((id, lista) -> {
             LocalDate d = hoy;
-            boolean cambio = true;
-            while (cambio) {
-                cambio = false;
+            boolean cambioErht = true;
+            while (cambioErht) {
+                cambioErht = false;
                 for (Ocupacion o : lista) {
-                    LocalDate fin = o.devolucionPrevista();
-                    if ("ENTREGADO".equals(o.estado()) && fin.isBefore(hoy)) {
-                        fin = hoy;
+                    LocalDate finErht = o.devolucionPrevista();
+                    if ("ENTREGADO".equals(o.estado()) && finErht.isBefore(hoy)) {
+                        finErht = hoy;
                     }
-                    if (!o.salida().isAfter(d) && !fin.isBefore(d)) {
-                        d = fin.plusDays(1);
-                        cambio = true;
+                    if (!o.salida().isAfter(d) && !finErht.isBefore(d)) {
+                        d = finErht.plusDays(1);
+                        cambioErht = true;
                     }
                 }
             }
-            libre.put(id, d);
+            libreErht.put(id, d);
         });
-        return libre;
+        return libreErht;
     }
 
     /** Cuadrícula de tarjetas: 3 columnas, o 2 si el ancho disponible es angosto. */
     public static final class Cuadricula extends GridPane {
 
         private static final double ANCHO_MINIMO_3 = 1100;
-        private List<Node> tarjetas = List.of();
-        private int columnas;
+        private List<Node> tarjetasErht = List.of();
+        private int columnasErht;
 
         public Cuadricula() {
             setHgap(26);
             setVgap(26);
             widthProperty().addListener((o, a, b) -> {
                 int c = b.doubleValue() >= ANCHO_MINIMO_3 ? 3 : 2;
-                if (c != columnas) {
-                    ordenar(c);
+                if (c != columnasErht) {
+                    ordenarErht(c);
                 }
             });
         }
 
         public void mostrar(List<Node> nuevas) {
-            tarjetas = nuevas;
-            ordenar(getWidth() == 0 ? 3 : (getWidth() >= ANCHO_MINIMO_3 ? 3 : 2));
+            tarjetasErht = nuevas;
+            ordenarErht(getWidth() == 0 ? 3 : (getWidth() >= ANCHO_MINIMO_3 ? 3 : 2));
         }
 
-        private void ordenar(int c) {
-            columnas = c;
+        private void ordenarErht(int c) {
+            columnasErht = c;
             getChildren().clear();
             getColumnConstraints().clear();
             for (int i = 0; i < c; i++) {
@@ -341,8 +341,8 @@ public final class TarjetaTraje {
                 cc.setFillWidth(true);
                 getColumnConstraints().add(cc);
             }
-            for (int i = 0; i < tarjetas.size(); i++) {
-                Node n = tarjetas.get(i);
+            for (int i = 0; i < tarjetasErht.size(); i++) {
+                Node n = tarjetasErht.get(i);
                 GridPane.setFillWidth(n, true);
                 add(n, i % c, i / c);
             }

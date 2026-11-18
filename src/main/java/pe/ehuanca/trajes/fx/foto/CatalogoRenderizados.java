@@ -34,48 +34,48 @@ public final class CatalogoRenderizados {
 
     /** carpeta de danza → ángulos disponibles (en orden), p. ej. "caporal" → [frente, perfil, espalda]. */
     public static Map<String, List<String>> danzas() {
-        Resource[] bases;
+        Resource[] basesErht;
         try {
-            bases = new PathMatchingResourcePatternResolver().getResources("classpath*:render/*/*/base.png");
+            basesErht = new PathMatchingResourcePatternResolver().getResources("classpath*:render/*/*/base.png");
         } catch (IOException e) {
             return Map.of();
         }
-        Map<String, List<String>> mapa = new TreeMap<>();
-        for (Resource r : bases) {
-            String ruta;
+        Map<String, List<String>> mapaErht = new TreeMap<>();
+        for (Resource r : basesErht) {
+            String rutaErht;
             try {
-                ruta = r.getURL().toString().replace('\\', '/');
+                rutaErht = r.getURL().toString().replace('\\', '/');
             } catch (IOException e) {
                 continue;
             }
-            int i = ruta.lastIndexOf("/render/");
+            int i = rutaErht.lastIndexOf("/render/");
             if (i < 0) {
                 continue;
             }
-            String[] partes = ruta.substring(i + "/render/".length()).split("/");
-            if (partes.length >= 3) {
-                mapa.computeIfAbsent(partes[0], k -> new ArrayList<>()).add(partes[1]);
+            String[] partesErht = rutaErht.substring(i + "/render/".length()).split("/");
+            if (partesErht.length >= 3) {
+                mapaErht.computeIfAbsent(partesErht[0], k -> new ArrayList<>()).add(partesErht[1]);
             }
         }
-        Map<String, List<String>> ordenado = new LinkedHashMap<>();
-        mapa.forEach((danza, angulos) -> {
+        Map<String, List<String>> ordenadoErht = new LinkedHashMap<>();
+        mapaErht.forEach((danza, angulos) -> {
             List<String> l = new ArrayList<>(angulos.stream().distinct().toList());
             l.sort(Comparator.comparing((String a) -> {
                 int k = ORDEN_ANGULOS.indexOf(a);
                 return k < 0 ? 99 : k;
             }).thenComparing(a -> a));
-            ordenado.put(danza, List.copyOf(l));
+            ordenadoErht.put(danza, List.copyOf(l));
         });
-        return ordenado;
+        return ordenadoErht;
     }
 
     /** Carpeta de render que corresponde a una danza de la base ("Caporales" ↔ render/caporal). */
     public static String carpetaDe(String danza, Map<String, List<String>> disponibles) {
         String d = clave(danza);
-        for (String carpeta : disponibles.keySet()) {
-            String c = clave(carpeta);
+        for (String carpetaErht : disponibles.keySet()) {
+            String c = clave(carpetaErht);
             if (!c.isEmpty() && (d.startsWith(c) || c.startsWith(d))) {
-                return carpeta;
+                return carpetaErht;
             }
         }
         return null;
@@ -86,7 +86,7 @@ public final class CatalogoRenderizados {
         if (texto == null) {
             return "";
         }
-        String sinTildes = Normalizer.normalize(texto, Normalizer.Form.NFD).replaceAll("\\p{M}", "");
-        return sinTildes.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", "");
+        String sinTildesErht = Normalizer.normalize(texto, Normalizer.Form.NFD).replaceAll("\\p{M}", "");
+        return sinTildesErht.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", "");
     }
 }

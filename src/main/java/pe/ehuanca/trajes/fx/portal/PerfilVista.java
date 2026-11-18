@@ -30,101 +30,101 @@ public class PerfilVista extends VBox {
 
     public PerfilVista(Servicios s, VistaPortalCliente portal) {
         getStyleClass().add("contenido");
-        int idCliente = Sesion.actual().idCliente();   // solo sus propios datos
+        int idClienteErht = Sesion.actual().idCliente();   // solo sus propios datos
         Usuario u = Sesion.actual().usuario();
-        Cliente c = s.clientes().buscar(idCliente);
+        Cliente c = s.clientes().buscar(idClienteErht);
 
         // ---------------- datos
-        TextField documento = UtilidadesInterfaz.campo(c.tipoDocumento() + " " + c.numeroDocumento(), "");
-        documento.setEditable(false);
-        documento.getStyleClass().add("campo-bloqueado");
-        TextField usuario = UtilidadesInterfaz.campo("@" + u.nombreUsuario(), "");
-        usuario.setEditable(false);
-        usuario.getStyleClass().add("campo-bloqueado");
-        TextField nombres = UtilidadesInterfaz.campo(c.nombres(), "Nombres");
-        TextField apellidos = UtilidadesInterfaz.campo(c.apellidos() == null ? "" : c.apellidos(), "Apellidos");
-        TextField telefono = UtilidadesInterfaz.campo(c.telefono() == null ? "" : c.telefono(), "9 dígitos");
-        TextField correo = UtilidadesInterfaz.campo(c.correo() == null ? "" : c.correo(), "tu@correo.com");
-        TextField direccion = UtilidadesInterfaz.campo(c.direccion() == null ? "" : c.direccion(), "Opcional");
+        TextField documentoErht = UtilidadesInterfaz.campo(c.tipoDocumento() + " " + c.numeroDocumento(), "");
+        documentoErht.setEditable(false);
+        documentoErht.getStyleClass().add("campo-bloqueado");
+        TextField usuarioErht = UtilidadesInterfaz.campo("@" + u.nombreUsuario(), "");
+        usuarioErht.setEditable(false);
+        usuarioErht.getStyleClass().add("campo-bloqueado");
+        TextField nombresErht = UtilidadesInterfaz.campo(c.nombres(), "Nombres");
+        TextField apellidosErht = UtilidadesInterfaz.campo(c.apellidos() == null ? "" : c.apellidos(), "Apellidos");
+        TextField telefonoErht = UtilidadesInterfaz.campo(c.telefono() == null ? "" : c.telefono(), "9 dígitos");
+        TextField correoErht = UtilidadesInterfaz.campo(c.correo() == null ? "" : c.correo(), "tu@correo.com");
+        TextField direccionErht = UtilidadesInterfaz.campo(c.direccion() == null ? "" : c.direccion(), "Opcional");
 
         GridPane g = new GridPane();
         g.setHgap(16);
         g.setVgap(12);
-        fila(g, 0, "Documento", documento, "Usuario", usuario);
-        fila(g, 1, "Nombres", nombres, "Apellidos", apellidos);
-        fila(g, 2, "Celular", telefono, "Correo", correo);
-        g.add(campo("Dirección", direccion), 0, 3, 2, 1);
+        filaErht(g, 0, "Documento", documentoErht, "Usuario", usuarioErht);
+        filaErht(g, 1, "Nombres", nombresErht, "Apellidos", apellidosErht);
+        filaErht(g, 2, "Celular", telefonoErht, "Correo", correoErht);
+        g.add(campoErht("Dirección", direccionErht), 0, 3, 2, 1);
 
-        Label avisoDatos = new Label();
-        avisoDatos.getStyleClass().add("exito-suave");
-        avisoDatos.setVisible(false);
-        Button guardar = UtilidadesInterfaz.estilo(new Button("Guardar cambios", UtilidadesInterfaz.icono(Feather.SAVE)), "boton-primario");
-        guardar.setOnAction(e -> {
-            avisoDatos.setVisible(false);
-            if (UtilidadesInterfaz.ejecutar(() -> s.clientes().actualizarPerfil(idCliente, nombres.getText(), apellidos.getText(),
-                    telefono.getText(), correo.getText(), direccion.getText()))) {
-                String nombre = (nombres.getText().trim() + " " + apellidos.getText().trim()).trim();
-                Sesion.actual().actualizar(new Usuario(u.idUsuario(), u.nombreUsuario(), u.rol(), u.idCliente(), nombre));
+        Label avisoDatosErht = new Label();
+        avisoDatosErht.getStyleClass().add("exito-suave");
+        avisoDatosErht.setVisible(false);
+        Button guardarErht = UtilidadesInterfaz.estilo(new Button("Guardar cambios", UtilidadesInterfaz.icono(Feather.SAVE)), "boton-primario");
+        guardarErht.setOnAction(e -> {
+            avisoDatosErht.setVisible(false);
+            if (UtilidadesInterfaz.ejecutar(() -> s.clientes().actualizarPerfil(idClienteErht, nombresErht.getText(), apellidosErht.getText(),
+                    telefonoErht.getText(), correoErht.getText(), direccionErht.getText()))) {
+                String nombreErht = (nombresErht.getText().trim() + " " + apellidosErht.getText().trim()).trim();
+                Sesion.actual().actualizar(new Usuario(u.idUsuario(), u.nombreUsuario(), u.rol(), u.idCliente(), nombreErht));
                 portal.refrescarCabecera();
-                avisoDatos.setText("Tus datos se guardaron.");
-                avisoDatos.setVisible(true);
+                avisoDatosErht.setText("Tus datos se guardaron.");
+                avisoDatosErht.setVisible(true);
             }
         });
-        HBox pieDatos = new HBox(12, avisoDatos, UtilidadesInterfaz.espacio(), guardar);
-        pieDatos.setAlignment(Pos.CENTER_LEFT);
-        VBox datos = new VBox(16, seccion("Mis datos", "El documento no se puede cambiar aquí; si hay un error, "
-                + "avísanos en la tienda."), g, pieDatos);
-        datos.getStyleClass().add("tarjeta-blanca");
-        HBox.setHgrow(datos, Priority.ALWAYS);
+        HBox pieDatosErht = new HBox(12, avisoDatosErht, UtilidadesInterfaz.espacio(), guardarErht);
+        pieDatosErht.setAlignment(Pos.CENTER_LEFT);
+        VBox datosErht = new VBox(16, seccionErht("Mis datos", "El documento no se puede cambiar aquí; si hay un error, "
+                + "avísanos en la tienda."), g, pieDatosErht);
+        datosErht.getStyleClass().add("tarjeta-blanca");
+        HBox.setHgrow(datosErht, Priority.ALWAYS);
 
         // ---------------- contraseña
-        PasswordField actual = new PasswordField();
-        PasswordField nueva = new PasswordField();
-        PasswordField repetir = new PasswordField();
-        actual.setPromptText("Contraseña actual");
-        nueva.setPromptText("Mínimo 6 caracteres");
-        repetir.setPromptText("Repite la nueva");
-        Label avisoClave = new Label();
-        avisoClave.getStyleClass().add("exito-suave");
-        avisoClave.setVisible(false);
-        Button cambiar = UtilidadesInterfaz.estilo(new Button("Cambiar contraseña", UtilidadesInterfaz.icono(Feather.LOCK)), "boton-primario");
-        cambiar.setMaxWidth(Double.MAX_VALUE);
-        cambiar.setOnAction(e -> {
-            avisoClave.setVisible(false);
-            if (UtilidadesInterfaz.ejecutar(() -> s.usuarios().cambiarClave(u.idUsuario(), actual.getText(), nueva.getText(),
-                    repetir.getText()))) {
-                actual.clear();
-                nueva.clear();
-                repetir.clear();
-                avisoClave.setText("Tu contraseña se cambió.");
-                avisoClave.setVisible(true);
+        PasswordField actualErht = new PasswordField();
+        PasswordField nuevaErht = new PasswordField();
+        PasswordField repetirErht = new PasswordField();
+        actualErht.setPromptText("Contraseña actual");
+        nuevaErht.setPromptText("Mínimo 6 caracteres");
+        repetirErht.setPromptText("Repite la nueva");
+        Label avisoClaveErht = new Label();
+        avisoClaveErht.getStyleClass().add("exito-suave");
+        avisoClaveErht.setVisible(false);
+        Button cambiarErht = UtilidadesInterfaz.estilo(new Button("Cambiar contraseña", UtilidadesInterfaz.icono(Feather.LOCK)), "boton-primario");
+        cambiarErht.setMaxWidth(Double.MAX_VALUE);
+        cambiarErht.setOnAction(e -> {
+            avisoClaveErht.setVisible(false);
+            if (UtilidadesInterfaz.ejecutar(() -> s.usuarios().cambiarClave(u.idUsuario(), actualErht.getText(), nuevaErht.getText(),
+                    repetirErht.getText()))) {
+                actualErht.clear();
+                nuevaErht.clear();
+                repetirErht.clear();
+                avisoClaveErht.setText("Tu contraseña se cambió.");
+                avisoClaveErht.setVisible(true);
             }
         });
-        VBox clave = new VBox(14, seccion("Contraseña", "Usa una que no uses en otros sitios."),
-                campo("Contraseña actual", actual), campo("Nueva contraseña", nueva),
-                campo("Repite la nueva", repetir), cambiar, avisoClave);
-        clave.getStyleClass().add("tarjeta-blanca");
-        clave.setPrefWidth(360);
-        clave.setMinWidth(320);
+        VBox claveErht = new VBox(14, seccionErht("Contraseña", "Usa una que no uses en otros sitios."),
+                campoErht("Contraseña actual", actualErht), campoErht("Nueva contraseña", nuevaErht),
+                campoErht("Repite la nueva", repetirErht), cambiarErht, avisoClaveErht);
+        claveErht.getStyleClass().add("tarjeta-blanca");
+        claveErht.setPrefWidth(360);
+        claveErht.setMinWidth(320);
 
-        HBox columnas = new HBox(22, datos, clave);
-        getChildren().addAll(UtilidadesInterfaz.encabezado("Mi cuenta", "Perfil", "Hola, " + u.nombreVisible() + "."), columnas);
+        HBox columnasErht = new HBox(22, datosErht, claveErht);
+        getChildren().addAll(UtilidadesInterfaz.encabezado("Mi cuenta", "Perfil", "Hola, " + u.nombreVisible() + "."), columnasErht);
     }
 
-    private static VBox seccion(String titulo, String texto) {
+    private static VBox seccionErht(String titulo, String texto) {
         return new VBox(4, UtilidadesInterfaz.seccion(titulo), UtilidadesInterfaz.subtitulo(texto));
     }
 
-    private static VBox campo(String titulo, javafx.scene.control.Control control) {
+    private static VBox campoErht(String titulo, javafx.scene.control.Control control) {
         Label l = new Label(UtilidadesInterfaz.espaciado(titulo));
         l.getStyleClass().add("campo-titulo");
         control.setMaxWidth(Double.MAX_VALUE);
         return new VBox(6, l, control);
     }
 
-    private static void fila(GridPane g, int f, String t1, TextField c1, String t2, TextField c2) {
-        VBox a = campo(t1, c1);
-        VBox b = campo(t2, c2);
+    private static void filaErht(GridPane g, int f, String t1, TextField c1, String t2, TextField c2) {
+        VBox a = campoErht(t1, c1);
+        VBox b = campoErht(t2, c2);
         GridPane.setHgrow(a, Priority.ALWAYS);
         GridPane.setHgrow(b, Priority.ALWAYS);
         g.add(a, 0, f);

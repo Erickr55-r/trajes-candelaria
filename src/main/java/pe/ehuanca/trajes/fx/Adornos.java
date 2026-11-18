@@ -69,30 +69,30 @@ public final class Adornos {
      * repetido {@code repeticiones} veces, con un rombo pequeño entre cada motivo.
      */
     public static Group greca(int repeticiones, double modulo, String claseLinea, String claseRelleno) {
-        StringBuilder linea = new StringBuilder("M0 ").append(fmt(3 * modulo));
-        StringBuilder rombos = new StringBuilder();
+        StringBuilder lineaErht = new StringBuilder("M0 ").append(fmtErht(3 * modulo));
+        StringBuilder rombosErht = new StringBuilder();
         for (int i = 0; i < repeticiones; i++) {
             // sube 3 escalones y baja 3
-            linea.append(" h").append(fmt(modulo)).append(" v").append(fmt(-modulo))
-                    .append(" h").append(fmt(modulo)).append(" v").append(fmt(-modulo))
-                    .append(" h").append(fmt(modulo)).append(" v").append(fmt(-modulo))
-                    .append(" h").append(fmt(modulo)).append(" v").append(fmt(modulo))
-                    .append(" h").append(fmt(modulo)).append(" v").append(fmt(modulo))
-                    .append(" h").append(fmt(modulo)).append(" v").append(fmt(modulo));
+            lineaErht.append(" h").append(fmtErht(modulo)).append(" v").append(fmtErht(-modulo))
+                    .append(" h").append(fmtErht(modulo)).append(" v").append(fmtErht(-modulo))
+                    .append(" h").append(fmtErht(modulo)).append(" v").append(fmtErht(-modulo))
+                    .append(" h").append(fmtErht(modulo)).append(" v").append(fmtErht(modulo))
+                    .append(" h").append(fmtErht(modulo)).append(" v").append(fmtErht(modulo))
+                    .append(" h").append(fmtErht(modulo)).append(" v").append(fmtErht(modulo));
             double cx = (i * 6 + 3.5) * modulo;
             double cy = 2.3 * modulo;
             double r = modulo * 0.45;
-            rombos.append("M").append(fmt(cx)).append(' ').append(fmt(cy - r))
-                    .append(" L").append(fmt(cx + r)).append(' ').append(fmt(cy))
-                    .append(" L").append(fmt(cx)).append(' ').append(fmt(cy + r))
-                    .append(" L").append(fmt(cx - r)).append(' ').append(fmt(cy)).append(" Z ");
+            rombosErht.append("M").append(fmtErht(cx)).append(' ').append(fmtErht(cy - r))
+                    .append(" L").append(fmtErht(cx + r)).append(' ').append(fmtErht(cy))
+                    .append(" L").append(fmtErht(cx)).append(' ').append(fmtErht(cy + r))
+                    .append(" L").append(fmtErht(cx - r)).append(' ').append(fmtErht(cy)).append(" Z ");
         }
-        linea.append(" h").append(fmt(modulo));
+        lineaErht.append(" h").append(fmtErht(modulo));
         SVGPath l = new SVGPath();
-        l.setContent(linea.toString());
+        l.setContent(lineaErht.toString());
         l.getStyleClass().add(claseLinea);
         SVGPath r = new SVGPath();
-        r.setContent(rombos.toString());
+        r.setContent(rombosErht.toString());
         r.getStyleClass().add(claseRelleno);
         return new Group(l, r);
     }
@@ -102,12 +102,12 @@ public final class Adornos {
         if (danza == null) {
             return RESERVA[0];
         }
-        String clave = danza.trim().toLowerCase(Locale.ROOT);
-        String c = COLOR_DANZA.get(clave);
-        return c != null ? c : RESERVA[Math.floorMod(clave.hashCode(), RESERVA.length)];
+        String claveErht = danza.trim().toLowerCase(Locale.ROOT);
+        String c = COLOR_DANZA.get(claveErht);
+        return c != null ? c : RESERVA[Math.floorMod(claveErht.hashCode(), RESERVA.length)];
     }
 
-    private static String fmt(double v) {
+    private static String fmtErht(double v) {
         return String.format(Locale.ROOT, "%.2f", v);
     }
 }

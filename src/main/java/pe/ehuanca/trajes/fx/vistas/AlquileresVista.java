@@ -28,60 +28,60 @@ import java.util.List;
  */
 public class AlquileresVista extends VBox {
 
-    private final Servicios s;
-    private final ComboBox<String> estado = UtilidadesInterfaz.comboTexto(
+    private final Servicios sErht;
+    private final ComboBox<String> estadoErht = UtilidadesInterfaz.comboTexto(
             List.of("SOLICITADO", "RESERVADO", "ENTREGADO", "DEVUELTO", "ANULADO", "RECHAZADO"), "Todos");
-    private final TextField texto = UtilidadesInterfaz.campo("", "Cliente o conjunto...");
-    private final Label cantidad = UtilidadesInterfaz.subtitulo("");
-    private final TableView<AlquilerResumen> tabla = UtilidadesInterfaz.tabla("No hay alquileres con esos filtros.");
+    private final TextField textoErht = UtilidadesInterfaz.campo("", "Cliente o conjunto...");
+    private final Label cantidadErht = UtilidadesInterfaz.subtitulo("");
+    private final TableView<AlquilerResumen> tablaErht = UtilidadesInterfaz.tabla("No hay alquileres con esos filtros.");
 
     public AlquileresVista(Servicios s) {
-        this.s = s;
+        this.sErht = s;
         getStyleClass().add("contenido");
 
-        estado.setMaxWidth(170);
-        texto.setPrefWidth(280);
-        texto.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargar));
-        estado.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargar));
-        Button buscar = UtilidadesInterfaz.estilo(new Button("Buscar", UtilidadesInterfaz.icono(Feather.SEARCH)), "boton-primario");
-        buscar.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargar));
-        Button limpiar = new Button("Limpiar");
-        limpiar.setOnAction(e -> {
-            texto.clear();
-            estado.getSelectionModel().selectFirst();
-            UtilidadesInterfaz.ejecutar(this::cargar);
+        estadoErht.setMaxWidth(170);
+        textoErht.setPrefWidth(280);
+        textoErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarErht));
+        estadoErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarErht));
+        Button buscarErht = UtilidadesInterfaz.estilo(new Button("Buscar", UtilidadesInterfaz.icono(Feather.SEARCH)), "boton-primario");
+        buscarErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarErht));
+        Button limpiarErht = new Button("Limpiar");
+        limpiarErht.setOnAction(e -> {
+            textoErht.clear();
+            estadoErht.getSelectionModel().selectFirst();
+            UtilidadesInterfaz.ejecutar(this::cargarErht);
         });
-        HBox filtros = new HBox(10, UtilidadesInterfaz.etiqueta("Estado"), estado, UtilidadesInterfaz.etiqueta("Buscar"), texto, buscar, limpiar,
-                UtilidadesInterfaz.espacio(), cantidad);
-        filtros.getStyleClass().add("barra-filtros");
+        HBox filtrosErht = new HBox(10, UtilidadesInterfaz.etiqueta("Estado"), estadoErht, UtilidadesInterfaz.etiqueta("Buscar"), textoErht, buscarErht, limpiarErht,
+                UtilidadesInterfaz.espacio(), cantidadErht);
+        filtrosErht.getStyleClass().add("barra-filtros");
 
-        tabla.getColumns().add(UtilidadesInterfaz.colNumero("N°", AlquilerResumen::idAlquiler, 60));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Cliente", AlquilerResumen::cliente, 220));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Conjunto", AlquilerResumen::conjunto, 170));
-        tabla.getColumns().add(UtilidadesInterfaz.colFecha("Salida", AlquilerResumen::fechaSalida, 95));
-        tabla.getColumns().add(UtilidadesInterfaz.colFecha("Devolución", AlquilerResumen::fechaDevolucionPrevista, 95));
-        tabla.getColumns().add(UtilidadesInterfaz.colFecha("Devuelto", AlquilerResumen::fechaDevolucionReal, 95));
-        tabla.getColumns().add(UtilidadesInterfaz.colNumero("Trajes", AlquilerResumen::numTrajes, 60));
-        tabla.getColumns().add(UtilidadesInterfaz.colSoles("Monto", AlquilerResumen::montoAlquiler, 105));
-        tabla.getColumns().add(UtilidadesInterfaz.colSoles("Saldo", AlquilerResumen::saldo, 100));
-        tabla.getColumns().add(UtilidadesInterfaz.colEstadoAlquiler(170));
-        UtilidadesInterfaz.alDobleClic(tabla, a -> {
+        tablaErht.getColumns().add(UtilidadesInterfaz.colNumero("N°", AlquilerResumen::idAlquiler, 60));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Cliente", AlquilerResumen::cliente, 220));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Conjunto", AlquilerResumen::conjunto, 170));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colFecha("Salida", AlquilerResumen::fechaSalida, 95));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colFecha("Devolución", AlquilerResumen::fechaDevolucionPrevista, 95));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colFecha("Devuelto", AlquilerResumen::fechaDevolucionReal, 95));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colNumero("Trajes", AlquilerResumen::numTrajes, 60));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colSoles("Monto", AlquilerResumen::montoAlquiler, 105));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colSoles("Saldo", AlquilerResumen::saldo, 100));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colEstadoAlquiler(170));
+        UtilidadesInterfaz.alDobleClic(tablaErht, a -> {
             new AlquilerDetalleDialogo(s, a.idAlquiler()).mostrar();
-            UtilidadesInterfaz.ejecutar(this::cargar);
+            UtilidadesInterfaz.ejecutar(this::cargarErht);
         });
-        VBox.setVgrow(tabla, Priority.ALWAYS);
+        VBox.setVgrow(tablaErht, Priority.ALWAYS);
 
-        tabla.setMinHeight(380);
-        HBox cabecera = new HBox(UtilidadesInterfaz.encabezado("Gestión de alquileres", "Alquileres",
+        tablaErht.setMinHeight(380);
+        HBox cabeceraErht = new HBox(UtilidadesInterfaz.encabezado("Gestión de alquileres", "Alquileres",
                 "Doble clic en un alquiler para ver su detalle, registrar pagos, entregarlo o recibirlo."));
-        cabecera.setAlignment(Pos.BOTTOM_LEFT);
-        getChildren().addAll(cabecera, filtros, tabla);
-        cargar();
+        cabeceraErht.setAlignment(Pos.BOTTOM_LEFT);
+        getChildren().addAll(cabeceraErht, filtrosErht, tablaErht);
+        cargarErht();
     }
 
-    private void cargar() {
-        List<AlquilerResumen> lista = s.alquileres().listar(estado.getValue(), texto.getText());
-        tabla.getItems().setAll(lista);
-        cantidad.setText(lista.size() + " alquiler(es)");
+    private void cargarErht() {
+        List<AlquilerResumen> listaErht = sErht.alquileres().listar(estadoErht.getValue(), textoErht.getText());
+        tablaErht.getItems().setAll(listaErht);
+        cantidadErht.setText(listaErht.size() + " alquiler(es)");
     }
 }

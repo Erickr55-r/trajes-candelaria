@@ -65,33 +65,33 @@ public class VistaPanelVendedor extends BorderPane {
     /** Pantallas que solo ve el ADMIN. */
     private static final List<String> SOLO_ADMIN = List.of(REPORTES, USUARIOS);
 
-    private final Servicios servicios;
-    private final Runnable alCerrarSesion;
-    private final boolean admin;
-    private final Map<String, Button> botones = new LinkedHashMap<>();
-    private final Label insignia = new Label();
+    private final Servicios serviciosErht;
+    private final Runnable alCerrarSesionErht;
+    private final boolean adminErht;
+    private final Map<String, Button> botonesErht = new LinkedHashMap<>();
+    private final Label insigniaErht = new Label();
     /** Pedidos de diseño PENDIENTES (por cotizar). */
-    private final Label insigniaPedidos = new Label();
-    private final ScrollPane area = new ScrollPane();
-    private final Timeline refresco;
+    private final Label insigniaPedidosErht = new Label();
+    private final ScrollPane areaErht = new ScrollPane();
+    private final Timeline refrescoErht;
 
     public VistaPanelVendedor(Servicios servicios, Runnable alCerrarSesion) {
-        this.servicios = servicios;
-        this.alCerrarSesion = alCerrarSesion;
-        this.admin = Usuario.ADMIN.equals(Sesion.actual().usuario().rol());
-        area.setFitToWidth(true);
-        area.setFitToHeight(true);
-        area.getStyleClass().add("area-contenido");
-        setLeft(barraLateral());
-        setCenter(area);
+        this.serviciosErht = servicios;
+        this.alCerrarSesionErht = alCerrarSesion;
+        this.adminErht = Usuario.ADMIN.equals(Sesion.actual().usuario().rol());
+        areaErht.setFitToWidth(true);
+        areaErht.setFitToHeight(true);
+        areaErht.getStyleClass().add("area-contenido");
+        setLeft(barraLateralErht());
+        setCenter(areaErht);
 
         // La insignia de Solicitudes se actualiza sola cada minuto (los clientes piden desde su portal).
-        refresco = new Timeline(new KeyFrame(Duration.seconds(60), e -> actualizarInsignia()));
-        refresco.setCycleCount(Timeline.INDEFINITE);
-        refresco.play();
+        refrescoErht = new Timeline(new KeyFrame(Duration.seconds(60), e -> actualizarInsignia()));
+        refrescoErht.setCycleCount(Timeline.INDEFINITE);
+        refrescoErht.play();
         sceneProperty().addListener((o, antes, ahora) -> {
             if (ahora == null) {
-                refresco.stop();
+                refrescoErht.stop();
             }
         });
         mostrar(INICIO);
@@ -99,55 +99,55 @@ public class VistaPanelVendedor extends BorderPane {
 
     // ------------------------------------------------------------------ barra lateral
 
-    private Node barraLateral() {
-        Button nueva = UtilidadesInterfaz.estilo(new Button("Nueva reserva", UtilidadesInterfaz.icono(Feather.PLUS)), "boton-primario");
-        nueva.setMaxWidth(Double.MAX_VALUE);
-        nueva.setOnAction(e -> mostrar(NUEVA_RESERVA));
-        VBox.setMargin(nueva, new Insets(4, 18, 10, 18));
+    private Node barraLateralErht() {
+        Button nuevaErht = UtilidadesInterfaz.estilo(new Button("Nueva reserva", UtilidadesInterfaz.icono(Feather.PLUS)), "boton-primario");
+        nuevaErht.setMaxWidth(Double.MAX_VALUE);
+        nuevaErht.setOnAction(e -> mostrar(NUEVA_RESERVA));
+        VBox.setMargin(nuevaErht, new Insets(4, 18, 10, 18));
 
-        HBox marca = Cabecera.marca(() -> mostrar(INICIO));
-        marca.getStyleClass().add("menu-marca-lateral");
-        VBox menu = new VBox(marca, nueva);
-        menu.getStyleClass().add("menu-lateral");
+        HBox marcaErht = Cabecera.marca(() -> mostrar(INICIO));
+        marcaErht.getStyleClass().add("menu-marca-lateral");
+        VBox menuErht = new VBox(marcaErht, nuevaErht);
+        menuErht.getStyleClass().add("menu-lateral");
 
-        menu.getChildren().add(grupo("Principal"));
-        agregarOpcionMenu(menu, INICIO, Feather.HOME);
-        agregarOpcionMenu(menu, SOLICITUDES, Feather.INBOX);
-        agregarOpcionMenu(menu, CATALOGO, Feather.GRID);
-        agregarOpcionMenu(menu, ALQUILERES, Feather.CALENDAR);
-        agregarOpcionMenu(menu, CLIENTES, Feather.USERS);
-        menu.getChildren().add(grupo("Taller"));
-        agregarOpcionMenu(menu, PEDIDOS, Feather.SCISSORS);
-        menu.getChildren().add(grupo("Inventario"));
-        agregarOpcionMenu(menu, TRAJES, Feather.PACKAGE);
-        agregarOpcionMenu(menu, CONJUNTOS, Feather.LAYERS);
-        if (admin) {
-            menu.getChildren().add(grupo("Administración"));
-            agregarOpcionMenu(menu, REPORTES, Feather.BAR_CHART_2);
-            agregarOpcionMenu(menu, USUARIOS, Feather.SHIELD);
+        menuErht.getChildren().add(grupoErht("Principal"));
+        agregarOpcionMenuErht(menuErht, INICIO, Feather.HOME);
+        agregarOpcionMenuErht(menuErht, SOLICITUDES, Feather.INBOX);
+        agregarOpcionMenuErht(menuErht, CATALOGO, Feather.GRID);
+        agregarOpcionMenuErht(menuErht, ALQUILERES, Feather.CALENDAR);
+        agregarOpcionMenuErht(menuErht, CLIENTES, Feather.USERS);
+        menuErht.getChildren().add(grupoErht("Taller"));
+        agregarOpcionMenuErht(menuErht, PEDIDOS, Feather.SCISSORS);
+        menuErht.getChildren().add(grupoErht("Inventario"));
+        agregarOpcionMenuErht(menuErht, TRAJES, Feather.PACKAGE);
+        agregarOpcionMenuErht(menuErht, CONJUNTOS, Feather.LAYERS);
+        if (adminErht) {
+            menuErht.getChildren().add(grupoErht("Administración"));
+            agregarOpcionMenuErht(menuErht, REPORTES, Feather.BAR_CHART_2);
+            agregarOpcionMenuErht(menuErht, USUARIOS, Feather.SHIELD);
         }
 
-        Region espacio = new Region();
-        VBox.setVgrow(espacio, Priority.ALWAYS);
-        menu.getChildren().addAll(espacio, tarjetaUsuario());
+        Region espacioErht = new Region();
+        VBox.setVgrow(espacioErht, Priority.ALWAYS);
+        menuErht.getChildren().addAll(espacioErht, tarjetaUsuarioErht());
 
-        ScrollPane desplazable = new ScrollPane(menu);
-        desplazable.setFitToWidth(true);
-        desplazable.setFitToHeight(true);
-        desplazable.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        desplazable.getStyleClass().add("menu-scroll");
-        desplazable.setMinWidth(248);
-        desplazable.setPrefWidth(248);
-        return desplazable;
+        ScrollPane desplazableErht = new ScrollPane(menuErht);
+        desplazableErht.setFitToWidth(true);
+        desplazableErht.setFitToHeight(true);
+        desplazableErht.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        desplazableErht.getStyleClass().add("menu-scroll");
+        desplazableErht.setMinWidth(248);
+        desplazableErht.setPrefWidth(248);
+        return desplazableErht;
     }
 
-    private static Label grupo(String texto) {
+    private static Label grupoErht(String texto) {
         Label l = new Label(UtilidadesInterfaz.espaciado(texto));
         l.getStyleClass().add("menu-grupo");
         return l;
     }
 
-    private void agregarOpcionMenu(VBox menu, String pantalla, Ikon ikon) {
+    private void agregarOpcionMenuErht(VBox menu, String pantalla, Ikon ikon) {
         Button b = new Button(pantalla, UtilidadesInterfaz.icono(ikon));
         b.getStyleClass().add("menu-boton");
         b.setMaxWidth(Double.MAX_VALUE);
@@ -160,15 +160,15 @@ public class VistaPanelVendedor extends BorderPane {
             t.setToX(encima && !b.getStyleClass().contains("activo") ? 4 : 0);
             t.play();
         });
-        botones.put(pantalla, b);
-        Label insigniaOpcion = SOLICITUDES.equals(pantalla) ? insignia : PEDIDOS.equals(pantalla) ? insigniaPedidos : null;
-        if (insigniaOpcion != null) {
-            insigniaOpcion.getStyleClass().add("insignia");
-            insigniaOpcion.setMouseTransparent(true);
-            StackPane conInsignia = new StackPane(b, insigniaOpcion);
-            StackPane.setAlignment(insigniaOpcion, Pos.CENTER_RIGHT);
-            StackPane.setMargin(insigniaOpcion, new Insets(0, 22, 0, 0));
-            menu.getChildren().add(conInsignia);
+        botonesErht.put(pantalla, b);
+        Label insigniaOpcionErht = SOLICITUDES.equals(pantalla) ? insigniaErht : PEDIDOS.equals(pantalla) ? insigniaPedidosErht : null;
+        if (insigniaOpcionErht != null) {
+            insigniaOpcionErht.getStyleClass().add("insignia");
+            insigniaOpcionErht.setMouseTransparent(true);
+            StackPane conInsigniaErht = new StackPane(b, insigniaOpcionErht);
+            StackPane.setAlignment(insigniaOpcionErht, Pos.CENTER_RIGHT);
+            StackPane.setMargin(insigniaOpcionErht, new Insets(0, 22, 0, 0));
+            menu.getChildren().add(conInsigniaErht);
             actualizarInsignia();
         } else {
             menu.getChildren().add(b);
@@ -176,28 +176,28 @@ public class VistaPanelVendedor extends BorderPane {
     }
 
     /** Usuario de la sesión abajo: avatar (menú Tema / Cerrar sesión / Salir), nombre, rol y botón de salida. */
-    private HBox tarjetaUsuario() {
+    private HBox tarjetaUsuarioErht() {
         Usuario u = Sesion.actual().usuario();
-        Label nombre = new Label(u.nombreVisible());
-        nombre.getStyleClass().add("usuario-nombre");
-        Label rol = new Label(UtilidadesInterfaz.espaciado(u.rolVisible()));
-        rol.getStyleClass().add("usuario-rol");
-        VBox textos = new VBox(1, nombre, rol);
-        textos.setAlignment(Pos.CENTER_LEFT);
-        HBox.setHgrow(textos, Priority.ALWAYS);
-        HBox caja = new HBox(10, Cabecera.avatar(alCerrarSesion), textos, Cabecera.botonCerrarSesion(alCerrarSesion));
-        caja.setAlignment(Pos.CENTER_LEFT);
-        caja.getStyleClass().add("menu-usuario-lateral");
-        return caja;
+        Label nombreErht = new Label(u.nombreVisible());
+        nombreErht.getStyleClass().add("usuario-nombre");
+        Label rolErht = new Label(UtilidadesInterfaz.espaciado(u.rolVisible()));
+        rolErht.getStyleClass().add("usuario-rol");
+        VBox textosErht = new VBox(1, nombreErht, rolErht);
+        textosErht.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(textosErht, Priority.ALWAYS);
+        HBox cajaErht = new HBox(10, Cabecera.avatar(alCerrarSesionErht), textosErht, Cabecera.botonCerrarSesion(alCerrarSesionErht));
+        cajaErht.setAlignment(Pos.CENTER_LEFT);
+        cajaErht.getStyleClass().add("menu-usuario-lateral");
+        return cajaErht;
     }
 
     /** Insignias rojas: solicitudes por aprobar y pedidos de diseño por cotizar (ocultas si no hay). */
     public void actualizarInsignia() {
-        pintar(insignia, () -> servicios.alquileres().contarSolicitudes());
-        pintar(insigniaPedidos, () -> servicios.personalizador().contarPendientes());
+        pintarErht(insigniaErht, () -> serviciosErht.alquileres().contarSolicitudes());
+        pintarErht(insigniaPedidosErht, () -> serviciosErht.personalizador().contarPendientes());
     }
 
-    private static void pintar(Label insigniaOpcion, java.util.function.IntSupplier contar) {
+    private static void pintarErht(Label insigniaOpcion, java.util.function.IntSupplier contar) {
         int n;
         try {
             n = contar.getAsInt();
@@ -212,40 +212,40 @@ public class VistaPanelVendedor extends BorderPane {
 
     /** Cambia la pantalla (se crea de nuevo para que muestre datos actualizados). */
     public void mostrar(String pantalla) {
-        if (SOLO_ADMIN.contains(pantalla) && !admin) {
+        if (SOLO_ADMIN.contains(pantalla) && !adminErht) {
             UtilidadesInterfaz.mostrarError("Esta opción solo está disponible para el administrador.");
             return;
         }
-        cambiar(pantalla, () -> switch (pantalla) {
-            case SOLICITUDES -> new SolicitudesVista(servicios, this::actualizarInsignia);
-            case CATALOGO -> CatalogoVista.paraTienda(servicios, this);
-            case NUEVA_RESERVA -> new NuevaReservaVista(servicios, this);
-            case ALQUILERES -> new AlquileresVista(servicios);
-            case TRAJES -> new TrajesVista(servicios);
-            case CLIENTES -> new ClientesVista(servicios);
-            case CONJUNTOS -> new ConjuntosVista(servicios);
-            case PEDIDOS -> new PedidosVista(servicios, this::actualizarInsignia);
-            case REPORTES -> new ReportesVista(servicios);
-            case USUARIOS -> new UsuariosVista(servicios);
-            default -> InicioVista.paraTienda(servicios,
+        cambiarErht(pantalla, () -> switch (pantalla) {
+            case SOLICITUDES -> new SolicitudesVista(serviciosErht, this::actualizarInsignia);
+            case CATALOGO -> CatalogoVista.paraTienda(serviciosErht, this);
+            case NUEVA_RESERVA -> new NuevaReservaVista(serviciosErht, this);
+            case ALQUILERES -> new AlquileresVista(serviciosErht);
+            case TRAJES -> new TrajesVista(serviciosErht);
+            case CLIENTES -> new ClientesVista(serviciosErht);
+            case CONJUNTOS -> new ConjuntosVista(serviciosErht);
+            case PEDIDOS -> new PedidosVista(serviciosErht, this::actualizarInsignia);
+            case REPORTES -> new ReportesVista(serviciosErht);
+            case USUARIOS -> new UsuariosVista(serviciosErht);
+            default -> InicioVista.paraTienda(serviciosErht,
                     (t, d, h, c, n) -> reservar(t.idTraje(), d, h, c, n), () -> mostrar(SOLICITUDES));
         });
     }
 
     /** Abre Nueva reserva con las fechas, el conjunto y el traje ya puestos. */
     public void reservar(int idTraje, LocalDate desde, LocalDate hasta, Opcion conjunto, String observacion) {
-        cambiar(NUEVA_RESERVA, () -> {
-            NuevaReservaVista v = new NuevaReservaVista(servicios, this);
+        cambiarErht(NUEVA_RESERVA, () -> {
+            NuevaReservaVista v = new NuevaReservaVista(serviciosErht, this);
             v.preparar(idTraje, desde, hasta, conjunto, observacion);
             return v;
         });
     }
 
-    private void cambiar(String pantalla, Supplier<Node> vista) {
+    private void cambiarErht(String pantalla, Supplier<Node> vista) {
         UtilidadesInterfaz.ejecutar(() -> {
-            area.setContent(vista.get());
-            area.setVvalue(0);
-            botones.forEach((nombre, boton) -> {
+            areaErht.setContent(vista.get());
+            areaErht.setVvalue(0);
+            botonesErht.forEach((nombre, boton) -> {
                 boton.getStyleClass().remove("activo");
                 boton.setTranslateX(0);
                 if (nombre.equals(pantalla)) {

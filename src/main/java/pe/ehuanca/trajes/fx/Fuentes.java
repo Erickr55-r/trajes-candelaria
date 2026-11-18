@@ -28,17 +28,17 @@ public final class Fuentes {
             "PlusJakartaSans-Bold.ttf"
     };
 
-    private static boolean cargadas;
+    private static boolean cargadasErht;
 
     private Fuentes() {
     }
 
     public static synchronized void cargar() {
-        if (cargadas) {
+        if (cargadasErht) {
             return;
         }
-        for (String archivo : ARCHIVOS) {
-            try (InputStream in = Fuentes.class.getResourceAsStream("/fonts/" + archivo)) {
+        for (String archivoErht : ARCHIVOS) {
+            try (InputStream in = Fuentes.class.getResourceAsStream("/fonts/" + archivoErht)) {
                 if (in != null) {
                     Font.loadFont(in, 13);
                 }
@@ -46,6 +46,6 @@ public final class Fuentes {
                 // sin esta fuente se usa la del sistema
             }
         }
-        cargadas = true;
+        cargadasErht = true;
     }
 }

@@ -41,10 +41,10 @@ public class PersonalizadorServicio {
     /** Mismo factor que el trigger: un ALQUILER paga el 30% del costo de confección. */
     public static final BigDecimal FACTOR_ALQUILER = new BigDecimal("0.30");
 
-    private final JdbcTemplate jdbc;
+    private final JdbcTemplate jdbcErht;
 
     public PersonalizadorServicio(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
+        this.jdbcErht = jdbc;
     }
 
     private static final RowMapper<ParteTraje> PARTE = (rs, i) -> new ParteTraje(
@@ -68,7 +68,7 @@ public class PersonalizadorServicio {
 
     /** Danzas que tienen partes configuradas en el personalizador. */
     public List<Opcion> danzas() {
-        return jdbc.query("""
+        return jdbcErht.query("""
                 SELECT d.id_danza AS id, d.nombre
                 FROM danza d
                 WHERE EXISTS (SELECT 1 FROM parte_traje p WHERE p.id_danza = d.id_danza)
@@ -78,7 +78,7 @@ public class PersonalizadorServicio {
 
     public List<ParteTraje> partesDe(int idDanza) {
         // De la cabeza a los pies, como se ven en el maniquí
-        return jdbc.query("""
+        return jdbcErht.query("""
                 SELECT * FROM parte_traje
                 WHERE id_danza = ?
                 ORDER BY CASE nombre WHEN 'Máscara' THEN 1 WHEN 'Sombrero' THEN 2 WHEN 'Chaqueta' THEN 3
@@ -88,11 +88,11 @@ public class PersonalizadorServicio {
     }
 
     public List<ColorTraje> colores() {
-        return jdbc.query("SELECT * FROM color ORDER BY id_color", COLOR);
+        return jdbcErht.query("SELECT * FROM color ORDER BY id_color", COLOR);
     }
 
     public List<Implemento> implementos() {
-        return jdbc.query("SELECT * FROM implemento ORDER BY nombre", IMPLEMENTO);
+        return jdbcErht.query("SELECT * FROM implemento ORDER BY nombre", IMPLEMENTO);
     }
 
     // ------------------------------------------------------------------ pedidos
@@ -114,52 +114,52 @@ public class PersonalizadorServicio {
         if (fechaEntrega.isBefore(LocalDate.now())) {
             throw new ExcepcionReglaNegocio("La fecha de entrega no puede ser anterior a hoy.");
         }
-        BigDecimal pagado = adelanto == null ? BigDecimal.ZERO : adelanto;
-        if (pagado.signum() < 0) {
+        BigDecimal pagadoErht = adelanto == null ? BigDecimal.ZERO : adelanto;
+        if (pagadoErht.signum() < 0) {
             throw new ExcepcionReglaNegocio("El adelanto no puede ser negativo.");
         }
-        Integer idPedido = jdbc.queryForObject("""
+        Integer idPedidoErht = jdbcErht.queryForObject("""
                 INSERT INTO pedido_personalizado (id_cliente, id_danza, talla, fecha_entrega, tipo, observacion)
                 VALUES (?, ?, ?, ?, ?, ?)
                 RETURNING id_pedido
                 """, Integer.class, idCliente, idDanza, talla, fechaEntrega, tipo, vacioANulo(observacion));
 
-        partes.forEach((idParte, idColor) -> jdbc.update(
+        partes.forEach((idParte, idColor) -> jdbcErht.update(
                 "INSERT INTO pedido_parte (id_pedido, id_parte, id_color) VALUES (?, ?, ?)",
-                idPedido, idParte, idColor));
+                idPedidoErht, idParte, idColor));
         if (implementos != null) {
-            implementos.forEach((idImplemento, cantidad) -> jdbc.update(
+            implementos.forEach((idImplemento, cantidad) -> jdbcErht.update(
                     "INSERT INTO pedido_implemento (id_pedido, id_implemento, cantidad) VALUES (?, ?, ?)",
-                    idPedido, idImplemento, cantidad));
+                    idPedidoErht, idImplemento, cantidad));
         }
 
-        if (pagado.signum() > 0) {
-            BigDecimal total = jdbc.queryForObject(
-                    "SELECT monto_total FROM pedido_personalizado WHERE id_pedido = ?", BigDecimal.class, idPedido);
-            if (pagado.compareTo(total) > 0) {
+        if (pagadoErht.signum() > 0) {
+            BigDecimal totalErht = jdbcErht.queryForObject(
+                    "SELECT monto_total FROM pedido_personalizado WHERE id_pedido = ?", BigDecimal.class, idPedidoErht);
+            if (pagadoErht.compareTo(totalErht) > 0) {
                 throw new ExcepcionReglaNegocio("El adelanto no puede ser mayor que el total del pedido.");
             }
-            jdbc.update("UPDATE pedido_personalizado SET adelanto = ? WHERE id_pedido = ?", pagado, idPedido);
+            jdbcErht.update("UPDATE pedido_personalizado SET adelanto = ? WHERE id_pedido = ?", pagadoErht, idPedidoErht);
         }
-        return idPedido;
+        return idPedidoErht;
     }
 
     public List<PedidoResumen> listarPedidos(String estado, String texto) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM v_pedidos_resumen WHERE 1 = 1");
-        List<Object> parametros = new ArrayList<>();
+        StringBuilder sqlErht = new StringBuilder("SELECT * FROM v_pedidos_resumen WHERE 1 = 1");
+        List<Object> parametrosErht = new ArrayList<>();
         if (tieneTexto(estado)) {
-            sql.append(" AND estado = ?");
-            parametros.add(estado);
+            sqlErht.append(" AND estado = ?");
+            parametrosErht.add(estado);
         }
         if (tieneTexto(texto)) {
-            sql.append(" AND (cliente ILIKE ? OR danza ILIKE ? OR id_pedido::text = ?)");
-            String patron = "%" + texto.trim() + "%";
-            parametros.add(patron);
-            parametros.add(patron);
-            parametros.add(texto.trim());
+            sqlErht.append(" AND (cliente ILIKE ? OR danza ILIKE ? OR id_pedido::text = ?)");
+            String patronErht = "%" + texto.trim() + "%";
+            parametrosErht.add(patronErht);
+            parametrosErht.add(patronErht);
+            parametrosErht.add(texto.trim());
         }
-        sql.append(" ORDER BY fecha_pedido DESC, id_pedido DESC");
-        return jdbc.query(sql.toString(), RESUMEN, parametros.toArray());
+        sqlErht.append(" ORDER BY fecha_pedido DESC, id_pedido DESC");
+        return jdbcErht.query(sqlErht.toString(), RESUMEN, parametrosErht.toArray());
     }
 
     /**
@@ -176,7 +176,7 @@ public class PersonalizadorServicio {
             throw new ExcepcionReglaNegocio("El precio no puede ser menor que lo ya pagado ("
                     + p.adelanto().setScale(2) + " soles).");
         }
-        int n = jdbc.update("""
+        int n = jdbcErht.update("""
                 UPDATE pedido_personalizado SET monto_total = ?, estado = 'COTIZADO'
                 WHERE id_pedido = ? AND estado = 'PENDIENTE'
                 """, precio.setScale(2, java.math.RoundingMode.HALF_UP), idPedido);
@@ -187,13 +187,13 @@ public class PersonalizadorServicio {
 
     /** Guarda la imagen PNG del diseño, solo si el pedido es del cliente. */
     public void guardarImagen(int idPedido, int idCliente, byte[] png) {
-        jdbc.update("UPDATE pedido_personalizado SET imagen_diseno = ? WHERE id_pedido = ? AND id_cliente = ?",
+        jdbcErht.update("UPDATE pedido_personalizado SET imagen_diseno = ? WHERE id_pedido = ? AND id_cliente = ?",
                 png, idPedido, idCliente);
     }
 
     /** Imagen del diseño de un pedido del cliente (null si no tiene). */
     public byte[] imagenDiseno(int idPedido, int idCliente) {
-        List<byte[]> l = jdbc.query(
+        List<byte[]> l = jdbcErht.query(
                 "SELECT imagen_diseno FROM pedido_personalizado WHERE id_pedido = ? AND id_cliente = ?",
                 (rs, i) -> rs.getBytes(1), idPedido, idCliente);
         return l.isEmpty() ? null : l.get(0);
@@ -201,7 +201,7 @@ public class PersonalizadorServicio {
 
     /** El cliente acepta el precio cotizado: COTIZADO → APROBADO. */
     public void aprobarCotizacion(int idPedido, int idCliente) {
-        int n = jdbc.update("""
+        int n = jdbcErht.update("""
                 UPDATE pedido_personalizado SET estado = 'APROBADO'
                 WHERE id_pedido = ? AND id_cliente = ? AND estado = 'COTIZADO'
                 """, idPedido, idCliente);
@@ -212,7 +212,7 @@ public class PersonalizadorServicio {
 
     /** El cliente no acepta el precio: el pedido queda CANCELADO. */
     public void rechazarCotizacion(int idPedido, int idCliente) {
-        int n = jdbc.update("""
+        int n = jdbcErht.update("""
                 UPDATE pedido_personalizado
                 SET estado = 'CANCELADO',
                     observacion = LEFT(CONCAT_WS(' · ', observacion, 'El cliente no aceptó la cotización'), 200)
@@ -244,62 +244,62 @@ public class PersonalizadorServicio {
         if (!TIPOS.contains(tipo)) {
             throw new ExcepcionReglaNegocio("Elige la modalidad: confeccionar o alquilar.");
         }
-        Integer idPedido = jdbc.queryForObject("""
+        Integer idPedidoErht = jdbcErht.queryForObject("""
                 INSERT INTO pedido_personalizado (id_cliente, id_danza, talla, fecha_entrega, tipo, observacion)
                 VALUES (?, ?, ?, ?, ?, ?)
                 RETURNING id_pedido
                 """, Integer.class, idCliente, idDanza, talla, fechaEntrega, tipo, vacioANulo(observacion));
         for (pe.ehuanca.trajes.modelo.ParteElegida p : partes) {
-            String colorHex = p.colorHex() == null ? null : p.colorHex().toUpperCase(java.util.Locale.ROOT);
-            jdbc.update("INSERT INTO pedido_parte (id_pedido, id_parte, id_color, color_hex) VALUES (?, ?, ?, ?)",
-                    idPedido, p.idParte(), p.idColor(), colorHex);
+            String colorHexErht = p.colorHex() == null ? null : p.colorHex().toUpperCase(java.util.Locale.ROOT);
+            jdbcErht.update("INSERT INTO pedido_parte (id_pedido, id_parte, id_color, color_hex) VALUES (?, ?, ?, ?)",
+                    idPedidoErht, p.idParte(), p.idColor(), colorHexErht);
         }
         if (implementos != null) {
-            implementos.forEach((idImplemento, cantidad) -> jdbc.update(
+            implementos.forEach((idImplemento, cantidad) -> jdbcErht.update(
                     "INSERT INTO pedido_implemento (id_pedido, id_implemento, cantidad) VALUES (?, ?, ?)",
-                    idPedido, idImplemento, cantidad));
+                    idPedidoErht, idImplemento, cantidad));
         }
-        jdbc.update("UPDATE pedido_personalizado SET precio_estimado = monto_total WHERE id_pedido = ?", idPedido);
-        return idPedido;
+        jdbcErht.update("UPDATE pedido_personalizado SET precio_estimado = monto_total WHERE id_pedido = ?", idPedidoErht);
+        return idPedidoErht;
     }
 
     /** Guarda dónde quedó el PNG del diseño (carpeta disenos/). */
     public void guardarRutaImagen(int idPedido, int idCliente, String ruta) {
-        jdbc.update("UPDATE pedido_personalizado SET imagen_ruta = ? WHERE id_pedido = ? AND id_cliente = ?",
+        jdbcErht.update("UPDATE pedido_personalizado SET imagen_ruta = ? WHERE id_pedido = ? AND id_cliente = ?",
                 ruta, idPedido, idCliente);
     }
 
     /** Imagen del diseño para la tienda (sin filtrar por cliente: solo la usa el panel del vendedor). */
     public byte[] imagenDisenoTienda(int idPedido) {
-        List<byte[]> l = jdbc.query("SELECT imagen_diseno FROM pedido_personalizado WHERE id_pedido = ?",
+        List<byte[]> l = jdbcErht.query("SELECT imagen_diseno FROM pedido_personalizado WHERE id_pedido = ?",
                 (rs, i) -> rs.getBytes(1), idPedido);
         return l.isEmpty() ? null : l.get(0);
     }
 
     /** Pedidos de diseño que esperan cotización (insignia del panel). */
     public int contarPendientes() {
-        Integer n = jdbc.queryForObject("SELECT COUNT(*) FROM pedido_personalizado WHERE estado = 'PENDIENTE'",
+        Integer n = jdbcErht.queryForObject("SELECT COUNT(*) FROM pedido_personalizado WHERE estado = 'PENDIENTE'",
                 Integer.class);
         return n == null ? 0 : n;
     }
 
     /** Pedidos de un cliente (portal del cliente). */
     public List<PedidoResumen> pedidosDelCliente(int idCliente) {
-        return jdbc.query("SELECT * FROM v_pedidos_resumen WHERE id_cliente = ? ORDER BY fecha_pedido DESC, id_pedido DESC",
+        return jdbcErht.query("SELECT * FROM v_pedidos_resumen WHERE id_cliente = ? ORDER BY fecha_pedido DESC, id_pedido DESC",
                 RESUMEN, idCliente);
     }
 
     public PedidoResumen buscarPedido(int idPedido) {
-        List<PedidoResumen> lista = jdbc.query("SELECT * FROM v_pedidos_resumen WHERE id_pedido = ?", RESUMEN, idPedido);
-        if (lista.isEmpty()) {
+        List<PedidoResumen> listaErht = jdbcErht.query("SELECT * FROM v_pedidos_resumen WHERE id_pedido = ?", RESUMEN, idPedido);
+        if (listaErht.isEmpty()) {
             throw new ExcepcionReglaNegocio("No existe el pedido N° " + idPedido + ".");
         }
-        return lista.get(0);
+        return listaErht.get(0);
     }
 
     public PedidoDetalle detallePedido(int idPedido) {
-        PedidoResumen resumen = buscarPedido(idPedido);
-        List<PedidoParte> partes = jdbc.query("""
+        PedidoResumen resumenErht = buscarPedido(idPedido);
+        List<PedidoParte> partesErht = jdbcErht.query("""
                 SELECT pt.id_parte, pt.nombre AS parte, pt.precio_base, c.id_color,
                        COALESCE(c.nombre, 'Personalizado') AS color, COALESCE(pp.color_hex, c.hex) AS hex
                 FROM pedido_parte pp
@@ -310,7 +310,7 @@ public class PersonalizadorServicio {
                 """, (rs, i) -> new PedidoParte(rs.getInt("id_parte"), rs.getString("parte"),
                 rs.getBigDecimal("precio_base"), rs.getInt("id_color"), rs.getString("color"), rs.getString("hex")),
                 idPedido);
-        List<PedidoImplemento> implementos = jdbc.query("""
+        List<PedidoImplemento> implementosErht = jdbcErht.query("""
                 SELECT i.id_implemento, i.nombre, i.parte_destino, i.precio, pi.cantidad,
                        i.precio * pi.cantidad AS subtotal
                 FROM pedido_implemento pi
@@ -320,7 +320,7 @@ public class PersonalizadorServicio {
                 """, (rs, i) -> new PedidoImplemento(rs.getInt("id_implemento"), rs.getString("nombre"),
                 rs.getString("parte_destino"), rs.getBigDecimal("precio"), rs.getInt("cantidad"),
                 rs.getBigDecimal("subtotal")), idPedido);
-        return new PedidoDetalle(resumen, partes, implementos);
+        return new PedidoDetalle(resumenErht, partesErht, implementosErht);
     }
 
     /** Estado que sigue en el flujo PENDIENTE → COTIZADO → APROBADO → EN_CONFECCION → LISTO → ENTREGADO. */
@@ -350,7 +350,7 @@ public class PersonalizadorServicio {
             throw new ExcepcionReglaNegocio("Falta pagar " + p.saldo().setScale(2) + " soles. "
                     + "Registra el pago del saldo antes de entregar el pedido.");
         }
-        jdbc.update("UPDATE pedido_personalizado SET estado = ? WHERE id_pedido = ?", estado, idPedido);
+        jdbcErht.update("UPDATE pedido_personalizado SET estado = ? WHERE id_pedido = ?", estado, idPedido);
     }
 
     /** Suma un pago al adelanto del pedido (sin pasar del total). */
@@ -366,6 +366,6 @@ public class PersonalizadorServicio {
         if (monto.compareTo(p.saldo()) > 0) {
             throw new ExcepcionReglaNegocio("El monto supera el saldo pendiente (" + p.saldo().setScale(2) + " soles).");
         }
-        jdbc.update("UPDATE pedido_personalizado SET adelanto = adelanto + ? WHERE id_pedido = ?", monto, idPedido);
+        jdbcErht.update("UPDATE pedido_personalizado SET adelanto = adelanto + ? WHERE id_pedido = ?", monto, idPedido);
     }
 }

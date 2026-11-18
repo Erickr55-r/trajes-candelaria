@@ -36,54 +36,54 @@ public class MisReservasVista extends VBox {
     private static final List<String> PASOS = List.of("SOLICITADO", "RESERVADO", "ENTREGADO", "DEVUELTO");
     private static final List<String> NOMBRES = List.of("Solicitado", "Reservado", "Entregado", "Devuelto");
 
-    private final Servicios s;
-    private final VistaPortalCliente portal;
+    private final Servicios sErht;
+    private final VistaPortalCliente portalErht;
 
     public MisReservasVista(Servicios s, VistaPortalCliente portal) {
-        this.s = s;
-        this.portal = portal;
+        this.sErht = s;
+        this.portalErht = portal;
         getStyleClass().add("contenido");
-        int idCliente = Sesion.actual().idCliente();   // todo se filtra por el cliente de la sesión
+        int idClienteErht = Sesion.actual().idCliente();   // todo se filtra por el cliente de la sesión
 
-        List<AlquilerResumen> lista = s.alquileres().delCliente(idCliente);
-        Map<Integer, String> motivos = s.alquileres().motivosRechazo(idCliente);
+        List<AlquilerResumen> listaErht = s.alquileres().delCliente(idClienteErht);
+        Map<Integer, String> motivosErht = s.alquileres().motivosRechazo(idClienteErht);
 
         getChildren().add(UtilidadesInterfaz.encabezado("Mi cuenta", "Mis reservas",
                 "Sigue cada reserva paso a paso. Las solicitudes quedan en revisión hasta que la tienda las confirme."));
-        if (lista.isEmpty()) {
+        if (listaErht.isEmpty()) {
             Button ir = UtilidadesInterfaz.estilo(new Button("Ver trajes", UtilidadesInterfaz.icono(Feather.ARROW_RIGHT)), "boton-primario");
             ir.setOnAction(e -> portal.ir(VistaPortalCliente.CATALOGO));
-            VBox vacio = new VBox(10, UtilidadesInterfaz.seccion("Todavía no tienes reservas"),
+            VBox vacioErht = new VBox(10, UtilidadesInterfaz.seccion("Todavía no tienes reservas"),
                     UtilidadesInterfaz.subtitulo("Elige un traje del catálogo y solicita tu reserva."), ir);
-            vacio.getStyleClass().addAll("tarjeta-blanca", "vacio-catalogo");
-            getChildren().add(vacio);
+            vacioErht.getStyleClass().addAll("tarjeta-blanca", "vacio-catalogo");
+            getChildren().add(vacioErht);
             return;
         }
-        for (AlquilerResumen a : lista) {
-            getChildren().add(tarjeta(a, motivos.get(a.idAlquiler()), idCliente));
+        for (AlquilerResumen a : listaErht) {
+            getChildren().add(tarjetaErht(a, motivosErht.get(a.idAlquiler()), idClienteErht));
         }
     }
 
-    private VBox tarjeta(AlquilerResumen a, String motivo, int idCliente) {
-        Label titulo = new Label("Reserva N° " + a.idAlquiler());
-        titulo.getStyleClass().add("reserva-titulo");
-        Label insignia = UtilidadesInterfaz.insigniaEstado(a.estado());
-        HBox cabecera = new HBox(12, titulo, insignia, UtilidadesInterfaz.espacio());
-        cabecera.setAlignment(Pos.CENTER_LEFT);
+    private VBox tarjetaErht(AlquilerResumen a, String motivo, int idCliente) {
+        Label tituloErht = new Label("Reserva N° " + a.idAlquiler());
+        tituloErht.getStyleClass().add("reserva-titulo");
+        Label insigniaErht = UtilidadesInterfaz.insigniaEstado(a.estado());
+        HBox cabeceraErht = new HBox(12, tituloErht, insigniaErht, UtilidadesInterfaz.espacio());
+        cabeceraErht.setAlignment(Pos.CENTER_LEFT);
         if ("SOLICITADO".equals(a.estado())) {
-            Button cancelar = UtilidadesInterfaz.estilo(new Button("Cancelar solicitud", UtilidadesInterfaz.icono(Feather.X_CIRCLE)), "boton-peligro");
-            cancelar.setOnAction(e -> {
+            Button cancelarErht = UtilidadesInterfaz.estilo(new Button("Cancelar solicitud", UtilidadesInterfaz.icono(Feather.X_CIRCLE)), "boton-peligro");
+            cancelarErht.setOnAction(e -> {
                 if (UtilidadesInterfaz.confirmar("¿Cancelar tu solicitud N° " + a.idAlquiler() + "? Los trajes quedarán libres.")) {
                     UtilidadesInterfaz.ejecutar(() -> {
-                        s.alquileres().cancelarSolicitud(a.idAlquiler(), idCliente);
-                        portal.ir(VistaPortalCliente.MIS_RESERVAS);
+                        sErht.alquileres().cancelarSolicitud(a.idAlquiler(), idCliente);
+                        portalErht.ir(VistaPortalCliente.MIS_RESERVAS);
                     });
                 }
             });
-            cabecera.getChildren().add(cancelar);
+            cabeceraErht.getChildren().add(cancelarErht);
         }
 
-        VBox caja = new VBox(18, cabecera, lineaDeTiempo(a.estado()));
+        VBox cajaErht = new VBox(18, cabeceraErht, lineaDeTiempoErht(a.estado()));
 
         if ("RECHAZADO".equals(a.estado())) {
             Label m = new Label("La tienda no pudo aceptar esta solicitud: " + (motivo == null ? "—" : motivo),
@@ -91,100 +91,100 @@ public class MisReservasVista extends VBox {
             m.getStyleClass().add("error-suave");
             m.setWrapText(true);
             m.setMaxWidth(Double.MAX_VALUE);
-            caja.getChildren().add(m);
+            cajaErht.getChildren().add(m);
         } else if ("ANULADO".equals(a.estado())) {
             Label m = new Label("Esta reserva fue cancelada.", UtilidadesInterfaz.icono(Feather.INFO));
             m.getStyleClass().add("aviso-gris");
-            caja.getChildren().add(m);
+            cajaErht.getChildren().add(m);
         }
 
         // Datos: fechas, trajes y montos
-        long dias = Math.max(1, ChronoUnit.DAYS.between(a.fechaSalida(), a.fechaDevolucionPrevista()));
-        VBox fechas = dato("Fechas", UtilidadesInterfaz.fecha(a.fechaSalida()) + "  →  " + UtilidadesInterfaz.fecha(a.fechaDevolucionPrevista()),
-                dias + (dias == 1 ? " día" : " días") + (a.conjunto() != null && !"PARTICULAR".equals(a.conjunto())
+        long diasErht = Math.max(1, ChronoUnit.DAYS.between(a.fechaSalida(), a.fechaDevolucionPrevista()));
+        VBox fechasErht = datoErht("Fechas", UtilidadesInterfaz.fecha(a.fechaSalida()) + "  →  " + UtilidadesInterfaz.fecha(a.fechaDevolucionPrevista()),
+                diasErht + (diasErht == 1 ? " día" : " días") + (a.conjunto() != null && !"PARTICULAR".equals(a.conjunto())
                         ? " · " + a.conjunto() : ""));
-        List<AlquilerDetalleTraje> trajes = s.alquileres().trajesDelCliente(a.idAlquiler(), idCliente);
-        VBox listaTrajes = new VBox(4);
-        for (AlquilerDetalleTraje t : trajes) {
+        List<AlquilerDetalleTraje> trajesErht = sErht.alquileres().trajesDelCliente(a.idAlquiler(), idCliente);
+        VBox listaTrajesErht = new VBox(4);
+        for (AlquilerDetalleTraje t : trajesErht) {
             Label l = new Label(t.personaje() + " · " + t.danza() + "  (talla " + t.talla() + ", " + t.codigo() + ")",
                     UtilidadesInterfaz.icono(Feather.CHECK));
             l.getStyleClass().add("pieza-item");
-            listaTrajes.getChildren().add(l);
+            listaTrajesErht.getChildren().add(l);
         }
-        Label tTrajes = new Label(UtilidadesInterfaz.espaciado("Trajes (" + trajes.size() + ")"));
-        tTrajes.getStyleClass().add("campo-titulo");
-        VBox cajaTrajes = new VBox(6, tTrajes, listaTrajes);
-        HBox.setHgrow(cajaTrajes, Priority.ALWAYS);
+        Label tTrajesErht = new Label(UtilidadesInterfaz.espaciado("Trajes (" + trajesErht.size() + ")"));
+        tTrajesErht.getStyleClass().add("campo-titulo");
+        VBox cajaTrajesErht = new VBox(6, tTrajesErht, listaTrajesErht);
+        HBox.setHgrow(cajaTrajesErht, Priority.ALWAYS);
 
-        boolean cuenta = !List.of("RECHAZADO", "ANULADO").contains(a.estado());
-        VBox montos = new VBox(6,
-                monto("Total alquiler", UtilidadesInterfaz.soles(a.montoAlquiler()), false),
-                monto("Garantía (reembolsable)", UtilidadesInterfaz.soles(a.montoGarantia()), false),
-                monto("Pagado", UtilidadesInterfaz.soles(a.pagadoAlquiler()), false),
-                monto("Saldo", cuenta ? UtilidadesInterfaz.soles(a.saldo()) : "—", true));
-        montos.setMinWidth(260);
+        boolean cuentaErht = !List.of("RECHAZADO", "ANULADO").contains(a.estado());
+        VBox montosErht = new VBox(6,
+                montoErht("Total alquiler", UtilidadesInterfaz.soles(a.montoAlquiler()), false),
+                montoErht("Garantía (reembolsable)", UtilidadesInterfaz.soles(a.montoGarantia()), false),
+                montoErht("Pagado", UtilidadesInterfaz.soles(a.pagadoAlquiler()), false),
+                montoErht("Saldo", cuentaErht ? UtilidadesInterfaz.soles(a.saldo()) : "—", true));
+        montosErht.setMinWidth(260);
 
-        HBox datos = new HBox(30, fechas, cajaTrajes, montos);
-        datos.getStyleClass().add("reserva-datos");
-        caja.getChildren().add(datos);
-        caja.getStyleClass().add("reserva-tarjeta");
-        return caja;
+        HBox datosErht = new HBox(30, fechasErht, cajaTrajesErht, montosErht);
+        datosErht.getStyleClass().add("reserva-datos");
+        cajaErht.getChildren().add(datosErht);
+        cajaErht.getStyleClass().add("reserva-tarjeta");
+        return cajaErht;
     }
 
     /** Pasos con el actual en dorado; los anteriores, completados; si fue rechazado o cancelado, se marca. */
-    private static HBox lineaDeTiempo(String estado) {
-        int actual = PASOS.indexOf(estado);
-        boolean corte = "RECHAZADO".equals(estado) || "ANULADO".equals(estado);
-        if (corte) {
-            actual = 0;   // se quedó en la solicitud
+    private static HBox lineaDeTiempoErht(String estado) {
+        int actualErht = PASOS.indexOf(estado);
+        boolean corteErht = "RECHAZADO".equals(estado) || "ANULADO".equals(estado);
+        if (corteErht) {
+            actualErht = 0;   // se quedó en la solicitud
         }
-        HBox linea = new HBox();
-        linea.setAlignment(Pos.CENTER_LEFT);
+        HBox lineaErht = new HBox();
+        lineaErht.setAlignment(Pos.CENTER_LEFT);
         for (int i = 0; i < PASOS.size(); i++) {
-            String clase;
-            if (corte && i == 0) {
-                clase = "paso-cortado";
-            } else if (corte) {
-                clase = "paso-pendiente";
-            } else if (i < actual) {
-                clase = "paso-hecho";
-            } else if (i == actual) {
-                clase = "paso-actual";
+            String claseErht;
+            if (corteErht && i == 0) {
+                claseErht = "paso-cortado";
+            } else if (corteErht) {
+                claseErht = "paso-pendiente";
+            } else if (i < actualErht) {
+                claseErht = "paso-hecho";
+            } else if (i == actualErht) {
+                claseErht = "paso-actual";
             } else {
-                clase = "paso-pendiente";
+                claseErht = "paso-pendiente";
             }
             Circle c = new Circle(14);
-            c.getStyleClass().addAll("paso-circulo", clase);
-            StackPane punto = new StackPane(c);
-            if ("paso-hecho".equals(clase)) {
-                punto.getChildren().add(UtilidadesInterfaz.icono(Feather.CHECK, 14));
-            } else if ("paso-cortado".equals(clase)) {
-                punto.getChildren().add(UtilidadesInterfaz.icono(Feather.X, 14));
+            c.getStyleClass().addAll("paso-circulo", claseErht);
+            StackPane puntoErht = new StackPane(c);
+            if ("paso-hecho".equals(claseErht)) {
+                puntoErht.getChildren().add(UtilidadesInterfaz.icono(Feather.CHECK, 14));
+            } else if ("paso-cortado".equals(claseErht)) {
+                puntoErht.getChildren().add(UtilidadesInterfaz.icono(Feather.X, 14));
             } else {
                 Label n = new Label(String.valueOf(i + 1));
                 n.getStyleClass().add("paso-numero");
-                punto.getChildren().add(n);
+                puntoErht.getChildren().add(n);
             }
-            punto.getStyleClass().add(clase);
-            String texto = corte && i == 0 ? ("RECHAZADO".equals(estado) ? "Rechazado" : "Cancelado") : NOMBRES.get(i);
-            Label nombre = new Label(texto);
-            nombre.getStyleClass().addAll("paso-nombre", clase);
-            VBox paso = new VBox(6, punto, nombre);
-            paso.setAlignment(Pos.CENTER);
-            paso.setMinWidth(90);
-            linea.getChildren().add(paso);
+            puntoErht.getStyleClass().add(claseErht);
+            String textoErht = corteErht && i == 0 ? ("RECHAZADO".equals(estado) ? "Rechazado" : "Cancelado") : NOMBRES.get(i);
+            Label nombreErht = new Label(textoErht);
+            nombreErht.getStyleClass().addAll("paso-nombre", claseErht);
+            VBox pasoErht = new VBox(6, puntoErht, nombreErht);
+            pasoErht.setAlignment(Pos.CENTER);
+            pasoErht.setMinWidth(90);
+            lineaErht.getChildren().add(pasoErht);
             if (i < PASOS.size() - 1) {
                 Region r = new Region();
-                r.getStyleClass().addAll("paso-linea", !corte && i < actual ? "paso-hecho" : "paso-pendiente");
+                r.getStyleClass().addAll("paso-linea", !corteErht && i < actualErht ? "paso-hecho" : "paso-pendiente");
                 HBox.setHgrow(r, Priority.ALWAYS);
                 HBox.setMargin(r, new Insets(0, -20, 22, -20));
-                linea.getChildren().add(r);
+                lineaErht.getChildren().add(r);
             }
         }
-        return linea;
+        return lineaErht;
     }
 
-    private static VBox dato(String titulo, String valor, String nota) {
+    private static VBox datoErht(String titulo, String valor, String nota) {
         Label t = new Label(UtilidadesInterfaz.espaciado(titulo));
         t.getStyleClass().add("campo-titulo");
         Label v = new Label(valor);
@@ -196,7 +196,7 @@ public class MisReservasVista extends VBox {
         return c;
     }
 
-    private static HBox monto(String concepto, String valor, boolean fuerte) {
+    private static HBox montoErht(String concepto, String valor, boolean fuerte) {
         Label c = new Label(concepto);
         c.getStyleClass().add("resumen-concepto");
         Label v = new Label(valor);

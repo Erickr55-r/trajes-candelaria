@@ -35,190 +35,190 @@ import java.util.function.Consumer;
  */
 public class VistaInicioSesion extends HBox {
 
-    private final Servicios s;
-    private final Consumer<Usuario> alIngresar;
-    private final StackPane derecha = new StackPane();
+    private final Servicios sErht;
+    private final Consumer<Usuario> alIngresarErht;
+    private final StackPane derechaErht = new StackPane();
 
     public VistaInicioSesion(Servicios s, Consumer<Usuario> alIngresar) {
-        this.s = s;
-        this.alIngresar = alIngresar;
+        this.sErht = s;
+        this.alIngresarErht = alIngresar;
         getStyleClass().add("inicio-sesion");
 
-        StackPane izquierda = panelMarca();
-        izquierda.prefWidthProperty().bind(widthProperty().multiply(0.46));
-        izquierda.setMinWidth(380);
+        StackPane izquierdaErht = panelMarcaErht();
+        izquierdaErht.prefWidthProperty().bind(widthProperty().multiply(0.46));
+        izquierdaErht.setMinWidth(380);
 
-        derecha.getStyleClass().add("inicio-sesion-der");
-        HBox.setHgrow(derecha, Priority.ALWAYS);
-        getChildren().addAll(izquierda, derecha);
-        mostrarIngreso(null);
+        derechaErht.getStyleClass().add("inicio-sesion-der");
+        HBox.setHgrow(derechaErht, Priority.ALWAYS);
+        getChildren().addAll(izquierdaErht, derechaErht);
+        mostrarIngresoErht(null);
     }
 
     // ------------------------------------------------------------------ panel izquierdo
 
-    private StackPane panelMarca() {
-        Group chakana = Adornos.chakanaEnGrupo(420, "inicio-sesion-chakana");
-        StackPane.setAlignment(chakana, Pos.CENTER_RIGHT);
-        StackPane.setMargin(chakana, new Insets(0, -150, 0, 0));
+    private StackPane panelMarcaErht() {
+        Group chakanaErht = Adornos.chakanaEnGrupo(420, "inicio-sesion-chakana");
+        StackPane.setAlignment(chakanaErht, Pos.CENTER_RIGHT);
+        StackPane.setMargin(chakanaErht, new Insets(0, -150, 0, 0));
 
-        Group greca = Adornos.greca(6, 9, "adorno-linea", "adorno");
-        greca.setOpacity(0.5);
+        Group grecaErht = Adornos.greca(6, 9, "adorno-linea", "adorno");
+        grecaErht.setOpacity(0.5);
 
-        StackPane logotipo = new StackPane(UtilidadesInterfaz.icono(Feather.SCISSORS));
-        logotipo.getStyleClass().addAll("logotipo-cuadro", "logotipo-grande");
-        Label nombre = new Label("Trajes Candelaria");
-        nombre.getStyleClass().add("inicio-sesion-marca");
-        Label frase = new Label("Trajes Candelaria · Alquiler y confección");
-        frase.getStyleClass().add("inicio-sesion-frase");
-        Label texto = new Label("Trajes de luces y autóctonos para la Festividad de la Virgen de la Candelaria. "
+        StackPane logotipoErht = new StackPane(UtilidadesInterfaz.icono(Feather.SCISSORS));
+        logotipoErht.getStyleClass().addAll("logotipo-cuadro", "logotipo-grande");
+        Label nombreErht = new Label("Trajes Candelaria");
+        nombreErht.getStyleClass().add("inicio-sesion-marca");
+        Label fraseErht = new Label("Trajes Candelaria · Alquiler y confección");
+        fraseErht.getStyleClass().add("inicio-sesion-frase");
+        Label textoErht = new Label("Trajes de luces y autóctonos para la Festividad de la Virgen de la Candelaria. "
                 + "Reserva en línea, recoge en tienda y luce tu mejor traje.");
-        texto.getStyleClass().add("inicio-sesion-texto");
-        texto.setWrapText(true);
-        texto.setMaxWidth(420);
+        textoErht.getStyleClass().add("inicio-sesion-texto");
+        textoErht.setWrapText(true);
+        textoErht.setMaxWidth(420);
 
-        VBox contenido = new VBox(18, logotipo, nombre, frase, greca, texto);
-        contenido.setAlignment(Pos.CENTER_LEFT);
-        contenido.setPadding(new Insets(56));
-        contenido.setMaxWidth(560);
-        StackPane.setAlignment(contenido, Pos.CENTER_LEFT);
+        VBox contenidoErht = new VBox(18, logotipoErht, nombreErht, fraseErht, grecaErht, textoErht);
+        contenidoErht.setAlignment(Pos.CENTER_LEFT);
+        contenidoErht.setPadding(new Insets(56));
+        contenidoErht.setMaxWidth(560);
+        StackPane.setAlignment(contenidoErht, Pos.CENTER_LEFT);
 
-        Label lugar = new Label(UtilidadesInterfaz.espaciado("Juliaca · Puno · Perú"));
-        lugar.getStyleClass().add("inicio-sesion-pie");
-        Label derechos = new Label(AcercaDe.PIE_DERECHOS);
-        derechos.getStyleClass().add("inicio-sesion-pie");
-        VBox pie = new VBox(4, lugar, derechos);
-        pie.setMaxSize(javafx.scene.layout.Region.USE_PREF_SIZE, javafx.scene.layout.Region.USE_PREF_SIZE);
-        StackPane.setAlignment(pie, Pos.BOTTOM_LEFT);
-        StackPane.setMargin(pie, new Insets(0, 0, 32, 56));
+        Label lugarErht = new Label(UtilidadesInterfaz.espaciado("Juliaca · Puno · Perú"));
+        lugarErht.getStyleClass().add("inicio-sesion-pie");
+        Label derechosErht = new Label(AcercaDe.PIE_DERECHOS);
+        derechosErht.getStyleClass().add("inicio-sesion-pie");
+        VBox pieErht = new VBox(4, lugarErht, derechosErht);
+        pieErht.setMaxSize(javafx.scene.layout.Region.USE_PREF_SIZE, javafx.scene.layout.Region.USE_PREF_SIZE);
+        StackPane.setAlignment(pieErht, Pos.BOTTOM_LEFT);
+        StackPane.setMargin(pieErht, new Insets(0, 0, 32, 56));
 
-        StackPane panel = new StackPane(chakana, contenido, pie);
-        panel.getStyleClass().add("inicio-sesion-izq");
-        javafx.scene.shape.Rectangle recorte = new javafx.scene.shape.Rectangle();
-        recorte.widthProperty().bind(panel.widthProperty());
-        recorte.heightProperty().bind(panel.heightProperty());
-        panel.setClip(recorte);
-        return panel;
+        StackPane panelErht = new StackPane(chakanaErht, contenidoErht, pieErht);
+        panelErht.getStyleClass().add("inicio-sesion-izq");
+        javafx.scene.shape.Rectangle recorteErht = new javafx.scene.shape.Rectangle();
+        recorteErht.widthProperty().bind(panelErht.widthProperty());
+        recorteErht.heightProperty().bind(panelErht.heightProperty());
+        panelErht.setClip(recorteErht);
+        return panelErht;
     }
 
     // ------------------------------------------------------------------ ingresar
 
-    private void mostrarIngreso(String usuarioSugerido) {
-        TextField usuario = new TextField(usuarioSugerido == null ? "" : usuarioSugerido);
-        usuario.setPromptText("Tu usuario");
-        PasswordField clave = new PasswordField();
-        clave.setPromptText("Tu contraseña");
-        Label error = etiquetaError();
+    private void mostrarIngresoErht(String usuarioSugerido) {
+        TextField usuarioErht = new TextField(usuarioSugerido == null ? "" : usuarioSugerido);
+        usuarioErht.setPromptText("Tu usuario");
+        PasswordField claveErht = new PasswordField();
+        claveErht.setPromptText("Tu contraseña");
+        Label errorErht = etiquetaErrorErht();
 
-        Button ingresar = UtilidadesInterfaz.estilo(new Button("Ingresar", UtilidadesInterfaz.icono(Feather.ARROW_RIGHT)), "boton-primario");
-        ingresar.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
-        ingresar.getStyleClass().add("boton-ancho");
-        ingresar.setMaxWidth(Double.MAX_VALUE);
-        ingresar.setDefaultButton(true);
-        ingresar.setOnAction(e -> intentar(error, () -> s.usuarios().autenticar(usuario.getText(), clave.getText())));
+        Button ingresarErht = UtilidadesInterfaz.estilo(new Button("Ingresar", UtilidadesInterfaz.icono(Feather.ARROW_RIGHT)), "boton-primario");
+        ingresarErht.setContentDisplay(javafx.scene.control.ContentDisplay.RIGHT);
+        ingresarErht.getStyleClass().add("boton-ancho");
+        ingresarErht.setMaxWidth(Double.MAX_VALUE);
+        ingresarErht.setDefaultButton(true);
+        ingresarErht.setOnAction(e -> intentarErht(errorErht, () -> sErht.usuarios().autenticar(usuarioErht.getText(), claveErht.getText())));
 
-        Hyperlink crear = new Hyperlink("Crear cuenta de cliente");
-        crear.getStyleClass().add("enlace");
-        crear.setOnAction(e -> mostrarRegistro());
-        HBox lineaCrear = new HBox(4, new Label("¿Primera vez?"), crear);
-        lineaCrear.setAlignment(Pos.CENTER);
-        lineaCrear.getStyleClass().add("inicio-sesion-ayuda");
+        Hyperlink crearErht = new Hyperlink("Crear cuenta de cliente");
+        crearErht.getStyleClass().add("enlace");
+        crearErht.setOnAction(e -> mostrarRegistroErht());
+        HBox lineaCrearErht = new HBox(4, new Label("¿Primera vez?"), crearErht);
+        lineaCrearErht.setAlignment(Pos.CENTER);
+        lineaCrearErht.getStyleClass().add("inicio-sesion-ayuda");
 
-        VBox tarjeta = tarjeta("Acceso", "Bienvenido", "Ingresa con tu usuario para continuar.",
-                campo("Usuario", Feather.USER, usuario),
-                campo("Contraseña", Feather.LOCK, clave),
-                error, ingresar, lineaCrear);
-        mostrar(tarjeta);
-        Platform.runLater(() -> (usuario.getText().isEmpty() ? usuario : clave).requestFocus());
+        VBox tarjetaErht = tarjetaErht("Acceso", "Bienvenido", "Ingresa con tu usuario para continuar.",
+                campoErht("Usuario", Feather.USER, usuarioErht),
+                campoErht("Contraseña", Feather.LOCK, claveErht),
+                errorErht, ingresarErht, lineaCrearErht);
+        mostrarErht(tarjetaErht);
+        Platform.runLater(() -> (usuarioErht.getText().isEmpty() ? usuarioErht : claveErht).requestFocus());
     }
 
     // ------------------------------------------------------------------ registro
 
-    private void mostrarRegistro() {
-        TextField nombre = new TextField();
-        nombre.setPromptText("Nombres y apellidos");
-        TextField dni = new TextField();
-        dni.setPromptText("8 dígitos");
-        TextField celular = new TextField();
-        celular.setPromptText("9 dígitos");
-        TextField correo = new TextField();
-        correo.setPromptText("Opcional");
-        TextField usuario = new TextField();
-        usuario.setPromptText("Ej.: maria.quispe");
-        PasswordField clave = new PasswordField();
-        clave.setPromptText("Mínimo 6 caracteres");
-        Label error = etiquetaError();
+    private void mostrarRegistroErht() {
+        TextField nombreErht = new TextField();
+        nombreErht.setPromptText("Nombres y apellidos");
+        TextField dniErht = new TextField();
+        dniErht.setPromptText("8 dígitos");
+        TextField celularErht = new TextField();
+        celularErht.setPromptText("9 dígitos");
+        TextField correoErht = new TextField();
+        correoErht.setPromptText("Opcional");
+        TextField usuarioErht = new TextField();
+        usuarioErht.setPromptText("Ej.: maria.quispe");
+        PasswordField claveErht = new PasswordField();
+        claveErht.setPromptText("Mínimo 6 caracteres");
+        Label errorErht = etiquetaErrorErht();
 
-        HBox dniCel = new HBox(12, campo("DNI", Feather.CREDIT_CARD, dni), campo("Celular", Feather.PHONE, celular));
-        dniCel.getChildren().forEach(n -> HBox.setHgrow(n, Priority.ALWAYS));
+        HBox dniCelErht = new HBox(12, campoErht("DNI", Feather.CREDIT_CARD, dniErht), campoErht("Celular", Feather.PHONE, celularErht));
+        dniCelErht.getChildren().forEach(n -> HBox.setHgrow(n, Priority.ALWAYS));
 
-        Button crear = UtilidadesInterfaz.estilo(new Button("Crear cuenta", UtilidadesInterfaz.icono(Feather.USER_PLUS)), "boton-primario");
-        crear.getStyleClass().add("boton-ancho");
-        crear.setMaxWidth(Double.MAX_VALUE);
-        crear.setDefaultButton(true);
-        crear.setOnAction(e -> intentar(error, () -> s.usuarios().registrarCliente(nombre.getText(), dni.getText(),
-                celular.getText(), correo.getText(), usuario.getText(), clave.getText())));
+        Button crearErht = UtilidadesInterfaz.estilo(new Button("Crear cuenta", UtilidadesInterfaz.icono(Feather.USER_PLUS)), "boton-primario");
+        crearErht.getStyleClass().add("boton-ancho");
+        crearErht.setMaxWidth(Double.MAX_VALUE);
+        crearErht.setDefaultButton(true);
+        crearErht.setOnAction(e -> intentarErht(errorErht, () -> sErht.usuarios().registrarCliente(nombreErht.getText(), dniErht.getText(),
+                celularErht.getText(), correoErht.getText(), usuarioErht.getText(), claveErht.getText())));
 
-        Hyperlink volver = new Hyperlink("Ingresar");
-        volver.getStyleClass().add("enlace");
-        volver.setOnAction(e -> mostrarIngreso(null));
-        HBox lineaVolver = new HBox(4, new Label("¿Ya tienes cuenta?"), volver);
-        lineaVolver.setAlignment(Pos.CENTER);
-        lineaVolver.getStyleClass().add("inicio-sesion-ayuda");
+        Hyperlink volverErht = new Hyperlink("Ingresar");
+        volverErht.getStyleClass().add("enlace");
+        volverErht.setOnAction(e -> mostrarIngresoErht(null));
+        HBox lineaVolverErht = new HBox(4, new Label("¿Ya tienes cuenta?"), volverErht);
+        lineaVolverErht.setAlignment(Pos.CENTER);
+        lineaVolverErht.getStyleClass().add("inicio-sesion-ayuda");
 
-        VBox tarjeta = tarjeta("Cuenta de cliente", "Crea tu cuenta",
+        VBox tarjetaErht = tarjetaErht("Cuenta de cliente", "Crea tu cuenta",
                 "Con tu cuenta puedes ver los trajes libres, solicitar reservas y seguir tus pedidos.",
-                campo("Nombre completo", Feather.USER, nombre), dniCel,
-                campo("Correo", Feather.MAIL, correo),
-                campo("Usuario", Feather.AT_SIGN, usuario),
-                campo("Contraseña", Feather.LOCK, clave),
-                error, crear, lineaVolver);
-        mostrar(tarjeta);
-        Platform.runLater(nombre::requestFocus);
+                campoErht("Nombre completo", Feather.USER, nombreErht), dniCelErht,
+                campoErht("Correo", Feather.MAIL, correoErht),
+                campoErht("Usuario", Feather.AT_SIGN, usuarioErht),
+                campoErht("Contraseña", Feather.LOCK, claveErht),
+                errorErht, crearErht, lineaVolverErht);
+        mostrarErht(tarjetaErht);
+        Platform.runLater(nombreErht::requestFocus);
     }
 
     // ------------------------------------------------------------------ piezas
 
-    private void mostrar(VBox tarjeta) {
-        StackPane centro = new StackPane(tarjeta);
-        centro.setPadding(new Insets(40));
-        ScrollPane desplazable = new ScrollPane(centro);
-        desplazable.setFitToWidth(true);
-        desplazable.setFitToHeight(true);
-        desplazable.getStyleClass().add("inicio-sesion-scroll");
-        derecha.getChildren().setAll(desplazable);
+    private void mostrarErht(VBox tarjeta) {
+        StackPane centroErht = new StackPane(tarjeta);
+        centroErht.setPadding(new Insets(40));
+        ScrollPane desplazableErht = new ScrollPane(centroErht);
+        desplazableErht.setFitToWidth(true);
+        desplazableErht.setFitToHeight(true);
+        desplazableErht.getStyleClass().add("inicio-sesion-scroll");
+        derechaErht.getChildren().setAll(desplazableErht);
     }
 
-    private static VBox tarjeta(String sobre, String titulo, String texto, javafx.scene.Node... hijos) {
+    private static VBox tarjetaErht(String sobre, String titulo, String texto, javafx.scene.Node... hijos) {
         Label t = new Label(titulo);
         t.getStyleClass().add("inicio-sesion-titulo");
-        Label sub = new Label(texto);
-        sub.getStyleClass().add("subtitulo");
-        sub.setWrapText(true);
-        VBox cabecera = new VBox(6, UtilidadesInterfaz.sobretitulo(sobre), t, sub);
-        VBox.setMargin(cabecera, new Insets(0, 0, 8, 0));
-        VBox caja = new VBox(16);
-        caja.getChildren().add(cabecera);
-        caja.getChildren().addAll(hijos);
-        caja.getStyleClass().add("inicio-sesion-tarjeta");
-        caja.setMaxWidth(440);
-        caja.setMaxHeight(Region.USE_PREF_SIZE);
-        return caja;
+        Label subErht = new Label(texto);
+        subErht.getStyleClass().add("subtitulo");
+        subErht.setWrapText(true);
+        VBox cabeceraErht = new VBox(6, UtilidadesInterfaz.sobretitulo(sobre), t, subErht);
+        VBox.setMargin(cabeceraErht, new Insets(0, 0, 8, 0));
+        VBox cajaErht = new VBox(16);
+        cajaErht.getChildren().add(cabeceraErht);
+        cajaErht.getChildren().addAll(hijos);
+        cajaErht.getStyleClass().add("inicio-sesion-tarjeta");
+        cajaErht.setMaxWidth(440);
+        cajaErht.setMaxHeight(Region.USE_PREF_SIZE);
+        return cajaErht;
     }
 
     /** Campo de 44 px con ícono a la izquierda; el borde se vuelve dorado al enfocar. */
-    private static VBox campo(String titulo, Ikon ikon, TextField control) {
+    private static VBox campoErht(String titulo, Ikon ikon, TextField control) {
         Label l = new Label(UtilidadesInterfaz.espaciado(titulo));
         l.getStyleClass().add("campo-titulo");
         control.getStyleClass().add("campo-interno");
         HBox.setHgrow(control, Priority.ALWAYS);
-        HBox caja = new HBox(10, UtilidadesInterfaz.icono(ikon), control);
-        caja.setAlignment(Pos.CENTER_LEFT);
-        caja.getStyleClass().add("campo-icono");
-        caja.setOnMouseClicked(e -> control.requestFocus());
-        return new VBox(7, l, caja);
+        HBox cajaErht = new HBox(10, UtilidadesInterfaz.icono(ikon), control);
+        cajaErht.setAlignment(Pos.CENTER_LEFT);
+        cajaErht.getStyleClass().add("campo-icono");
+        cajaErht.setOnMouseClicked(e -> control.requestFocus());
+        return new VBox(7, l, cajaErht);
     }
 
-    private static Label etiquetaError() {
+    private static Label etiquetaErrorErht() {
         Label l = new Label();
         l.getStyleClass().add("error-suave");
         l.setWrapText(true);
@@ -236,12 +236,12 @@ public class VistaInicioSesion extends HBox {
     }
 
     /** Ejecuta el ingreso o el registro; si falla, muestra el mensaje en rojo suave dentro de la tarjeta. */
-    private void intentar(Label error, Intento intento) {
+    private void intentarErht(Label error, Intento intento) {
         try {
             Usuario u = intento.ejecutar();
             error.setVisible(false);
             error.setManaged(false);
-            alIngresar.accept(u);
+            alIngresarErht.accept(u);
         } catch (ExcepcionReglaNegocio | DataAccessException ex) {
             error.setText(UtilidadesInterfaz.mensaje(ex));
             error.setVisible(true);

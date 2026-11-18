@@ -15,7 +15,7 @@ public final class Sesion {
 
     private static final Sesion INSTANCIA = new Sesion();
 
-    private Usuario usuario;
+    private Usuario usuarioErht;
 
     private Sesion() {
     }
@@ -25,29 +25,29 @@ public final class Sesion {
     }
 
     public void iniciar(Usuario u) {
-        this.usuario = u;
+        this.usuarioErht = u;
     }
 
     public void cerrar() {
-        this.usuario = null;
+        this.usuarioErht = null;
     }
 
     public boolean activa() {
-        return usuario != null;
+        return usuarioErht != null;
     }
 
     /** Usuario actual (lanza un error si no hay sesión). */
     public Usuario usuario() {
-        if (usuario == null) {
+        if (usuarioErht == null) {
             throw new IllegalStateException("No hay una sesión iniciada.");
         }
-        return usuario;
+        return usuarioErht;
     }
 
     /** Reemplaza los datos del usuario (por ejemplo, después de editar el perfil). */
     public void actualizar(Usuario u) {
-        if (usuario != null && u.idUsuario() == usuario.idUsuario()) {
-            this.usuario = u;
+        if (usuarioErht != null && u.idUsuario() == usuarioErht.idUsuario()) {
+            this.usuarioErht = u;
         }
     }
 
@@ -55,7 +55,7 @@ public final class Sesion {
     public int idCliente() {
         Integer id = usuario().idCliente();
         if (id == null) {
-            throw new IllegalStateException("El usuario " + usuario.nombreUsuario() + " no está vinculado a un cliente.");
+            throw new IllegalStateException("El usuario " + usuarioErht.nombreUsuario() + " no está vinculado a un cliente.");
         }
         return id;
     }

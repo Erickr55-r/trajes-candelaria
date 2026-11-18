@@ -102,7 +102,7 @@ public class GenerarCapturas {
         @Override
         public void start(Stage escenario) {
             super.start(escenario);
-            if (leer(this, "servicios") == null) {
+            if (leer(this, "serviciosErht") == null) {
                 return; // no conectó a PostgreSQL: AplicacionFx ya mostró el error
             }
             escenario.setX(0);
@@ -137,7 +137,7 @@ public class GenerarCapturas {
         Recorrido(AplicacionCapturas aplicacion, Stage escenario) {
             this.aplicacion = aplicacion;
             this.escenario = escenario;
-            this.s = (Servicios) leer(aplicacion, "servicios");
+            this.s = (Servicios) leer(aplicacion, "serviciosErht");
         }
 
         void ejecutar() throws Exception {
@@ -173,7 +173,7 @@ public class GenerarCapturas {
                 escenario.getScene().getRoot().applyCss();
                 escenario.getScene().getRoot().layout();
                 clic(new ArrayList<>(disena.lookupAll(".muestra")).get(1));
-                ((DatePicker) campo(disena, "entrega")).setValue(LocalDate.of(2027, 1, 24));
+                ((DatePicker) campo(disena, "entregaErht")).setValue(LocalDate.of(2027, 1, 24));
                 for (Node n : disena.lookupAll(".modalidad")) {
                     if ("CONFECCION".equals(n.getUserData())) {
                         ((ToggleButton) n).setSelected(true);
@@ -195,12 +195,12 @@ public class GenerarCapturas {
             pausa(2500);
             fx(() -> {
                 Object inicio = centro(portal).getContent();
-                ComboBox<Opcion> danza = campo(inicio, "danza");
+                ComboBox<Opcion> danza = campo(inicio, "danzaErht");
                 danza.getItems().stream().filter(o -> o != null && o.nombre().equals("Caporales")).findFirst()
                         .ifPresent(danza::setValue);
-                ((DatePicker) campo(inicio, "recojo")).setValue(LocalDate.of(2027, 2, 1));
-                ((DatePicker) campo(inicio, "devolucion")).setValue(LocalDate.of(2027, 2, 4));
-                invocar(inicio, "buscar");
+                ((DatePicker) campo(inicio, "recojoErht")).setValue(LocalDate.of(2027, 2, 1));
+                ((DatePicker) campo(inicio, "devolucionErht")).setValue(LocalDate.of(2027, 2, 4));
+                invocar(inicio, "buscarErht");
             });
             pausa(2500);
             fx(() -> desplazarHasta(centro(portal), ".buscador", 24));
@@ -291,7 +291,7 @@ public class GenerarCapturas {
             pausa(400);
             fx(() -> {
                 // entrega antes de la Candelaria 2027
-                ((DatePicker) campo(vista, "entrega")).setValue(LocalDate.of(2027, 1, cascabeles ? 22 : 26));
+                ((DatePicker) campo(vista, "entregaErht")).setValue(LocalDate.of(2027, 1, cascabeles ? 22 : 26));
                 for (Node n : vista.lookupAll(".modalidad")) {
                     if (modalidad.equals(n.getUserData())) {
                         ((ToggleButton) n).setSelected(true);
@@ -340,18 +340,18 @@ public class GenerarCapturas {
             pausa(1800);
             fx(() -> {
                 Object v = areaPanel(panel).getContent();
-                ComboBox<Opcion> cliente = campo(v, "cliente");
+                ComboBox<Opcion> cliente = campo(v, "clienteErht");
                 cliente.getItems().stream().filter(o -> o != null && o.nombre().startsWith("Roxana Calla Huanca"))
                         .findFirst().ifPresent(cliente::setValue);
-                ((DatePicker) campo(v, "salida")).setValue(LocalDate.of(2027, 2, 1));
-                ((DatePicker) campo(v, "devolucion")).setValue(LocalDate.of(2027, 2, 4));
-                ComboBox<Opcion> danza = campo(v, "danza");
+                ((DatePicker) campo(v, "salidaErht")).setValue(LocalDate.of(2027, 2, 1));
+                ((DatePicker) campo(v, "devolucionErht")).setValue(LocalDate.of(2027, 2, 4));
+                ComboBox<Opcion> danza = campo(v, "danzaErht");
                 danza.getItems().stream().filter(o -> o != null && o.nombre().equals("Caporales")).findFirst()
                         .ifPresent(danza::setValue);
-                invocar(v, "buscar");
-                TableView<?> tabla = campo(v, "tabla");
+                invocar(v, "buscarErht");
+                TableView<?> tabla = campo(v, "tablaErht");
                 try {
-                    Method marca = v.getClass().getDeclaredMethod("marca", TrajeDisponible.class);
+                    Method marca = v.getClass().getDeclaredMethod("marcaErht", TrajeDisponible.class);
                     marca.setAccessible(true);
                     for (Object t : tabla.getItems().subList(0, Math.min(3, tabla.getItems().size()))) {
                         ((javafx.beans.property.BooleanProperty) marca.invoke(v, t)).set(true);
@@ -359,8 +359,8 @@ public class GenerarCapturas {
                 } catch (ReflectiveOperationException e) {
                     throw new IllegalStateException(e);
                 }
-                ((TextField) campo(v, "adelanto")).setText("150.00");
-                seleccionar(campo(v, "metodo"), "YAPE");
+                ((TextField) campo(v, "adelantoErht")).setText("150.00");
+                seleccionar(campo(v, "metodoErht"), "YAPE");
             });
             pausa(900);
             guardar("33_panel_nueva_reserva.png");
@@ -369,7 +369,7 @@ public class GenerarCapturas {
             fx(() -> panel.mostrar(VistaPanelVendedor.ALQUILERES));
             pausa(1800);
             fx(() -> {
-                TableView<?> tabla = campo(areaPanel(panel).getContent(), "tabla");
+                TableView<?> tabla = campo(areaPanel(panel).getContent(), "tablaErht");
                 for (TableColumn<?, ?> c : tabla.getColumns()) {
                     if ("CLIENTE".equals(c.getText())) {
                         ordenar(tabla, c);
@@ -502,7 +502,7 @@ public class GenerarCapturas {
             fx(() -> panel.mostrar(VistaPanelVendedor.TRAJES));
             pausa(1800);
             fx(() -> {
-                TableView<?> tabla = campo(areaPanel(panel).getContent(), "tabla");
+                TableView<?> tabla = campo(areaPanel(panel).getContent(), "tablaErht");
                 for (TableColumn<?, ?> c : tabla.getColumns()) {
                     if ("ESTADO".equals(c.getText())) {
                         c.setSortType(TableColumn.SortType.DESCENDING);

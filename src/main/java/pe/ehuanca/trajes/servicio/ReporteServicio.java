@@ -21,15 +21,15 @@ import java.util.Map;
 @Service
 public class ReporteServicio {
 
-    private final JdbcTemplate jdbc;
+    private final JdbcTemplate jdbcErht;
 
     public ReporteServicio(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
+        this.jdbcErht = jdbc;
     }
 
     public List<Tabla> todos() {
         return List.of(
-                tabla("Danzas más rentables",
+                tablaErht("Danzas más rentables",
                         "Ingresos por alquiler de cada danza, sin contar alquileres anulados.", """
                         SELECT RANK() OVER (ORDER BY SUM(d.precio) DESC) AS "Puesto",
                                dz.nombre                                 AS "Danza",
@@ -43,7 +43,7 @@ public class ReporteServicio {
                         GROUP BY dz.nombre
                         ORDER BY 1
                         """),
-                tabla("Ingresos por mes",
+                tablaErht("Ingresos por mes",
                         "Adelantos, saldos y cobros por daños de los últimos 12 meses, con el acumulado.", """
                         SELECT TO_CHAR(fecha_pago, 'YYYY-MM') AS "Mes",
                                SUM(monto)                     AS "Ingreso (S/)",
@@ -54,7 +54,7 @@ public class ReporteServicio {
                         GROUP BY TO_CHAR(fecha_pago, 'YYYY-MM')
                         ORDER BY 1
                         """),
-                tabla("Trajes más alquilados",
+                tablaErht("Trajes más alquilados",
                         "Los 10 trajes que más veces salieron.", """
                         SELECT codigo AS "Código", danza AS "Danza", personaje AS "Personaje",
                                talla AS "Talla", veces_alquilado AS "Veces"
@@ -62,7 +62,7 @@ public class ReporteServicio {
                         ORDER BY veces_alquilado DESC, codigo
                         LIMIT 10
                         """),
-                tabla("Piezas que más se dañan",
+                tablaErht("Piezas que más se dañan",
                         "Daños registrados en las devoluciones, agrupados por tipo de pieza.", """
                         SELECT tp.nombre        AS "Pieza",
                                COUNT(*)         AS "Veces dañada",
@@ -73,7 +73,7 @@ public class ReporteServicio {
                         GROUP BY tp.nombre
                         ORDER BY 2 DESC
                         """),
-                tabla("Devoluciones con retraso",
+                tablaErht("Devoluciones con retraso",
                         "Alquileres devueltos después de la fecha acordada.", """
                         SELECT a.id_alquiler AS "Alquiler",
                                CONCAT_WS(' ', c.nombres, c.apellidos) AS "Cliente",
@@ -85,7 +85,7 @@ public class ReporteServicio {
                         WHERE a.fecha_devolucion_real > a.fecha_devolucion_prevista
                         ORDER BY 5 DESC
                         """),
-                tabla("Rentabilidad por traje",
+                tablaErht("Rentabilidad por traje",
                         "Lo que generó cada traje menos lo que costó su mantenimiento.", """
                         WITH ingreso AS (
                             SELECT d.id_traje, SUM(d.precio) AS ingreso
@@ -109,7 +109,7 @@ public class ReporteServicio {
                         ORDER BY 6 DESC
                         LIMIT 15
                         """),
-                tablaPersonalizador("Pedidos personalizados por estado",
+                tablaPersonalizadorErht("Pedidos personalizados por estado",
                         "Pedidos del personalizador 3D en cada estado, con lo cobrado y lo que falta cobrar.", """
                         SELECT estado AS "Estado",
                                COUNT(*) AS "Pedidos",
@@ -124,7 +124,7 @@ public class ReporteServicio {
                                  ARRAY['PENDIENTE', 'COTIZADO', 'APROBADO', 'EN_CONFECCION', 'LISTO', 'ENTREGADO',
                                        'CANCELADO']::VARCHAR[], estado)
                         """),
-                tablaPersonalizador("Implementos más pedidos",
+                tablaPersonalizadorErht("Implementos más pedidos",
                         "Implementos elegidos en los pedidos personalizados (sin contar cancelados), a precio de confección.", """
                         SELECT RANK() OVER (ORDER BY COUNT(*) DESC, SUM(pi.cantidad) DESC) AS "Puesto",
                                i.nombre                     AS "Implemento",
@@ -143,22 +143,22 @@ public class ReporteServicio {
     }
 
     /** Reporte sobre las tablas del personalizador: si aún no se ejecutó personalizador.sql, lo avisa. */
-    private Tabla tablaPersonalizador(String titulo, String descripcion, String sql) {
+    private Tabla tablaPersonalizadorErht(String titulo, String descripcion, String sql) {
         try {
-            return tabla(titulo, descripcion, sql);
+            return tablaErht(titulo, descripcion, sql);
         } catch (DataAccessException e) {
             return new Tabla(titulo, "Falta ejecutar db/personalizador.sql sobre la base alquiler_trajes.",
                     new ArrayList<>(), new ArrayList<>());
         }
     }
 
-    private Tabla tabla(String titulo, String descripcion, String sql) {
-        List<Map<String, Object>> filas = jdbc.queryForList(sql);
-        List<String> columnas = filas.isEmpty() ? new ArrayList<>() : new ArrayList<>(filas.get(0).keySet());
-        List<List<Object>> valores = new ArrayList<>();
-        for (Map<String, Object> fila : filas) {
-            valores.add(new ArrayList<>(fila.values()));
+    private Tabla tablaErht(String titulo, String descripcion, String sql) {
+        List<Map<String, Object>> filasErht = jdbcErht.queryForList(sql);
+        List<String> columnasErht = filasErht.isEmpty() ? new ArrayList<>() : new ArrayList<>(filasErht.get(0).keySet());
+        List<List<Object>> valoresErht = new ArrayList<>();
+        for (Map<String, Object> filaErht : filasErht) {
+            valoresErht.add(new ArrayList<>(filaErht.values()));
         }
-        return new Tabla(titulo, descripcion, columnas, valores);
+        return new Tabla(titulo, descripcion, columnasErht, valoresErht);
     }
 }

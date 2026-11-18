@@ -32,81 +32,81 @@ import java.util.List;
  */
 public class PedidosVista extends VBox {
 
-    private final Servicios s;
+    private final Servicios sErht;
     /** Avisa al panel para actualizar la insignia de pendientes. */
-    private final Runnable alCambiar;
-    private final ComboBox<String> estado = UtilidadesInterfaz.comboTexto(PersonalizadorServicio.ESTADOS, "Todos");
-    private final TextField texto = UtilidadesInterfaz.campo("", "Cliente, danza o N°...");
-    private final Label cantidad = UtilidadesInterfaz.subtitulo("");
-    private final TableView<PedidoResumen> tabla = UtilidadesInterfaz.tabla("No hay pedidos de diseño con esos filtros.");
+    private final Runnable alCambiarErht;
+    private final ComboBox<String> estadoErht = UtilidadesInterfaz.comboTexto(PersonalizadorServicio.ESTADOS, "Todos");
+    private final TextField textoErht = UtilidadesInterfaz.campo("", "Cliente, danza o N°...");
+    private final Label cantidadErht = UtilidadesInterfaz.subtitulo("");
+    private final TableView<PedidoResumen> tablaErht = UtilidadesInterfaz.tabla("No hay pedidos de diseño con esos filtros.");
 
     public PedidosVista(Servicios s, Runnable alCambiar) {
-        this.s = s;
-        this.alCambiar = alCambiar;
+        this.sErht = s;
+        this.alCambiarErht = alCambiar;
         getStyleClass().add("contenido");
 
-        estado.setMaxWidth(200);
-        texto.setPrefWidth(260);
-        texto.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargar));
-        estado.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargar));
-        Button buscar = UtilidadesInterfaz.estilo(new Button("Buscar", UtilidadesInterfaz.icono(Feather.SEARCH)), "boton-primario");
-        buscar.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargar));
-        Button limpiar = new Button("Limpiar");
-        limpiar.setOnAction(e -> {
-            texto.clear();
-            estado.getSelectionModel().selectFirst();
-            UtilidadesInterfaz.ejecutar(this::cargar);
+        estadoErht.setMaxWidth(200);
+        textoErht.setPrefWidth(260);
+        textoErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarErht));
+        estadoErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarErht));
+        Button buscarErht = UtilidadesInterfaz.estilo(new Button("Buscar", UtilidadesInterfaz.icono(Feather.SEARCH)), "boton-primario");
+        buscarErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarErht));
+        Button limpiarErht = new Button("Limpiar");
+        limpiarErht.setOnAction(e -> {
+            textoErht.clear();
+            estadoErht.getSelectionModel().selectFirst();
+            UtilidadesInterfaz.ejecutar(this::cargarErht);
         });
-        HBox filtros = new HBox(10, UtilidadesInterfaz.etiqueta("Estado"), estado, UtilidadesInterfaz.etiqueta("Buscar"), texto, buscar, limpiar,
-                UtilidadesInterfaz.espacio(), cantidad);
-        filtros.setAlignment(Pos.CENTER_LEFT);
-        filtros.getStyleClass().add("barra-filtros");
+        HBox filtrosErht = new HBox(10, UtilidadesInterfaz.etiqueta("Estado"), estadoErht, UtilidadesInterfaz.etiqueta("Buscar"), textoErht, buscarErht, limpiarErht,
+                UtilidadesInterfaz.espacio(), cantidadErht);
+        filtrosErht.setAlignment(Pos.CENTER_LEFT);
+        filtrosErht.getStyleClass().add("barra-filtros");
 
-        tabla.getColumns().add(UtilidadesInterfaz.colNumero("N°", PedidoResumen::idPedido, 55));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Cliente", PedidoResumen::cliente, 200));
-        tabla.getColumns().add(UtilidadesInterfaz.colFecha("Fecha", PedidoResumen::fechaPedido, 100));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Danza", PedidoResumen::danza, 110));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Modalidad",
+        tablaErht.getColumns().add(UtilidadesInterfaz.colNumero("N°", PedidoResumen::idPedido, 55));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Cliente", PedidoResumen::cliente, 200));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colFecha("Fecha", PedidoResumen::fechaPedido, 100));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Danza", PedidoResumen::danza, 110));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Modalidad",
                 p -> "ALQUILER".equals(p.tipo()) ? "Alquilar (30%)" : "Confeccionar", 130));
-        tabla.getColumns().add(UtilidadesInterfaz.colEstado("Estado", PedidoResumen::estado, 140));
-        tabla.getColumns().add(UtilidadesInterfaz.colSoles("Estimado",
+        tablaErht.getColumns().add(UtilidadesInterfaz.colEstado("Estado", PedidoResumen::estado, 140));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colSoles("Estimado",
                 p -> p.precioEstimado() == null ? p.montoTotal() : p.precioEstimado(), 100));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Precio final",
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Precio final",
                 p -> "PENDIENTE".equals(p.estado()) ? "Por cotizar" : UtilidadesInterfaz.soles(p.montoTotal()), 110));
-        tabla.getColumns().add(UtilidadesInterfaz.colSoles("Saldo", PedidoResumen::saldo, 95));
-        TableColumn<PedidoResumen, PedidoResumen> accion = new TableColumn<>(UtilidadesInterfaz.cabeceraColumna("Acción"));
-        accion.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue()));
-        accion.setCellFactory(c -> new TableCell<>() {
+        tablaErht.getColumns().add(UtilidadesInterfaz.colSoles("Saldo", PedidoResumen::saldo, 95));
+        TableColumn<PedidoResumen, PedidoResumen> accionErht = new TableColumn<>(UtilidadesInterfaz.cabeceraColumna("Acción"));
+        accionErht.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue()));
+        accionErht.setCellFactory(c -> new TableCell<>() {
             @Override
             protected void updateItem(PedidoResumen p, boolean empty) {
                 super.updateItem(p, empty);
                 setText(null);
-                setGraphic(empty || p == null ? null : AccionPedido.crear(s, p, () -> UtilidadesInterfaz.ejecutar(PedidosVista.this::cargar)));
+                setGraphic(empty || p == null ? null : AccionPedido.crear(s, p, () -> UtilidadesInterfaz.ejecutar(PedidosVista.this::cargarErht)));
             }
         });
-        accion.setSortable(false);
-        accion.setPrefWidth(180);
-        accion.setMinWidth(170);
-        tabla.getColumns().add(accion);
-        UtilidadesInterfaz.alDobleClic(tabla, p -> {
+        accionErht.setSortable(false);
+        accionErht.setPrefWidth(180);
+        accionErht.setMinWidth(170);
+        tablaErht.getColumns().add(accionErht);
+        UtilidadesInterfaz.alDobleClic(tablaErht, p -> {
             new PedidoDisenoDialogo(s, p.idPedido()).mostrar();
-            UtilidadesInterfaz.ejecutar(this::cargar);
+            UtilidadesInterfaz.ejecutar(this::cargarErht);
         });
-        tabla.setMinHeight(380);
-        VBox.setVgrow(tabla, Priority.ALWAYS);
+        tablaErht.setMinHeight(380);
+        VBox.setVgrow(tablaErht, Priority.ALWAYS);
 
-        HBox cabecera = new HBox(UtilidadesInterfaz.encabezado("Confección a medida", "Pedidos de diseño",
+        HBox cabeceraErht = new HBox(UtilidadesInterfaz.encabezado("Confección a medida", "Pedidos de diseño",
                 "Diseños que envían los clientes desde su portal. Cotiza los pendientes y avanza cada pedido con la "
                         + "columna Acción. Doble clic para ver el diseño, sus colores y los pagos."));
-        cabecera.setAlignment(Pos.BOTTOM_LEFT);
-        getChildren().addAll(cabecera, filtros, tabla);
-        cargar();
+        cabeceraErht.setAlignment(Pos.BOTTOM_LEFT);
+        getChildren().addAll(cabeceraErht, filtrosErht, tablaErht);
+        cargarErht();
     }
 
-    private void cargar() {
-        List<PedidoResumen> lista = s.personalizador().listarPedidos(estado.getValue(), texto.getText());
-        tabla.getItems().setAll(lista);
-        cantidad.setText(lista.size() + " pedido(s)");
-        alCambiar.run();
+    private void cargarErht() {
+        List<PedidoResumen> listaErht = sErht.personalizador().listarPedidos(estadoErht.getValue(), textoErht.getText());
+        tablaErht.getItems().setAll(listaErht);
+        cantidadErht.setText(listaErht.size() + " pedido(s)");
+        alCambiarErht.run();
     }
 }

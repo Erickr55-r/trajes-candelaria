@@ -42,46 +42,46 @@ public final class RenderizadoCapas {
             "pantalon", "Pantalón", "pollera", "Pollera", "mascara", "Máscara", "boton", "Botón",
             "botones", "Botones", "cinturon", "Cinturón", "camison", "Camisón");
 
-    private final Image base;
-    private final List<PrendaTenible> prendas;
+    private final Image baseErht;
+    private final List<PrendaTenible> prendasErht;
 
     private RenderizadoCapas(Image base, List<PrendaTenible> prendas) {
-        this.base = base;
-        this.prendas = prendas;
+        this.baseErht = base;
+        this.prendasErht = prendas;
     }
 
     /** @param carpeta ruta dentro de resources, sin barra inicial: "render/caporal/frente" */
     public static RenderizadoCapas cargar(String carpeta) {
-        Resource[] pngs;
+        Resource[] pngsErht;
         try {
-            pngs = new PathMatchingResourcePatternResolver().getResources("classpath*:" + carpeta + "/*.png");
+            pngsErht = new PathMatchingResourcePatternResolver().getResources("classpath*:" + carpeta + "/*.png");
         } catch (IOException e) {
             throw new ExcepcionReglaNegocio("No se pudo leer la carpeta " + carpeta + ": " + e.getMessage());
         }
-        Arrays.sort(pngs, Comparator.comparing(r -> nombreArchivo(r).toLowerCase(Locale.ROOT)));
+        Arrays.sort(pngsErht, Comparator.comparing(r -> nombreArchivoErht(r).toLowerCase(Locale.ROOT)));
 
-        Image base = null;
-        List<PrendaTenible> prendas = new ArrayList<>();
-        for (Resource r : pngs) {
-            String archivo = nombreArchivo(r);
-            Image img = leer(r);
-            if (archivo.equalsIgnoreCase(BASE)) {
-                base = img;
+        Image baseErht = null;
+        List<PrendaTenible> prendasErht = new ArrayList<>();
+        for (Resource r : pngsErht) {
+            String archivoErht = nombreArchivoErht(r);
+            Image imgErht = leerErht(r);
+            if (archivoErht.equalsIgnoreCase(BASE)) {
+                baseErht = imgErht;
             } else {
-                prendas.add(new PrendaTenible(archivo, nombreVisible(archivo), img));
+                prendasErht.add(new PrendaTenible(archivoErht, nombreVisible(archivoErht), imgErht));
             }
         }
-        if (base == null) {
+        if (baseErht == null) {
             throw new ExcepcionReglaNegocio("Falta " + BASE + " en src/main/resources/" + carpeta + ".");
         }
-        for (PrendaTenible p : prendas) {
-            if (p.imagen().getWidth() != base.getWidth() || p.imagen().getHeight() != base.getHeight()) {
+        for (PrendaTenible p : prendasErht) {
+            if (p.imagen().getWidth() != baseErht.getWidth() || p.imagen().getHeight() != baseErht.getHeight()) {
                 throw new ExcepcionReglaNegocio(p.archivo() + " mide " + (int) p.imagen().getWidth() + "x"
-                        + (int) p.imagen().getHeight() + " pero " + BASE + " mide " + (int) base.getWidth() + "x"
-                        + (int) base.getHeight() + ". Todas las capas deben renderizarse con el mismo tamaño.");
+                        + (int) p.imagen().getHeight() + " pero " + BASE + " mide " + (int) baseErht.getWidth() + "x"
+                        + (int) baseErht.getHeight() + ". Todas las capas deben renderizarse con el mismo tamaño.");
             }
         }
-        return new RenderizadoCapas(base, List.copyOf(prendas));
+        return new RenderizadoCapas(baseErht, List.copyOf(prendasErht));
     }
 
     /** "20_pantalon1.png" → "Pantalón"; "chaqueta.png" → "Chaqueta"; "botas_altas.png" → "Botas altas". */
@@ -93,43 +93,43 @@ public final class RenderizadoCapas {
         if (n.isEmpty()) {
             return archivo;
         }
-        String conocido = NOMBRES.get(n.toLowerCase(Locale.ROOT));
-        if (conocido != null) {
-            return conocido;
+        String conocidoErht = NOMBRES.get(n.toLowerCase(Locale.ROOT));
+        if (conocidoErht != null) {
+            return conocidoErht;
         }
         return n.substring(0, 1).toUpperCase(Locale.ROOT) + n.substring(1);
     }
 
-    private static String nombreArchivo(Resource r) {
+    private static String nombreArchivoErht(Resource r) {
         String n = r.getFilename();
         return n == null ? "" : n;
     }
 
-    private static Image leer(Resource r) {
+    private static Image leerErht(Resource r) {
         try (InputStream in = r.getInputStream()) {
-            Image img = new Image(in);
-            if (img.isError()) {
+            Image imgErht = new Image(in);
+            if (imgErht.isError()) {
                 throw new ExcepcionReglaNegocio("No se pudo leer la imagen " + r.getFilename() + ".");
             }
-            return img;
+            return imgErht;
         } catch (IOException e) {
             throw new ExcepcionReglaNegocio("No se pudo leer la imagen " + r.getFilename() + ": " + e.getMessage());
         }
     }
 
     public Image base() {
-        return base;
+        return baseErht;
     }
 
     public List<PrendaTenible> prendas() {
-        return prendas;
+        return prendasErht;
     }
 
     public double ancho() {
-        return base.getWidth();
+        return baseErht.getWidth();
     }
 
     public double alto() {
-        return base.getHeight();
+        return baseErht.getHeight();
     }
 }

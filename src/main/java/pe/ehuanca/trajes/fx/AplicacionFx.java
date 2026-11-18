@@ -32,55 +32,55 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class AplicacionFx extends Application {
 
-    private ConfigurableApplicationContext contexto;
-    private Exception errorInicio;
-    private Servicios servicios;
-    private Stage escenario;
-    private Scene escena;
+    private ConfigurableApplicationContext contextoErht;
+    private Exception errorInicioErht;
+    private Servicios serviciosErht;
+    private Stage escenarioErht;
+    private Scene escenaErht;
 
     @Override
     public void init() {
         try {
-            contexto = new SpringApplicationBuilder(AplicacionAlquilerTrajes.class)
+            contextoErht = new SpringApplicationBuilder(AplicacionAlquilerTrajes.class)
                     .web(WebApplicationType.NONE)
                     .run(getParameters().getRaw().toArray(new String[0]));
             // Prueba la conexión (y que exista la tabla) antes de abrir la ventana.
-            contexto.getBean(JdbcTemplate.class).queryForObject("SELECT COUNT(*) FROM traje", Long.class);
+            contextoErht.getBean(JdbcTemplate.class).queryForObject("SELECT COUNT(*) FROM traje", Long.class);
         } catch (Exception e) {
-            errorInicio = e;
+            errorInicioErht = e;
         }
     }
 
     @Override
     public void start(Stage escenario) {
         Fuentes.cargar();
-        if (errorInicio != null) {
-            Alert alerta = new Alert(Alert.AlertType.ERROR);
-            alerta.setTitle("Alquiler de trajes");
-            alerta.setHeaderText("No se pudo conectar a PostgreSQL");
-            alerta.setContentText(UtilidadesInterfaz.primeraLinea(errorInicio) + "\n\n"
+        if (errorInicioErht != null) {
+            Alert alertaErht = new Alert(Alert.AlertType.ERROR);
+            alertaErht.setTitle("Alquiler de trajes");
+            alertaErht.setHeaderText("No se pudo conectar a PostgreSQL");
+            alertaErht.setContentText(UtilidadesInterfaz.primeraLinea(errorInicioErht) + "\n\n"
                     + "Revisa que la variable de entorno DB_PASSWORD tenga la contraseña de PostgreSQL "
                     + "(en IntelliJ: Run Configuration «Trajes Candelaria»; ver application-example.properties), "
                     + "que PostgreSQL esté encendido y que exista la base alquiler_trajes cargada con "
                     + "db/base_datos.sql.");
-            alerta.getDialogPane().getStylesheets().add(UtilidadesInterfaz.HOJA_ESTILOS);
-            alerta.getDialogPane().setPrefWidth(560);
-            alerta.showAndWait();
+            alertaErht.getDialogPane().getStylesheets().add(UtilidadesInterfaz.HOJA_ESTILOS);
+            alertaErht.getDialogPane().setPrefWidth(560);
+            alertaErht.showAndWait();
             Platform.exit();
             return;
         }
-        servicios = new Servicios(contexto.getBean(AlquilerServicio.class),
-                contexto.getBean(TrajeServicio.class), contexto.getBean(ClienteServicio.class),
-                contexto.getBean(ReporteServicio.class), contexto.getBean(PersonalizadorServicio.class),
-                contexto.getBean(UsuarioServicio.class));
+        serviciosErht = new Servicios(contextoErht.getBean(AlquilerServicio.class),
+                contextoErht.getBean(TrajeServicio.class), contextoErht.getBean(ClienteServicio.class),
+                contextoErht.getBean(ReporteServicio.class), contextoErht.getBean(PersonalizadorServicio.class),
+                contextoErht.getBean(UsuarioServicio.class));
 
-        this.escenario = escenario;
-        escena = new Scene(new Group(), 1360, 840);
-        escena.getStylesheets().add(UtilidadesInterfaz.HOJA_ESTILOS);
+        this.escenarioErht = escenario;
+        escenaErht = new Scene(new Group(), 1360, 840);
+        escenaErht.getStylesheets().add(UtilidadesInterfaz.HOJA_ESTILOS);
         escenario.setTitle("Trajes Candelaria · Alquiler y confección");
         escenario.setMinWidth(1024);
         escenario.setMinHeight(640);
-        escenario.setScene(escena);
+        escenario.setScene(escenaErht);
         mostrarInicioSesion();
         escenario.show();
     }
@@ -88,24 +88,24 @@ public class AplicacionFx extends Application {
     /** Pantalla de inicio de sesión (también al cerrar sesión). */
     public void mostrarInicioSesion() {
         Sesion.actual().cerrar();
-        escena.setRoot(new VistaInicioSesion(servicios, this::ingresar));
-        escenario.setTitle("Trajes Candelaria · Iniciar sesión");
+        escenaErht.setRoot(new VistaInicioSesion(serviciosErht, this::ingresar));
+        escenarioErht.setTitle("Trajes Candelaria · Iniciar sesión");
     }
 
     /** Guarda la sesión y abre la pantalla de su rol: CLIENTE → portal; ADMIN o VENDEDOR → panel de la tienda. */
     public void ingresar(Usuario u) {
         Sesion.actual().iniciar(u);
-        Parent raiz = u.esCliente()
-                ? new VistaPortalCliente(servicios, this::mostrarInicioSesion)
-                : new VistaPanelVendedor(servicios, this::mostrarInicioSesion);
-        escena.setRoot(raiz);
-        escenario.setTitle("Trajes Candelaria · " + u.nombreVisible() + " (" + u.rolVisible() + ")");
+        Parent raizErht = u.esCliente()
+                ? new VistaPortalCliente(serviciosErht, this::mostrarInicioSesion)
+                : new VistaPanelVendedor(serviciosErht, this::mostrarInicioSesion);
+        escenaErht.setRoot(raizErht);
+        escenarioErht.setTitle("Trajes Candelaria · " + u.nombreVisible() + " (" + u.rolVisible() + ")");
     }
 
     @Override
     public void stop() {
-        if (contexto != null) {
-            contexto.close();
+        if (contextoErht != null) {
+            contextoErht.close();
         }
     }
 }

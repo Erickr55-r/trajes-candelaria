@@ -29,87 +29,87 @@ import java.util.List;
  */
 public class TrajesVista extends VBox {
 
-    private final Servicios s;
-    private final ComboBox<Opcion> danza;
-    private final ComboBox<String> estado = UtilidadesInterfaz.comboTexto(List.of("DISPONIBLE", "MANTENIMIENTO", "BAJA"), "Todos");
-    private final ComboBox<String> talla = UtilidadesInterfaz.comboTexto(UtilidadesInterfaz.TALLAS, "Todas");
-    private final TextField texto = UtilidadesInterfaz.campo("", "Código, personaje o color...");
-    private final Label cantidad = UtilidadesInterfaz.subtitulo("");
-    private final TableView<TrajeFila> tabla = UtilidadesInterfaz.tabla("No hay trajes con esos filtros.");
+    private final Servicios sErht;
+    private final ComboBox<Opcion> danzaErht;
+    private final ComboBox<String> estadoErht = UtilidadesInterfaz.comboTexto(List.of("DISPONIBLE", "MANTENIMIENTO", "BAJA"), "Todos");
+    private final ComboBox<String> tallaErht = UtilidadesInterfaz.comboTexto(UtilidadesInterfaz.TALLAS, "Todas");
+    private final TextField textoErht = UtilidadesInterfaz.campo("", "Código, personaje o color...");
+    private final Label cantidadErht = UtilidadesInterfaz.subtitulo("");
+    private final TableView<TrajeFila> tablaErht = UtilidadesInterfaz.tabla("No hay trajes con esos filtros.");
 
     public TrajesVista(Servicios s) {
-        this.s = s;
+        this.sErht = s;
         getStyleClass().add("contenido");
 
-        danza = UtilidadesInterfaz.combo(s.trajes().danzas(), Opcion::nombre, "Todas");
-        danza.setPrefWidth(220);
-        estado.setPrefWidth(150);
-        talla.setPrefWidth(90);
-        texto.setPrefWidth(220);
-        danza.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargar));
-        estado.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargar));
-        talla.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargar));
-        texto.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargar));
-        Button buscar = UtilidadesInterfaz.estilo(new Button("Buscar", UtilidadesInterfaz.icono(Feather.SEARCH)), "boton-primario");
-        buscar.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargar));
+        danzaErht = UtilidadesInterfaz.combo(s.trajes().danzas(), Opcion::nombre, "Todas");
+        danzaErht.setPrefWidth(220);
+        estadoErht.setPrefWidth(150);
+        tallaErht.setPrefWidth(90);
+        textoErht.setPrefWidth(220);
+        danzaErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarErht));
+        estadoErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarErht));
+        tallaErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarErht));
+        textoErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarErht));
+        Button buscarErht = UtilidadesInterfaz.estilo(new Button("Buscar", UtilidadesInterfaz.icono(Feather.SEARCH)), "boton-primario");
+        buscarErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarErht));
 
-        HBox filtros = new HBox(10, UtilidadesInterfaz.etiqueta("Danza"), danza, UtilidadesInterfaz.etiqueta("Estado"), estado,
-                UtilidadesInterfaz.etiqueta("Talla"), talla, texto, buscar, UtilidadesInterfaz.espacio(), cantidad);
-        filtros.getStyleClass().add("barra-filtros");
+        HBox filtrosErht = new HBox(10, UtilidadesInterfaz.etiqueta("Danza"), danzaErht, UtilidadesInterfaz.etiqueta("Estado"), estadoErht,
+                UtilidadesInterfaz.etiqueta("Talla"), tallaErht, textoErht, buscarErht, UtilidadesInterfaz.espacio(), cantidadErht);
+        filtrosErht.getStyleClass().add("barra-filtros");
 
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Código", TrajeFila::codigo, 85));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Danza", TrajeFila::danza, 170));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Personaje", TrajeFila::personaje, 180));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Género", TrajeFila::genero, 75));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Talla", TrajeFila::talla, 55));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Color", TrajeFila::color, 120));
-        tabla.getColumns().add(UtilidadesInterfaz.colSoles("Precio", TrajeFila::precioAlquiler, 95));
-        tabla.getColumns().add(UtilidadesInterfaz.colSoles("Garantía", TrajeFila::garantia, 95));
-        tabla.getColumns().add(UtilidadesInterfaz.colNumero("Alquileres", TrajeFila::vecesAlquilado, 80));
-        tabla.getColumns().add(UtilidadesInterfaz.colEstado("Estado", TrajeFila::estado, 130));
-        UtilidadesInterfaz.alDobleClic(tabla, t -> verDetalle(t.idTraje()));
-        VBox.setVgrow(tabla, Priority.ALWAYS);
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Código", TrajeFila::codigo, 85));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Danza", TrajeFila::danza, 170));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Personaje", TrajeFila::personaje, 180));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Género", TrajeFila::genero, 75));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Talla", TrajeFila::talla, 55));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Color", TrajeFila::color, 120));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colSoles("Precio", TrajeFila::precioAlquiler, 95));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colSoles("Garantía", TrajeFila::garantia, 95));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colNumero("Alquileres", TrajeFila::vecesAlquilado, 80));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colEstado("Estado", TrajeFila::estado, 130));
+        UtilidadesInterfaz.alDobleClic(tablaErht, t -> verDetalleErht(t.idTraje()));
+        VBox.setVgrow(tablaErht, Priority.ALWAYS);
 
-        Button nuevo = UtilidadesInterfaz.estilo(new Button("Nuevo traje", UtilidadesInterfaz.icono(Feather.PLUS)), "boton-primario");
-        nuevo.setOnAction(e -> {
+        Button nuevoErht = UtilidadesInterfaz.estilo(new Button("Nuevo traje", UtilidadesInterfaz.icono(Feather.PLUS)), "boton-primario");
+        nuevoErht.setOnAction(e -> {
             Integer id = new TrajeFormularioDialogo(s, null).mostrar();
-            UtilidadesInterfaz.ejecutar(this::cargar);
+            UtilidadesInterfaz.ejecutar(this::cargarErht);
             if (id != null) {
-                verDetalle(id);
+                verDetalleErht(id);
             }
         });
-        Button editar = new Button("Editar", UtilidadesInterfaz.icono(Feather.EDIT_2));
-        editar.setOnAction(e -> conSeleccion(t -> {
+        Button editarErht = new Button("Editar", UtilidadesInterfaz.icono(Feather.EDIT_2));
+        editarErht.setOnAction(e -> conSeleccionErht(t -> {
             new TrajeFormularioDialogo(s, t.idTraje()).mostrar();
-            UtilidadesInterfaz.ejecutar(this::cargar);
+            UtilidadesInterfaz.ejecutar(this::cargarErht);
         }));
-        Button detalle = new Button("Ver detalle", UtilidadesInterfaz.icono(Feather.EYE));
-        detalle.setOnAction(e -> conSeleccion(t -> verDetalle(t.idTraje())));
+        Button detalleErht = new Button("Ver detalle", UtilidadesInterfaz.icono(Feather.EYE));
+        detalleErht.setOnAction(e -> conSeleccionErht(t -> verDetalleErht(t.idTraje())));
 
-        tabla.setMinHeight(380);
-        HBox cabecera = new HBox(10, UtilidadesInterfaz.encabezado("Inventario", "Trajes",
+        tablaErht.setMinHeight(380);
+        HBox cabeceraErht = new HBox(10, UtilidadesInterfaz.encabezado("Inventario", "Trajes",
                 "Doble clic en un traje para ver sus piezas, mantenimiento e historial."),
-                UtilidadesInterfaz.espacio(), editar, detalle, nuevo);
-        cabecera.setAlignment(Pos.BOTTOM_LEFT);
-        getChildren().addAll(cabecera, filtros, tabla);
-        cargar();
+                UtilidadesInterfaz.espacio(), editarErht, detalleErht, nuevoErht);
+        cabeceraErht.setAlignment(Pos.BOTTOM_LEFT);
+        getChildren().addAll(cabeceraErht, filtrosErht, tablaErht);
+        cargarErht();
     }
 
-    private void cargar() {
-        Opcion d = danza.getValue();
-        List<TrajeFila> lista = s.trajes().listar(d == null ? null : d.id(), estado.getValue(), talla.getValue(),
-                texto.getText());
-        tabla.getItems().setAll(lista);
-        cantidad.setText(lista.size() + " traje(s)");
+    private void cargarErht() {
+        Opcion d = danzaErht.getValue();
+        List<TrajeFila> listaErht = sErht.trajes().listar(d == null ? null : d.id(), estadoErht.getValue(), tallaErht.getValue(),
+                textoErht.getText());
+        tablaErht.getItems().setAll(listaErht);
+        cantidadErht.setText(listaErht.size() + " traje(s)");
     }
 
-    private void verDetalle(int idTraje) {
-        new TrajeDetalleDialogo(s, idTraje).mostrar();
-        UtilidadesInterfaz.ejecutar(this::cargar);
+    private void verDetalleErht(int idTraje) {
+        new TrajeDetalleDialogo(sErht, idTraje).mostrar();
+        UtilidadesInterfaz.ejecutar(this::cargarErht);
     }
 
-    private void conSeleccion(java.util.function.Consumer<TrajeFila> accion) {
-        TrajeFila t = tabla.getSelectionModel().getSelectedItem();
+    private void conSeleccionErht(java.util.function.Consumer<TrajeFila> accion) {
+        TrajeFila t = tablaErht.getSelectionModel().getSelectedItem();
         if (t == null) {
             UtilidadesInterfaz.mostrarInformacion("Selecciona un traje de la tabla.");
             return;

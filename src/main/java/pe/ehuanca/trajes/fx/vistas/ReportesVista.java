@@ -31,46 +31,46 @@ public class ReportesVista extends VBox {
         }
         getStyleClass().add("contenido");
 
-        TabPane pestanias = new TabPane();
-        pestanias.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        TabPane pestaniasErht = new TabPane();
+        pestaniasErht.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         for (Tabla t : s.reportes().todos()) {
-            pestanias.getTabs().add(new Tab(t.titulo(), contenido(t)));
+            pestaniasErht.getTabs().add(new Tab(t.titulo(), contenidoErht(t)));
         }
-        VBox.setVgrow(pestanias, Priority.ALWAYS);
+        VBox.setVgrow(pestaniasErht, Priority.ALWAYS);
 
-        pestanias.setMinHeight(480);
+        pestaniasErht.setMinHeight(480);
         getChildren().addAll(UtilidadesInterfaz.encabezado("Indicadores", "Reportes",
-                "Consultas de gestión calculadas directamente en PostgreSQL."), pestanias);
+                "Consultas de gestión calculadas directamente en PostgreSQL."), pestaniasErht);
     }
 
-    private VBox contenido(Tabla t) {
-        TableView<List<Object>> tabla = UtilidadesInterfaz.tabla("Todavía no hay datos para este reporte.");
+    private VBox contenidoErht(Tabla t) {
+        TableView<List<Object>> tablaErht = UtilidadesInterfaz.tabla("Todavía no hay datos para este reporte.");
         for (int j = 0; j < t.columnas().size(); j++) {
-            tabla.getColumns().add(columna(t.columnas().get(j), j, t.filas()));
+            tablaErht.getColumns().add(columnaErht(t.columnas().get(j), j, t.filas()));
         }
-        tabla.getItems().setAll(t.filas());
-        VBox.setVgrow(tabla, Priority.ALWAYS);
-        VBox caja = new VBox(10, UtilidadesInterfaz.seccion(t.titulo()), UtilidadesInterfaz.subtitulo(t.descripcion()), tabla);
-        caja.setPadding(new javafx.geometry.Insets(6, 0, 0, 0));
-        return caja;
+        tablaErht.getItems().setAll(t.filas());
+        VBox.setVgrow(tablaErht, Priority.ALWAYS);
+        VBox cajaErht = new VBox(10, UtilidadesInterfaz.seccion(t.titulo()), UtilidadesInterfaz.subtitulo(t.descripcion()), tablaErht);
+        cajaErht.setPadding(new javafx.geometry.Insets(6, 0, 0, 0));
+        return cajaErht;
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private TableColumn<List<Object>, Object> columna(String titulo, int indice, List<List<Object>> filas) {
-        TableColumn<List<Object>, Object> col = new TableColumn<>(UtilidadesInterfaz.cabeceraColumna(titulo));
-        col.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().get(indice)));
-        col.setCellFactory(c -> new TableCell<>() {
+    private TableColumn<List<Object>, Object> columnaErht(String titulo, int indice, List<List<Object>> filas) {
+        TableColumn<List<Object>, Object> colErht = new TableColumn<>(UtilidadesInterfaz.cabeceraColumna(titulo));
+        colErht.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().get(indice)));
+        colErht.setCellFactory(c -> new TableCell<>() {
             @Override
             protected void updateItem(Object item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty ? null : UtilidadesInterfaz.texto(item));
             }
         });
-        boolean numerica = !filas.isEmpty() && filas.get(0).get(indice) instanceof Number;
-        if (numerica) {
-            col.setStyle("-fx-alignment: CENTER-RIGHT;");
+        boolean numericaErht = !filas.isEmpty() && filas.get(0).get(indice) instanceof Number;
+        if (numericaErht) {
+            colErht.setStyle("-fx-alignment: CENTER-RIGHT;");
         }
-        col.setComparator((a, b) -> {
+        colErht.setComparator((a, b) -> {
             if (a == null || b == null) {
                 return a == null ? (b == null ? 0 : -1) : 1;
             }
@@ -82,6 +82,6 @@ public class ReportesVista extends VBox {
             }
             return a.toString().compareTo(b.toString());
         });
-        return col;
+        return colErht;
     }
 }

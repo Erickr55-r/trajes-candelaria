@@ -24,62 +24,62 @@ import javafx.scene.layout.VBox;
  */
 public class ConjuntosVista extends VBox {
 
-    private final Servicios s;
-    private final TableView<ConjuntoFila> tabla = UtilidadesInterfaz.tabla("No hay conjuntos registrados.");
+    private final Servicios sErht;
+    private final TableView<ConjuntoFila> tablaErht = UtilidadesInterfaz.tabla("No hay conjuntos registrados.");
 
     public ConjuntosVista(Servicios s) {
-        this.s = s;
+        this.sErht = s;
         getStyleClass().add("contenido");
 
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Conjunto", ConjuntoFila::nombre, 230));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Danza", ConjuntoFila::danza, 170));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Delegado", ConjuntoFila::delegado, 200));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Teléfono", ConjuntoFila::telefono, 110));
-        tabla.getColumns().add(UtilidadesInterfaz.colNumero("Alquileres", ConjuntoFila::alquileres, 85));
-        HBox.setHgrow(tabla, Priority.ALWAYS);
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Conjunto", ConjuntoFila::nombre, 230));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Danza", ConjuntoFila::danza, 170));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Delegado", ConjuntoFila::delegado, 200));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Teléfono", ConjuntoFila::telefono, 110));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colNumero("Alquileres", ConjuntoFila::alquileres, 85));
+        HBox.setHgrow(tablaErht, Priority.ALWAYS);
 
-        TextField nombre = UtilidadesInterfaz.campo("", "Ej.: Diablada Bellavista");
-        ComboBox<Opcion> danza = UtilidadesInterfaz.combo(s.trajes().danzas(), Opcion::nombre, null);
-        ComboBox<Opcion> delegado = UtilidadesInterfaz.combo(s.clientes().opciones(), Opcion::nombre, "— Sin delegado —");
-        TextField telefono = UtilidadesInterfaz.campo("", "Opcional");
+        TextField nombreErht = UtilidadesInterfaz.campo("", "Ej.: Diablada Bellavista");
+        ComboBox<Opcion> danzaErht = UtilidadesInterfaz.combo(s.trajes().danzas(), Opcion::nombre, null);
+        ComboBox<Opcion> delegadoErht = UtilidadesInterfaz.combo(s.clientes().opciones(), Opcion::nombre, "— Sin delegado —");
+        TextField telefonoErht = UtilidadesInterfaz.campo("", "Opcional");
 
         GridPane g = UtilidadesInterfaz.formulario();
         g.getColumnConstraints().get(1).setMinWidth(200);
-        UtilidadesInterfaz.fila(g, 0, "Nombre *", nombre);
-        UtilidadesInterfaz.fila(g, 1, "Danza *", danza);
-        UtilidadesInterfaz.fila(g, 2, "Delegado", delegado);
-        UtilidadesInterfaz.fila(g, 3, "Teléfono", telefono);
+        UtilidadesInterfaz.fila(g, 0, "Nombre *", nombreErht);
+        UtilidadesInterfaz.fila(g, 1, "Danza *", danzaErht);
+        UtilidadesInterfaz.fila(g, 2, "Delegado", delegadoErht);
+        UtilidadesInterfaz.fila(g, 3, "Teléfono", telefonoErht);
 
-        Button guardar = UtilidadesInterfaz.estilo(new Button("Registrar conjunto"), "boton-primario");
-        guardar.setMaxWidth(Double.MAX_VALUE);
-        guardar.setOnAction(e -> {
+        Button guardarErht = UtilidadesInterfaz.estilo(new Button("Registrar conjunto"), "boton-primario");
+        guardarErht.setMaxWidth(Double.MAX_VALUE);
+        guardarErht.setOnAction(e -> {
             if (UtilidadesInterfaz.ejecutar(() -> {
-                Opcion d = delegado.getValue();
-                s.clientes().crearConjunto(UtilidadesInterfaz.requerido(nombre, "Nombre"), UtilidadesInterfaz.requerido(danza, "Danza").id(),
-                        d == null ? null : d.id(), telefono.getText());
-                cargar();
+                Opcion d = delegadoErht.getValue();
+                s.clientes().crearConjunto(UtilidadesInterfaz.requerido(nombreErht, "Nombre"), UtilidadesInterfaz.requerido(danzaErht, "Danza").id(),
+                        d == null ? null : d.id(), telefonoErht.getText());
+                cargarErht();
             })) {
-                nombre.clear();
-                telefono.clear();
-                delegado.getSelectionModel().selectFirst();
+                nombreErht.clear();
+                telefonoErht.clear();
+                delegadoErht.getSelectionModel().selectFirst();
                 UtilidadesInterfaz.mostrarInformacion("Conjunto registrado.");
             }
         });
 
-        VBox formulario = UtilidadesInterfaz.panel(UtilidadesInterfaz.seccion("Nuevo conjunto"),
-                UtilidadesInterfaz.subtitulo("Los conjuntos que alquilan 5 trajes o más reciben 10% de descuento."), g, guardar);
-        formulario.setPrefWidth(380);
-        formulario.setMinWidth(340);
+        VBox formularioErht = UtilidadesInterfaz.panel(UtilidadesInterfaz.seccion("Nuevo conjunto"),
+                UtilidadesInterfaz.subtitulo("Los conjuntos que alquilan 5 trajes o más reciben 10% de descuento."), g, guardarErht);
+        formularioErht.setPrefWidth(380);
+        formularioErht.setMinWidth(340);
 
-        HBox cuerpo = new HBox(16, tabla, new VBox(formulario));
-        VBox.setVgrow(cuerpo, Priority.ALWAYS);
-        tabla.setMinHeight(380);
+        HBox cuerpoErht = new HBox(16, tablaErht, new VBox(formularioErht));
+        VBox.setVgrow(cuerpoErht, Priority.ALWAYS);
+        tablaErht.setMinHeight(380);
         getChildren().addAll(UtilidadesInterfaz.encabezado("Agrupaciones", "Conjuntos",
-                "Agrupaciones de danza que alquilan trajes con un delegado."), cuerpo);
-        cargar();
+                "Agrupaciones de danza que alquilan trajes con un delegado."), cuerpoErht);
+        cargarErht();
     }
 
-    private void cargar() {
-        tabla.getItems().setAll(s.clientes().conjuntos());
+    private void cargarErht() {
+        tablaErht.getItems().setAll(sErht.clientes().conjuntos());
     }
 }

@@ -65,24 +65,24 @@ public final class UtilidadesInterfaz {
 
     /** Hoja de estilos del tema activo (la usan la ventana principal y todos los diálogos). */
     public static String HOJA_ESTILOS = TEMAS.get("Guindo");
-    private static String temaActual = "Guindo";
+    private static String temaActualErht = "Guindo";
 
     public static String temaActual() {
-        return temaActual;
+        return temaActualErht;
     }
 
     /** Cambia el tema en todas las ventanas abiertas y en las que se abran después. */
     public static void cambiarTema(String nombre) {
-        String nueva = TEMAS.get(nombre);
-        if (nueva == null || nueva.equals(HOJA_ESTILOS)) {
+        String nuevaErht = TEMAS.get(nombre);
+        if (nuevaErht == null || nuevaErht.equals(HOJA_ESTILOS)) {
             return;
         }
-        String anterior = HOJA_ESTILOS;
-        HOJA_ESTILOS = nueva;
-        temaActual = nombre;
+        String anteriorErht = HOJA_ESTILOS;
+        HOJA_ESTILOS = nuevaErht;
+        temaActualErht = nombre;
         for (Window w : Window.getWindows()) {
             if (w.getScene() != null) {
-                w.getScene().getStylesheets().replaceAll(h -> h.equals(anterior) ? nueva : h);
+                w.getScene().getStylesheets().replaceAll(h -> h.equals(anteriorErht) ? nuevaErht : h);
             }
         }
     }
@@ -132,10 +132,10 @@ public final class UtilidadesInterfaz {
         if (texto == null || texto.isBlank()) {
             return null;
         }
-        String limpio = texto.replace("S/", "").replace(" ", "").trim();
-        limpio = limpio.contains(".") ? limpio.replace(",", "") : limpio.replace(",", ".");
+        String limpioErht = texto.replace("S/", "").replace(" ", "").trim();
+        limpioErht = limpioErht.contains(".") ? limpioErht.replace(",", "") : limpioErht.replace(",", ".");
         try {
-            return new BigDecimal(limpio).setScale(2, RoundingMode.HALF_UP);
+            return new BigDecimal(limpioErht).setScale(2, RoundingMode.HALF_UP);
         } catch (NumberFormatException e) {
             throw new ExcepcionReglaNegocio("Monto no válido: " + texto.trim());
         }
@@ -143,42 +143,42 @@ public final class UtilidadesInterfaz {
 
     /** Valor obligatorio de un campo de texto. */
     public static String requerido(TextField campo, String nombre) {
-        String valor = campo.getText();
-        if (valor == null || valor.isBlank()) {
+        String valorErht = campo.getText();
+        if (valorErht == null || valorErht.isBlank()) {
             campo.requestFocus();
             throw new ExcepcionReglaNegocio("Completa el campo: " + nombre + ".");
         }
-        return valor.trim();
+        return valorErht.trim();
     }
 
     /** Valor obligatorio de una lista desplegable. */
     public static <T> T requerido(ComboBox<T> combo, String nombre) {
-        T valor = combo.getValue();
-        if (valor == null) {
+        T valorErht = combo.getValue();
+        if (valorErht == null) {
             combo.requestFocus();
             throw new ExcepcionReglaNegocio("Elige un valor en: " + nombre + ".");
         }
-        return valor;
+        return valorErht;
     }
 
     /** Fecha obligatoria de un DatePicker (confirma lo que se haya escrito a mano). */
     public static LocalDate requerido(DatePicker selector, String nombre) {
-        LocalDate valor = fechaDe(selector);
-        if (valor == null) {
+        LocalDate valorErht = fechaDe(selector);
+        if (valorErht == null) {
             selector.requestFocus();
             throw new ExcepcionReglaNegocio("Elige la fecha: " + nombre + ".");
         }
-        return valor;
+        return valorErht;
     }
 
     /** Fecha de un DatePicker; si el texto se escribió a mano y no se confirmó, lo lee igual. */
     public static LocalDate fechaDe(DatePicker selector) {
-        String escrito = selector.getEditor().getText();
-        if (escrito != null && !escrito.isBlank()) {
+        String escritoErht = selector.getEditor().getText();
+        if (escritoErht != null && !escritoErht.isBlank()) {
             try {
-                selector.setValue(LocalDate.parse(escrito.trim(), FECHA));
+                selector.setValue(LocalDate.parse(escritoErht.trim(), FECHA));
             } catch (DateTimeParseException e) {
-                throw new ExcepcionReglaNegocio("Fecha no válida: " + escrito.trim() + " (usa dd/mm/aaaa).");
+                throw new ExcepcionReglaNegocio("Fecha no válida: " + escritoErht.trim() + " (usa dd/mm/aaaa).");
             }
         }
         return selector.getValue();
@@ -228,27 +228,27 @@ public final class UtilidadesInterfaz {
 
     /** Primera línea del error más interno, sin el prefijo "ERROR:" de PostgreSQL. */
     public static String primeraLinea(Throwable e) {
-        Throwable causa = e;
-        while (causa.getCause() != null && causa.getCause() != causa) {
-            causa = causa.getCause();
+        Throwable causaErht = e;
+        while (causaErht.getCause() != null && causaErht.getCause() != causaErht) {
+            causaErht = causaErht.getCause();
         }
-        String m = causa.getMessage();
+        String m = causaErht.getMessage();
         if (m == null || m.isBlank()) {
-            return causa.getClass().getSimpleName();
+            return causaErht.getClass().getSimpleName();
         }
         return m.split("\\R")[0].replaceFirst("^ERROR:\\s*", "");
     }
 
     public static void mostrarError(String mensaje) {
-        alerta(Alert.AlertType.ERROR, "No se pudo completar la operación", mensaje).showAndWait();
+        alertaErht(Alert.AlertType.ERROR, "No se pudo completar la operación", mensaje).showAndWait();
     }
 
     public static void mostrarInformacion(String mensaje) {
-        alerta(Alert.AlertType.INFORMATION, null, mensaje).showAndWait();
+        alertaErht(Alert.AlertType.INFORMATION, null, mensaje).showAndWait();
     }
 
     public static boolean confirmar(String mensaje) {
-        Alert a = alerta(Alert.AlertType.CONFIRMATION, null, mensaje);
+        Alert a = alertaErht(Alert.AlertType.CONFIRMATION, null, mensaje);
         a.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
         return a.showAndWait().orElse(ButtonType.NO) == ButtonType.YES;
     }
@@ -262,60 +262,60 @@ public final class UtilidadesInterfaz {
         javafx.scene.control.Dialog<ButtonType> d = new javafx.scene.control.Dialog<>();
         d.setTitle("Trajes Candelaria");
         d.setHeaderText(titulo);
-        TextField campo = new TextField(inicial == null ? "" : inicial);
-        campo.setPromptText(ayuda);
-        campo.setPrefWidth(420);
-        Label texto = new Label(mensaje);
-        texto.setWrapText(true);
-        texto.setMaxWidth(420);
-        texto.getStyleClass().add("subtitulo");
-        d.getDialogPane().setContent(new VBox(12, texto, etiqueta(etiqueta), campo));
+        TextField campoErht = new TextField(inicial == null ? "" : inicial);
+        campoErht.setPromptText(ayuda);
+        campoErht.setPrefWidth(420);
+        Label textoErht = new Label(mensaje);
+        textoErht.setWrapText(true);
+        textoErht.setMaxWidth(420);
+        textoErht.getStyleClass().add("subtitulo");
+        d.getDialogPane().setContent(new VBox(12, textoErht, etiqueta(etiqueta), campoErht));
         d.getDialogPane().getStylesheets().add(HOJA_ESTILOS);
-        ButtonType aceptar = new ButtonType("Aceptar", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
-        d.getDialogPane().getButtonTypes().setAll(ButtonType.CANCEL, aceptar);
-        javafx.scene.Node botonAceptar = d.getDialogPane().lookupButton(aceptar);
-        botonAceptar.getStyleClass().add("boton-primario");
-        botonAceptar.disableProperty().bind(campo.textProperty().isEmpty());
-        Window activa = ventanaActiva();
-        if (activa != null) {
-            d.initOwner(activa);
+        ButtonType aceptarErht = new ButtonType("Aceptar", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+        d.getDialogPane().getButtonTypes().setAll(ButtonType.CANCEL, aceptarErht);
+        javafx.scene.Node botonAceptarErht = d.getDialogPane().lookupButton(aceptarErht);
+        botonAceptarErht.getStyleClass().add("boton-primario");
+        botonAceptarErht.disableProperty().bind(campoErht.textProperty().isEmpty());
+        Window activaErht = ventanaActivaErht();
+        if (activaErht != null) {
+            d.initOwner(activaErht);
         }
-        javafx.application.Platform.runLater(campo::requestFocus);
-        return d.showAndWait().filter(b -> b == aceptar).map(b -> campo.getText().trim()).filter(t -> !t.isEmpty());
+        javafx.application.Platform.runLater(campoErht::requestFocus);
+        return d.showAndWait().filter(b -> b == aceptarErht).map(b -> campoErht.getText().trim()).filter(t -> !t.isEmpty());
     }
 
-    private static Alert alerta(Alert.AlertType tipo, String cabecera, String mensaje) {
+    private static Alert alertaErht(Alert.AlertType tipo, String cabecera, String mensaje) {
         Alert a = new Alert(tipo);
         a.setTitle("Alquiler de trajes");
         a.setHeaderText(cabecera);
         a.setContentText(mensaje);
         a.getDialogPane().getStylesheets().add(HOJA_ESTILOS);
         a.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        Window activa = ventanaActiva();
-        if (activa != null) {
-            a.initOwner(activa);
+        Window activaErht = ventanaActivaErht();
+        if (activaErht != null) {
+            a.initOwner(activaErht);
         }
         return a;
     }
 
-    private static Window ventanaActiva() {
+    private static Window ventanaActivaErht() {
         return Window.getWindows().stream().filter(Window::isFocused).findFirst()
                 .orElse(Window.getWindows().isEmpty() ? null : Window.getWindows().get(0));
     }
 
     /** Ventana modal con el estilo de la aplicación. */
     public static Stage ventana(String titulo, Parent raiz, double ancho, double alto) {
-        Stage ventanaDialogo = new Stage();
-        ventanaDialogo.initModality(Modality.APPLICATION_MODAL);
-        Window duenia = ventanaActiva();
-        if (duenia != null) {
-            ventanaDialogo.initOwner(duenia);
+        Stage ventanaDialogoErht = new Stage();
+        ventanaDialogoErht.initModality(Modality.APPLICATION_MODAL);
+        Window dueniaErht = ventanaActivaErht();
+        if (dueniaErht != null) {
+            ventanaDialogoErht.initOwner(dueniaErht);
         }
-        Scene escena = new Scene(raiz, ancho, alto);
-        escena.getStylesheets().add(HOJA_ESTILOS);
-        ventanaDialogo.setTitle(titulo);
-        ventanaDialogo.setScene(escena);
-        return ventanaDialogo;
+        Scene escenaErht = new Scene(raiz, ancho, alto);
+        escenaErht.getStylesheets().add(HOJA_ESTILOS);
+        ventanaDialogoErht.setTitle(titulo);
+        ventanaDialogoErht.setScene(escenaErht);
+        return ventanaDialogoErht;
     }
 
     // ------------------------------------------------------------------ estados
@@ -350,21 +350,21 @@ public final class UtilidadesInterfaz {
 
     /** Estado del alquiler; si está entregado y ya pasó la fecha, se agrega VENCIDO. */
     public static HBox insigniasAlquiler(AlquilerResumen a) {
-        HBox caja = new HBox(4, insigniaEstado(a.estado()));
+        HBox cajaErht = new HBox(4, insigniaEstado(a.estado()));
         if (vencido(a)) {
-            caja.getChildren().add(insigniaEstado("VENCIDO"));
+            cajaErht.getChildren().add(insigniaEstado("VENCIDO"));
         }
-        caja.setAlignment(Pos.CENTER_LEFT);
-        return caja;
+        cajaErht.setAlignment(Pos.CENTER_LEFT);
+        return cajaErht;
     }
 
     // ------------------------------------------------------------------ tablas
 
     public static <S, T> TableColumn<S, T> columna(String titulo, Function<S, T> valor,
                                                    Function<? super T, String> formato, double ancho) {
-        TableColumn<S, T> col = new TableColumn<>(cabeceraColumna(titulo));
-        col.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(valor.apply(c.getValue())));
-        col.setCellFactory(c -> new TableCell<>() {
+        TableColumn<S, T> colErht = new TableColumn<>(cabeceraColumna(titulo));
+        colErht.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(valor.apply(c.getValue())));
+        colErht.setCellFactory(c -> new TableCell<>() {
             @Override
             protected void updateItem(T item, boolean empty) {
                 super.updateItem(item, empty);
@@ -372,9 +372,9 @@ public final class UtilidadesInterfaz {
             }
         });
         if (ancho > 0) {
-            col.setPrefWidth(ancho);
+            colErht.setPrefWidth(ancho);
         }
-        return col;
+        return colErht;
     }
 
     public static <S, T> TableColumn<S, T> colTexto(String titulo, Function<S, T> valor, double ancho) {
@@ -382,15 +382,15 @@ public final class UtilidadesInterfaz {
     }
 
     public static <S, T extends Number> TableColumn<S, T> colNumero(String titulo, Function<S, T> valor, double ancho) {
-        TableColumn<S, T> col = columna(titulo, valor, UtilidadesInterfaz::texto, ancho);
-        col.setStyle("-fx-alignment: CENTER-RIGHT;");
-        return col;
+        TableColumn<S, T> colErht = columna(titulo, valor, UtilidadesInterfaz::texto, ancho);
+        colErht.setStyle("-fx-alignment: CENTER-RIGHT;");
+        return colErht;
     }
 
     public static <S> TableColumn<S, BigDecimal> colSoles(String titulo, Function<S, BigDecimal> valor, double ancho) {
-        TableColumn<S, BigDecimal> col = columna(titulo, valor, UtilidadesInterfaz::soles, ancho);
-        col.setStyle("-fx-alignment: CENTER-RIGHT;");
-        return col;
+        TableColumn<S, BigDecimal> colErht = columna(titulo, valor, UtilidadesInterfaz::soles, ancho);
+        colErht.setStyle("-fx-alignment: CENTER-RIGHT;");
+        return colErht;
     }
 
     public static <S> TableColumn<S, LocalDate> colFecha(String titulo, Function<S, LocalDate> valor, double ancho) {
@@ -398,9 +398,9 @@ public final class UtilidadesInterfaz {
     }
 
     public static <S> TableColumn<S, String> colEstado(String titulo, Function<S, String> valor, double ancho) {
-        TableColumn<S, String> col = new TableColumn<>(cabeceraColumna(titulo));
-        col.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(valor.apply(c.getValue())));
-        col.setCellFactory(c -> new TableCell<>() {
+        TableColumn<S, String> colErht = new TableColumn<>(cabeceraColumna(titulo));
+        colErht.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(valor.apply(c.getValue())));
+        colErht.setCellFactory(c -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -408,15 +408,15 @@ public final class UtilidadesInterfaz {
                 setGraphic(empty ? null : insigniaEstado(item));
             }
         });
-        col.setPrefWidth(ancho);
-        return col;
+        colErht.setPrefWidth(ancho);
+        return colErht;
     }
 
     /** Columna de estado de un alquiler (con VENCIDO si corresponde). */
     public static TableColumn<AlquilerResumen, AlquilerResumen> colEstadoAlquiler(double ancho) {
-        TableColumn<AlquilerResumen, AlquilerResumen> col = new TableColumn<>(cabeceraColumna("Estado"));
-        col.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue()));
-        col.setCellFactory(c -> new TableCell<>() {
+        TableColumn<AlquilerResumen, AlquilerResumen> colErht = new TableColumn<>(cabeceraColumna("Estado"));
+        colErht.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue()));
+        colErht.setCellFactory(c -> new TableCell<>() {
             @Override
             protected void updateItem(AlquilerResumen item, boolean empty) {
                 super.updateItem(item, empty);
@@ -424,22 +424,22 @@ public final class UtilidadesInterfaz {
                 setGraphic(empty || item == null ? null : insigniasAlquiler(item));
             }
         });
-        col.setComparator((a, b) -> a.estado().compareTo(b.estado()));
-        col.setPrefWidth(Math.max(ancho, 200));
-        col.setMinWidth(190);
-        return col;
+        colErht.setComparator((a, b) -> a.estado().compareTo(b.estado()));
+        colErht.setPrefWidth(Math.max(ancho, 200));
+        colErht.setMinWidth(190);
+        return colErht;
     }
 
     /** Ejecuta la acción al hacer doble clic en una fila. */
     public static <S> void alDobleClic(TableView<S> tabla, Consumer<S> accion) {
         tabla.setRowFactory(t -> {
-            TableRow<S> fila = new TableRow<>();
-            fila.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && !fila.isEmpty()) {
-                    accion.accept(fila.getItem());
+            TableRow<S> filaErht = new TableRow<>();
+            filaErht.setOnMouseClicked(e -> {
+                if (e.getClickCount() == 2 && !filaErht.isEmpty()) {
+                    accion.accept(filaErht.getItem());
                 }
             });
-            return fila;
+            return filaErht;
         });
     }
 
@@ -457,22 +457,22 @@ public final class UtilidadesInterfaz {
      * (por ejemplo "Todas" o "— Sin conjunto —").
      */
     public static <T> ComboBox<T> combo(List<T> elementos, Function<T, String> texto, String vacio) {
-        List<T> lista = new ArrayList<>();
+        List<T> listaErht = new ArrayList<>();
         if (vacio != null) {
-            lista.add(null);
+            listaErht.add(null);
         }
-        lista.addAll(elementos);
-        ComboBox<T> combo = new ComboBox<>();
-        combo.getItems().setAll(lista);
-        combo.setCellFactory(l -> new ListCell<>() {
+        listaErht.addAll(elementos);
+        ComboBox<T> comboErht = new ComboBox<>();
+        comboErht.getItems().setAll(listaErht);
+        comboErht.setCellFactory(l -> new ListCell<>() {
             @Override
             protected void updateItem(T item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty ? null : item == null ? vacio : texto.apply(item));
             }
         });
-        combo.setButtonCell(combo.getCellFactory().call(null));
-        combo.setConverter(new StringConverter<>() {
+        comboErht.setButtonCell(comboErht.getCellFactory().call(null));
+        comboErht.setConverter(new StringConverter<>() {
             @Override
             public String toString(T item) {
                 return item == null ? (vacio == null ? "" : vacio) : texto.apply(item);
@@ -484,14 +484,14 @@ public final class UtilidadesInterfaz {
             }
         });
         if (vacio != null) {
-            combo.setPromptText(vacio);
-            combo.getSelectionModel().selectFirst();
+            comboErht.setPromptText(vacio);
+            comboErht.getSelectionModel().selectFirst();
         } else if (!elementos.isEmpty()) {
-            combo.getSelectionModel().selectFirst();
+            comboErht.getSelectionModel().selectFirst();
         }
-        combo.setVisibleRowCount(14);
-        combo.setMaxWidth(Double.MAX_VALUE);
-        return combo;
+        comboErht.setVisibleRowCount(14);
+        comboErht.setMaxWidth(Double.MAX_VALUE);
+        return comboErht;
     }
 
     public static ComboBox<String> comboTexto(List<String> elementos, String vacio) {
@@ -545,9 +545,9 @@ public final class UtilidadesInterfaz {
         imagen.getPixelReader().getPixels(0, 0, w, h, javafx.scene.image.PixelFormat.getIntArgbInstance(), px, 0, w);
         java.awt.image.BufferedImage bi = new java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB);
         bi.setRGB(0, 0, w, h, px, 0, w);
-        try (java.io.ByteArrayOutputStream salida = new java.io.ByteArrayOutputStream()) {
-            javax.imageio.ImageIO.write(bi, "png", salida);
-            return salida.toByteArray();
+        try (java.io.ByteArrayOutputStream salidaErht = new java.io.ByteArrayOutputStream()) {
+            javax.imageio.ImageIO.write(bi, "png", salidaErht);
+            return salidaErht.toByteArray();
         } catch (java.io.IOException e) {
             throw new ExcepcionReglaNegocio("No se pudo preparar la imagen del diseño: " + e.getMessage());
         }
@@ -574,13 +574,13 @@ public final class UtilidadesInterfaz {
      * intercala un espacio fino (U+2009) entre letras.
      */
     public static String espaciado(String texto) {
-        String mayus = texto.toUpperCase(new Locale("es", "PE"));
-        StringBuilder sb = new StringBuilder(mayus.length() * 2);
-        for (int i = 0; i < mayus.length(); i++) {
+        String mayusErht = texto.toUpperCase(new Locale("es", "PE"));
+        StringBuilder sb = new StringBuilder(mayusErht.length() * 2);
+        for (int i = 0; i < mayusErht.length(); i++) {
             if (i > 0) {
                 sb.append('\u2009');
             }
-            sb.append(mayus.charAt(i));
+            sb.append(mayusErht.charAt(i));
         }
         return sb.toString();
     }
@@ -601,18 +601,18 @@ public final class UtilidadesInterfaz {
 
     /** Encabezado de pantalla: subtítulo dorado, título serif y una línea de ayuda opcional. */
     public static VBox encabezado(String sobretitulo, String titulo, String descripcion) {
-        VBox caja = new VBox(sobretitulo(sobretitulo), titulo(titulo));
+        VBox cajaErht = new VBox(sobretitulo(sobretitulo), titulo(titulo));
         if (descripcion != null && !descripcion.isBlank()) {
-            caja.getChildren().add(subtitulo(descripcion));
+            cajaErht.getChildren().add(subtitulo(descripcion));
         }
-        caja.getStyleClass().add("encabezado");
-        return caja;
+        cajaErht.getStyleClass().add("encabezado");
+        return cajaErht;
     }
 
     /** Tarjeta de indicador con ícono (pantalla de inicio). */
     public static HBox tarjeta(String titulo, String valor, String color, Ikon ikon) {
-        StackPane cuadro = new StackPane(icono(ikon));
-        cuadro.getStyleClass().add("tarjeta-icono");
+        StackPane cuadroErht = new StackPane(icono(ikon));
+        cuadroErht.getStyleClass().add("tarjeta-icono");
         Label t = new Label(titulo);
         t.getStyleClass().add("tarjeta-titulo");
         t.setWrapText(true);
@@ -620,14 +620,14 @@ public final class UtilidadesInterfaz {
         Label v = new Label(valor);
         v.getStyleClass().add("tarjeta-valor");
         v.setMinWidth(Region.USE_PREF_SIZE);    // el número nunca se recorta
-        VBox textos = new VBox(2, t, v);
-        HBox.setHgrow(textos, Priority.ALWAYS);
-        HBox caja = new HBox(14, cuadro, textos);
-        caja.setAlignment(Pos.CENTER_LEFT);
-        caja.getStyleClass().addAll("tarjeta", "con-icono", color);
-        HBox.setHgrow(caja, Priority.ALWAYS);
-        caja.setMaxWidth(Double.MAX_VALUE);
-        return caja;
+        VBox textosErht = new VBox(2, t, v);
+        HBox.setHgrow(textosErht, Priority.ALWAYS);
+        HBox cajaErht = new HBox(14, cuadroErht, textosErht);
+        cajaErht.setAlignment(Pos.CENTER_LEFT);
+        cajaErht.getStyleClass().addAll("tarjeta", "con-icono", color);
+        HBox.setHgrow(cajaErht, Priority.ALWAYS);
+        cajaErht.setMaxWidth(Double.MAX_VALUE);
+        return cajaErht;
     }
 
     public static Label titulo(String texto) {
@@ -662,18 +662,18 @@ public final class UtilidadesInterfaz {
         t.setWrapText(true);
         Label v = new Label(valor);
         v.getStyleClass().add("tarjeta-valor");
-        VBox caja = new VBox(4, t, v);
-        caja.getStyleClass().addAll("tarjeta", color);
-        HBox.setHgrow(caja, Priority.ALWAYS);
-        caja.setMaxWidth(Double.MAX_VALUE);
-        return caja;
+        VBox cajaErht = new VBox(4, t, v);
+        cajaErht.getStyleClass().addAll("tarjeta", color);
+        HBox.setHgrow(cajaErht, Priority.ALWAYS);
+        cajaErht.setMaxWidth(Double.MAX_VALUE);
+        return cajaErht;
     }
 
     /** Panel blanco con borde. */
     public static VBox panel(Node... hijos) {
-        VBox caja = new VBox(10, hijos);
-        caja.getStyleClass().add("panel");
-        return caja;
+        VBox cajaErht = new VBox(10, hijos);
+        cajaErht.getStyleClass().add("panel");
+        return cajaErht;
     }
 
     /** Rejilla de formulario de dos columnas (etiqueta | control). */

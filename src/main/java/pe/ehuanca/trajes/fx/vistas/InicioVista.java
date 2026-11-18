@@ -71,42 +71,42 @@ public class InicioVista extends VBox {
     private static final int CANTIDAD_MAS_ALQUILADOS = 3;
     private static final DateTimeFormatter DIA_MES = DateTimeFormatter.ofPattern("dd/MM");
 
-    private final Servicios s;
-    private final AccionReservar accion;
+    private final Servicios sErht;
+    private final AccionReservar accionErht;
     /** true: panel de la tienda (conjunto + próximos movimientos); false: portal del cliente. */
-    private final boolean tienda;
+    private final boolean tiendaErht;
     /** Tienda: abre la pantalla Solicitudes (clic en el indicador). */
-    private final Runnable verSolicitudes;
+    private final Runnable verSolicitudesErht;
 
     // buscador
-    private final ToggleGroup modalidad = new ToggleGroup();
-    private final ComboBox<Opcion> danza;
-    private final ComboBox<Opcion> conjunto;
-    private final DatePicker recojo = UtilidadesInterfaz.selectorFecha(LocalDate.now().plusDays(1));
-    private final DatePicker devolucion = UtilidadesInterfaz.selectorFecha(LocalDate.now().plusDays(4));
-    private final Label duracion = new Label();
+    private final ToggleGroup modalidadErht = new ToggleGroup();
+    private final ComboBox<Opcion> danzaErht;
+    private final ComboBox<Opcion> conjuntoErht;
+    private final DatePicker recojoErht = UtilidadesInterfaz.selectorFecha(LocalDate.now().plusDays(1));
+    private final DatePicker devolucionErht = UtilidadesInterfaz.selectorFecha(LocalDate.now().plusDays(4));
+    private final Label duracionErht = new Label();
 
     // resultados
-    private final Label ubicacion = new Label();
-    private final Label tituloResultados = new Label();
-    private final Label subResultados = UtilidadesInterfaz.subtitulo("");
-    private final ToggleGroup filtroDanza = new ToggleGroup();
-    private final FlowPane etiquetasDanza = new FlowPane(8, 8);
-    private final ComboBox<String> orden = UtilidadesInterfaz.comboTexto(
+    private final Label ubicacionErht = new Label();
+    private final Label tituloResultadosErht = new Label();
+    private final Label subResultadosErht = UtilidadesInterfaz.subtitulo("");
+    private final ToggleGroup filtroDanzaErht = new ToggleGroup();
+    private final FlowPane etiquetasDanzaErht = new FlowPane(8, 8);
+    private final ComboBox<String> ordenErht = UtilidadesInterfaz.comboTexto(
             List.of(ORDEN_RECOMENDADO, ORDEN_MENOR, ORDEN_MAYOR, ORDEN_POPULAR), null);
-    private final TarjetaTraje.Cuadricula cuadricula = new TarjetaTraje.Cuadricula();
+    private final TarjetaTraje.Cuadricula cuadriculaErht = new TarjetaTraje.Cuadricula();
 
     // próximos movimientos
-    private final HBox tarjetas = new HBox(18);
-    private final TableView<AlquilerResumen> tabla = UtilidadesInterfaz.tabla("No hay salidas ni devoluciones pendientes.");
+    private final HBox tarjetasErht = new HBox(18);
+    private final TableView<AlquilerResumen> tablaErht = UtilidadesInterfaz.tabla("No hay salidas ni devoluciones pendientes.");
 
     // última búsqueda
-    private List<TrajeFila> encontrados = List.of();
-    private Set<Integer> masAlquilados = Set.of();
-    private Map<Integer, LocalDate> libreDesde = Map.of();
-    private final Map<Integer, List<String>> piezas = new HashMap<>();
-    private LocalDate buscadoDesde;
-    private LocalDate buscadoHasta;
+    private List<TrajeFila> encontradosErht = List.of();
+    private Set<Integer> masAlquiladosErht = Set.of();
+    private Map<Integer, LocalDate> libreDesdeErht = Map.of();
+    private final Map<Integer, List<String>> piezasErht = new HashMap<>();
+    private LocalDate buscadoDesdeErht;
+    private LocalDate buscadoHastaErht;
 
     public static InicioVista paraTienda(Servicios s, AccionReservar accion, Runnable verSolicitudes) {
         return new InicioVista(s, accion, true, verSolicitudes);
@@ -117,94 +117,94 @@ public class InicioVista extends VBox {
     }
 
     private InicioVista(Servicios s, AccionReservar accion, boolean tienda, Runnable verSolicitudes) {
-        this.s = s;
-        this.accion = accion;
-        this.tienda = tienda;
-        this.verSolicitudes = verSolicitudes;
+        this.sErht = s;
+        this.accionErht = accion;
+        this.tiendaErht = tienda;
+        this.verSolicitudesErht = verSolicitudes;
         getStyleClass().add("inicio");
 
-        List<Opcion> danzas = s.trajes().danzas();
-        danza = UtilidadesInterfaz.combo(danzas, Opcion::nombre, "Todas las danzas");
-        conjunto = UtilidadesInterfaz.combo(s.clientes().opcionesConjunto(), Opcion::nombre, "Sin conjunto (opcional)");
+        List<Opcion> danzasErht = s.trajes().danzas();
+        danzaErht = UtilidadesInterfaz.combo(danzasErht, Opcion::nombre, "Todas las danzas");
+        conjuntoErht = UtilidadesInterfaz.combo(s.clientes().opcionesConjunto(), Opcion::nombre, "Sin conjunto (opcional)");
 
-        VBox buscador = buscador();
+        VBox buscadorErht = buscadorErht();
         // La tarjeta de búsqueda se superpone al borde inferior del banner.
-        VBox.setMargin(buscador, new Insets(-92, 44, 0, 44));
-        VBox resultados = resultados(danzas);
-        VBox.setMargin(resultados, new Insets(46, 0, 0, 0));
-        getChildren().addAll(portada(), buscador, resultados);
+        VBox.setMargin(buscadorErht, new Insets(-92, 44, 0, 44));
+        VBox resultadosErht = resultadosErht(danzasErht);
+        VBox.setMargin(resultadosErht, new Insets(46, 0, 0, 0));
+        getChildren().addAll(portadaErht(), buscadorErht, resultadosErht);
         if (tienda) {
-            VBox movimientos = movimientos();
-            VBox.setMargin(movimientos, new Insets(54, 0, 0, 0));
-            getChildren().add(movimientos);
+            VBox movimientosErht = movimientosErht();
+            VBox.setMargin(movimientosErht, new Insets(54, 0, 0, 0));
+            getChildren().add(movimientosErht);
         }
-        actualizarDuracion();
-        UtilidadesInterfaz.ejecutar(this::buscar);
+        actualizarDuracionErht();
+        UtilidadesInterfaz.ejecutar(this::buscarErht);
         if (tienda) {
-            UtilidadesInterfaz.ejecutar(this::cargarMovimientos);
+            UtilidadesInterfaz.ejecutar(this::cargarMovimientosErht);
         }
     }
 
     // ------------------------------------------------------------------ banner
 
-    private StackPane portada() {
-        Label chip = new Label("Festividad Virgen de la Candelaria  •  Disponibilidad en tiempo real",
+    private StackPane portadaErht() {
+        Label chipErht = new Label("Festividad Virgen de la Candelaria  •  Disponibilidad en tiempo real",
                 UtilidadesInterfaz.icono(Feather.STAR));
-        chip.getStyleClass().addAll("etiqueta-opcion", "etiqueta-opcion-portada");
+        chipErht.getStyleClass().addAll("etiqueta-opcion", "etiqueta-opcion-portada");
 
         Text t1 = new Text("Luce tu mejor traje\nen la ");
         t1.getStyleClass().addAll("portada-titulo", "portada-blanco");
         Text t2 = new Text("Candelaria");
         t2.getStyleClass().addAll("portada-titulo", "portada-dorado");
-        TextFlow titulo = new TextFlow(t1, t2);
-        titulo.setLineSpacing(-8);
+        TextFlow tituloErht = new TextFlow(t1, t2);
+        tituloErht.setLineSpacing(-8);
 
-        TextFlow parrafo = new TextFlow(
-                textoNormal("Más de "), negrita("50 trajes de luces y autóctonos"),
-                textoNormal(" para diablada, morenada, caporales y más. Elige tus fechas, mira qué está "),
-                negrita("libre en tiempo real"), textoNormal(" y resérvalo con "), negrita("garantía devuelta"),
-                textoNormal(" si el traje vuelve sin daños."));
-        parrafo.setLineSpacing(4);
-        parrafo.setMaxWidth(560);
+        TextFlow parrafoErht = new TextFlow(
+                textoNormalErht("Más de "), negritaErht("50 trajes de luces y autóctonos"),
+                textoNormalErht(" para diablada, morenada, caporales y más. Elige tus fechas, mira qué está "),
+                negritaErht("libre en tiempo real"), textoNormalErht(" y resérvalo con "), negritaErht("garantía devuelta"),
+                textoNormalErht(" si el traje vuelve sin daños."));
+        parrafoErht.setLineSpacing(4);
+        parrafoErht.setMaxWidth(560);
 
-        VBox textos = new VBox(20, chip, titulo, parrafo);
-        textos.setMaxWidth(660);
-        textos.setAlignment(Pos.CENTER_LEFT);
-        StackPane.setAlignment(textos, Pos.CENTER_LEFT);
+        VBox textosErht = new VBox(20, chipErht, tituloErht, parrafoErht);
+        textosErht.setMaxWidth(660);
+        textosErht.setAlignment(Pos.CENTER_LEFT);
+        StackPane.setAlignment(textosErht, Pos.CENTER_LEFT);
 
         // Chakana y grecas doradas a la derecha (opacidad 0.33). Sin fotos de personas.
-        Group chakana = Adornos.chakanaEnGrupo(196, "adorno");
-        Group grecaArriba = Adornos.greca(5, 9, "adorno-linea", "adorno");
-        Group grecaAbajo = Adornos.greca(5, 9, "adorno-linea", "adorno");
-        grecaAbajo.setScaleY(-1);
-        VBox adornos = new VBox(24, grecaArriba, chakana, grecaAbajo);
-        adornos.setAlignment(Pos.CENTER);
-        adornos.setOpacity(0.33);
-        adornos.setMouseTransparent(true);
-        adornos.setManaged(false);
+        Group chakanaErht = Adornos.chakanaEnGrupo(196, "adorno");
+        Group grecaArribaErht = Adornos.greca(5, 9, "adorno-linea", "adorno");
+        Group grecaAbajoErht = Adornos.greca(5, 9, "adorno-linea", "adorno");
+        grecaAbajoErht.setScaleY(-1);
+        VBox adornosErht = new VBox(24, grecaArribaErht, chakanaErht, grecaAbajoErht);
+        adornosErht.setAlignment(Pos.CENTER);
+        adornosErht.setOpacity(0.33);
+        adornosErht.setMouseTransparent(true);
+        adornosErht.setManaged(false);
 
-        StackPane banner = new StackPane(adornos, textos);
-        banner.getStyleClass().add("portada");
-        Runnable ubicar = () -> {
-            adornos.autosize();
-            double x = banner.getWidth() - adornos.getWidth() - Math.max(40, banner.getWidth() * 0.06);
+        StackPane bannerErht = new StackPane(adornosErht, textosErht);
+        bannerErht.getStyleClass().add("portada");
+        Runnable ubicarErht = () -> {
+            adornosErht.autosize();
+            double x = bannerErht.getWidth() - adornosErht.getWidth() - Math.max(40, bannerErht.getWidth() * 0.06);
             // centrado en la parte del banner que no tapa el buscador (los 92 px de abajo)
-            adornos.relocate(x, Math.max(24, (banner.getHeight() - 92 - adornos.getHeight()) / 2));
+            adornosErht.relocate(x, Math.max(24, (bannerErht.getHeight() - 92 - adornosErht.getHeight()) / 2));
             // En ventanas angostas los adornos chocarían con el título: se ocultan.
-            adornos.setVisible(x > 700);
+            adornosErht.setVisible(x > 700);
         };
-        banner.widthProperty().addListener((o, a, b) -> ubicar.run());
-        banner.heightProperty().addListener((o, a, b) -> ubicar.run());
-        return banner;
+        bannerErht.widthProperty().addListener((o, a, b) -> ubicarErht.run());
+        bannerErht.heightProperty().addListener((o, a, b) -> ubicarErht.run());
+        return bannerErht;
     }
 
-    private static Text textoNormal(String t) {
+    private static Text textoNormalErht(String t) {
         Text x = new Text(t);
         x.getStyleClass().add("portada-parrafo");
         return x;
     }
 
-    private static Text negrita(String t) {
+    private static Text negritaErht(String t) {
         Text x = new Text(t);
         x.getStyleClass().add("portada-negrita");
         return x;
@@ -212,82 +212,82 @@ public class InicioVista extends VBox {
 
     // ------------------------------------------------------------------ buscador
 
-    private VBox buscador() {
-        ToggleButton enTienda = pestana(RECOJO_TIENDA, Feather.SHOPPING_BAG);
-        ToggleButton pestanaTienda = pestana(ENTREGA_EN_TIENDA, Feather.TRUCK);
-        enTienda.setSelected(true);
-        modalidad.selectedToggleProperty().addListener((o, antes, ahora) -> {
+    private VBox buscadorErht() {
+        ToggleButton enTiendaErht = pestanaErht(RECOJO_TIENDA, Feather.SHOPPING_BAG);
+        ToggleButton pestanaTiendaErht = pestanaErht(ENTREGA_EN_TIENDA, Feather.TRUCK);
+        enTiendaErht.setSelected(true);
+        modalidadErht.selectedToggleProperty().addListener((o, antes, ahora) -> {
             if (ahora == null) {
-                modalidad.selectToggle(antes);   // siempre hay una elegida
+                modalidadErht.selectToggle(antes);   // siempre hay una elegida
             } else {
-                actualizarUbicacion();
+                actualizarUbicacionErht();
             }
         });
-        HBox pestanas = new HBox(6, enTienda, pestanaTienda);
-        Region linea = new Region();
-        linea.getStyleClass().add("buscador-linea");
+        HBox pestanasErht = new HBox(6, enTiendaErht, pestanaTiendaErht);
+        Region lineaErht = new Region();
+        lineaErht.getStyleClass().add("buscador-linea");
 
-        GridPane fila = new GridPane();
-        fila.setHgap(14);
+        GridPane filaErht = new GridPane();
+        filaErht.setHgap(14);
         // Anchos preferidos proporcionales + crecimiento (sin percentWidth, que infla el ancho mínimo).
         for (double a : new double[]{240, 260, 180, 180}) {
             ColumnConstraints c = new ColumnConstraints();
             c.setMinWidth(90);
             c.setPrefWidth(a);
             c.setHgrow(Priority.ALWAYS);
-            fila.getColumnConstraints().add(c);
+            filaErht.getColumnConstraints().add(c);
         }
-        ColumnConstraints cBoton = new ColumnConstraints();
-        cBoton.setMinWidth(Region.USE_PREF_SIZE);
-        fila.getColumnConstraints().add(cBoton);
+        ColumnConstraints cBotonErht = new ColumnConstraints();
+        cBotonErht.setMinWidth(Region.USE_PREF_SIZE);
+        filaErht.getColumnConstraints().add(cBotonErht);
 
-        Button ver = UtilidadesInterfaz.estilo(new Button("Ver disponibles", UtilidadesInterfaz.icono(Feather.SEARCH)), "boton-primario");
-        ver.setPrefHeight(44);
-        ver.setMinWidth(Region.USE_PREF_SIZE);
-        ver.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::buscar));
+        Button verErht = UtilidadesInterfaz.estilo(new Button("Ver disponibles", UtilidadesInterfaz.icono(Feather.SEARCH)), "boton-primario");
+        verErht.setPrefHeight(44);
+        verErht.setMinWidth(Region.USE_PREF_SIZE);
+        verErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::buscarErht));
 
-        fila.add(campo("Danza", danza), 0, 0);
-        if (tienda) {
-            fila.add(campo("Conjunto", conjunto), 1, 0);
+        filaErht.add(campoErht("Danza", danzaErht), 0, 0);
+        if (tiendaErht) {
+            filaErht.add(campoErht("Conjunto", conjuntoErht), 1, 0);
         } else {
             // el cliente no reserva a nombre de un conjunto: la columna queda vacía y sin ancho
-            fila.getColumnConstraints().get(1).setPrefWidth(0);
-            fila.getColumnConstraints().get(1).setMinWidth(0);
-            fila.getColumnConstraints().get(1).setHgrow(javafx.scene.layout.Priority.NEVER);
-            fila.setHgap(14);
+            filaErht.getColumnConstraints().get(1).setPrefWidth(0);
+            filaErht.getColumnConstraints().get(1).setMinWidth(0);
+            filaErht.getColumnConstraints().get(1).setHgrow(javafx.scene.layout.Priority.NEVER);
+            filaErht.setHgap(14);
         }
-        fila.add(campo("Fecha de recojo", recojo), 2, 0);
-        fila.add(campo("Devolución", devolucion), 3, 0);
-        VBox cajaBoton = new VBox(ver);
-        cajaBoton.setAlignment(Pos.BOTTOM_LEFT);
-        fila.add(cajaBoton, 4, 0);
+        filaErht.add(campoErht("Fecha de recojo", recojoErht), 2, 0);
+        filaErht.add(campoErht("Devolución", devolucionErht), 3, 0);
+        VBox cajaBotonErht = new VBox(verErht);
+        cajaBotonErht.setAlignment(Pos.BOTTOM_LEFT);
+        filaErht.add(cajaBotonErht, 4, 0);
 
-        recojo.valueProperty().addListener((o, a, b) -> actualizarDuracion());
-        devolucion.valueProperty().addListener((o, a, b) -> actualizarDuracion());
+        recojoErht.valueProperty().addListener((o, a, b) -> actualizarDuracionErht());
+        devolucionErht.valueProperty().addListener((o, a, b) -> actualizarDuracionErht());
 
-        Label nota = new Label("Se excluyen los trajes en mantenimiento y los solicitados, reservados o entregados en esas "
+        Label notaErht = new Label("Se excluyen los trajes en mantenimiento y los solicitados, reservados o entregados en esas "
                 + "fechas. Conjuntos que alquilan 5 trajes o más: 10% de descuento.");
-        nota.getStyleClass().add("nota");
-        nota.setWrapText(true);
-        nota.setMinHeight(Region.USE_PREF_SIZE);
-        HBox.setHgrow(nota, Priority.ALWAYS);
-        duracion.setMinWidth(Region.USE_PREF_SIZE);
-        HBox pie = new HBox(14, duracion, nota);
-        pie.setAlignment(Pos.CENTER_LEFT);
+        notaErht.getStyleClass().add("nota");
+        notaErht.setWrapText(true);
+        notaErht.setMinHeight(Region.USE_PREF_SIZE);
+        HBox.setHgrow(notaErht, Priority.ALWAYS);
+        duracionErht.setMinWidth(Region.USE_PREF_SIZE);
+        HBox pieErht = new HBox(14, duracionErht, notaErht);
+        pieErht.setAlignment(Pos.CENTER_LEFT);
 
-        VBox caja = new VBox(pestanas, linea, fila, pie);
-        caja.getStyleClass().add("buscador");
-        return caja;
+        VBox cajaErht = new VBox(pestanasErht, lineaErht, filaErht, pieErht);
+        cajaErht.getStyleClass().add("buscador");
+        return cajaErht;
     }
 
-    private ToggleButton pestana(String texto, Feather ikon) {
+    private ToggleButton pestanaErht(String texto, Feather ikon) {
         ToggleButton b = new ToggleButton(texto, UtilidadesInterfaz.icono(ikon));
         b.getStyleClass().add("pestana");
-        b.setToggleGroup(modalidad);
+        b.setToggleGroup(modalidadErht);
         return b;
     }
 
-    private static VBox campo(String titulo, Region control) {
+    private static VBox campoErht(String titulo, Region control) {
         Label l = new Label(UtilidadesInterfaz.espaciado(titulo));
         l.getStyleClass().add("campo-titulo");
         control.setMaxWidth(Double.MAX_VALUE);
@@ -296,249 +296,249 @@ public class InicioVista extends VBox {
         return new VBox(7, l, control);
     }
 
-    private static long dias(LocalDate a, LocalDate b) {
+    private static long diasErht(LocalDate a, LocalDate b) {
         return Math.max(1, ChronoUnit.DAYS.between(a, b));
     }
 
-    private static String textoDias(long n) {
+    private static String textoDiasErht(long n) {
         return n + (n == 1 ? " día" : " días");
     }
 
-    private void actualizarDuracion() {
-        LocalDate a = recojo.getValue();
-        LocalDate b = devolucion.getValue();
-        duracion.getStyleClass().removeAll("etiqueta-opcion-verde", "etiqueta-opcion-rojo");
-        if (!duracion.getStyleClass().contains("etiqueta-opcion")) {
-            duracion.getStyleClass().add("etiqueta-opcion");
+    private void actualizarDuracionErht() {
+        LocalDate a = recojoErht.getValue();
+        LocalDate b = devolucionErht.getValue();
+        duracionErht.getStyleClass().removeAll("etiqueta-opcion-verde", "etiqueta-opcion-rojo");
+        if (!duracionErht.getStyleClass().contains("etiqueta-opcion")) {
+            duracionErht.getStyleClass().add("etiqueta-opcion");
         }
         if (a == null || b == null || b.isBefore(a)) {
-            duracion.setText(a == null || b == null ? "Elige las fechas" : "La devolución es antes del recojo");
-            duracion.setGraphic(UtilidadesInterfaz.icono(Feather.ALERT_CIRCLE));
-            duracion.getStyleClass().add("etiqueta-opcion-rojo");
+            duracionErht.setText(a == null || b == null ? "Elige las fechas" : "La devolución es antes del recojo");
+            duracionErht.setGraphic(UtilidadesInterfaz.icono(Feather.ALERT_CIRCLE));
+            duracionErht.getStyleClass().add("etiqueta-opcion-rojo");
         } else {
-            duracion.setText("Duración: " + textoDias(dias(a, b)));
-            duracion.setGraphic(UtilidadesInterfaz.icono(Feather.CLOCK));
-            duracion.getStyleClass().add("etiqueta-opcion-verde");
+            duracionErht.setText("Duración: " + textoDiasErht(diasErht(a, b)));
+            duracionErht.setGraphic(UtilidadesInterfaz.icono(Feather.CLOCK));
+            duracionErht.getStyleClass().add("etiqueta-opcion-verde");
         }
     }
 
     // ------------------------------------------------------------------ resultados
 
-    private VBox resultados(List<Opcion> danzas) {
-        ubicacion.getStyleClass().add("sobretitulo");
-        ubicacion.setGraphic(UtilidadesInterfaz.icono(Feather.MAP_PIN));
-        ubicacion.setGraphicTextGap(8);
-        actualizarUbicacion();
-        tituloResultados.getStyleClass().add("resultados-titulo");
-        subResultados.setMinHeight(Region.USE_PREF_SIZE);
+    private VBox resultadosErht(List<Opcion> danzas) {
+        ubicacionErht.getStyleClass().add("sobretitulo");
+        ubicacionErht.setGraphic(UtilidadesInterfaz.icono(Feather.MAP_PIN));
+        ubicacionErht.setGraphicTextGap(8);
+        actualizarUbicacionErht();
+        tituloResultadosErht.getStyleClass().add("resultados-titulo");
+        subResultadosErht.setMinHeight(Region.USE_PREF_SIZE);
 
-        etiquetasDanza.getChildren().add(etiquetaFiltro("Todas", null));
+        etiquetasDanzaErht.getChildren().add(etiquetaFiltroErht("Todas", null));
         for (Opcion d : danzas) {
-            etiquetasDanza.getChildren().add(etiquetaFiltro(d.nombre(), d));
+            etiquetasDanzaErht.getChildren().add(etiquetaFiltroErht(d.nombre(), d));
         }
-        ((ToggleButton) etiquetasDanza.getChildren().get(0)).setSelected(true);
-        filtroDanza.selectedToggleProperty().addListener((o, antes, ahora) -> {
+        ((ToggleButton) etiquetasDanzaErht.getChildren().get(0)).setSelected(true);
+        filtroDanzaErht.selectedToggleProperty().addListener((o, antes, ahora) -> {
             if (ahora == null) {
-                filtroDanza.selectToggle(antes);
+                filtroDanzaErht.selectToggle(antes);
             } else {
-                pintar();
+                pintarErht();
             }
         });
-        HBox.setHgrow(etiquetasDanza, Priority.ALWAYS);
+        HBox.setHgrow(etiquetasDanzaErht, Priority.ALWAYS);
 
-        orden.setValue(ORDEN_RECOMENDADO);
-        orden.setPrefWidth(200);
-        orden.setMinWidth(200);
-        orden.setOnAction(e -> pintar());
-        Label lOrden = UtilidadesInterfaz.etiqueta("Ordenar por");
-        lOrden.setMinWidth(Region.USE_PREF_SIZE);
-        HBox ordenCaja = new HBox(10, lOrden, orden);
-        ordenCaja.setAlignment(Pos.CENTER_RIGHT);
-        ordenCaja.setMinWidth(Region.USE_PREF_SIZE);
-        HBox filtros = new HBox(20, etiquetasDanza, ordenCaja);
-        filtros.setAlignment(Pos.TOP_LEFT);
+        ordenErht.setValue(ORDEN_RECOMENDADO);
+        ordenErht.setPrefWidth(200);
+        ordenErht.setMinWidth(200);
+        ordenErht.setOnAction(e -> pintarErht());
+        Label lOrdenErht = UtilidadesInterfaz.etiqueta("Ordenar por");
+        lOrdenErht.setMinWidth(Region.USE_PREF_SIZE);
+        HBox ordenCajaErht = new HBox(10, lOrdenErht, ordenErht);
+        ordenCajaErht.setAlignment(Pos.CENTER_RIGHT);
+        ordenCajaErht.setMinWidth(Region.USE_PREF_SIZE);
+        HBox filtrosErht = new HBox(20, etiquetasDanzaErht, ordenCajaErht);
+        filtrosErht.setAlignment(Pos.TOP_LEFT);
 
-        VBox caja = new VBox(8, ubicacion, tituloResultados, subResultados, filtros, cuadricula);
-        VBox.setMargin(filtros, new Insets(10, 0, 8, 0));
-        caja.getStyleClass().add("inicio-seccion");
-        return caja;
+        VBox cajaErht = new VBox(8, ubicacionErht, tituloResultadosErht, subResultadosErht, filtrosErht, cuadriculaErht);
+        VBox.setMargin(filtrosErht, new Insets(10, 0, 8, 0));
+        cajaErht.getStyleClass().add("inicio-seccion");
+        return cajaErht;
     }
 
-    private ToggleButton etiquetaFiltro(String texto, Opcion d) {
+    private ToggleButton etiquetaFiltroErht(String texto, Opcion d) {
         ToggleButton b = new ToggleButton(texto);
         b.getStyleClass().add("etiqueta-opcion-filtro");
         b.setUserData(d);
-        b.setToggleGroup(filtroDanza);
+        b.setToggleGroup(filtroDanzaErht);
         return b;
     }
 
-    private boolean esEntregaEnTienda() {
-        return modalidad.getSelectedToggle() != null
-                && ENTREGA_EN_TIENDA.equals(((ToggleButton) modalidad.getSelectedToggle()).getText());
+    private boolean esEntregaEnTiendaErht() {
+        return modalidadErht.getSelectedToggle() != null
+                && ENTREGA_EN_TIENDA.equals(((ToggleButton) modalidadErht.getSelectedToggle()).getText());
     }
 
-    private void actualizarUbicacion() {
-        ubicacion.setText(UtilidadesInterfaz.espaciado("Juliaca – Tienda principal") + "  •  "
-                + UtilidadesInterfaz.espaciado(esEntregaEnTienda() ? "Entrega en local del conjunto" : "Recojo en tienda"));
+    private void actualizarUbicacionErht() {
+        ubicacionErht.setText(UtilidadesInterfaz.espaciado("Juliaca – Tienda principal") + "  •  "
+                + UtilidadesInterfaz.espaciado(esEntregaEnTiendaErht() ? "Entrega en local del conjunto" : "Recojo en tienda"));
     }
 
     /** Busca con la función fn_trajes_disponibles de la base y prepara los datos de las tarjetas. */
-    private void buscar() {
-        LocalDate desde = UtilidadesInterfaz.requerido(recojo, "Fecha de recojo");
-        LocalDate hasta = UtilidadesInterfaz.requerido(devolucion, "Devolución");
-        if (hasta.isBefore(desde)) {
+    private void buscarErht() {
+        LocalDate desdeErht = UtilidadesInterfaz.requerido(recojoErht, "Fecha de recojo");
+        LocalDate hastaErht = UtilidadesInterfaz.requerido(devolucionErht, "Devolución");
+        if (hastaErht.isBefore(desdeErht)) {
             throw new ExcepcionReglaNegocio("La fecha de devolución no puede ser anterior a la de recojo.");
         }
-        Opcion d = danza.getValue();
-        Set<String> codigos = new HashSet<>(
-                s.alquileres().codigosDisponibles(desde, hasta, d == null ? null : d.nombre()));
+        Opcion d = danzaErht.getValue();
+        Set<String> codigosErht = new HashSet<>(
+                sErht.alquileres().codigosDisponibles(desdeErht, hastaErht, d == null ? null : d.nombre()));
 
-        List<TrajeFila> inventario = s.trajes().listar(null, null, null, null);
-        encontrados = inventario.stream().filter(t -> codigos.contains(t.codigo())).toList();
-        masAlquilados = new HashSet<>();
-        inventario.stream()
+        List<TrajeFila> inventarioErht = sErht.trajes().listar(null, null, null, null);
+        encontradosErht = inventarioErht.stream().filter(t -> codigosErht.contains(t.codigo())).toList();
+        masAlquiladosErht = new HashSet<>();
+        inventarioErht.stream()
                 .filter(t -> t.vecesAlquilado() > 0 && !"BAJA".equals(t.estado()))
                 .sorted(Comparator.comparingLong(TrajeFila::vecesAlquilado).reversed())
                 .limit(CANTIDAD_MAS_ALQUILADOS)
-                .forEach(t -> masAlquilados.add(t.idTraje()));
-        libreDesde = TarjetaTraje.proximaFechaLibre(s.alquileres().ocupaciones(), LocalDate.now());
-        buscadoDesde = desde;
-        buscadoHasta = hasta;
+                .forEach(t -> masAlquiladosErht.add(t.idTraje()));
+        libreDesdeErht = TarjetaTraje.proximaFechaLibre(sErht.alquileres().ocupaciones(), LocalDate.now());
+        buscadoDesdeErht = desdeErht;
+        buscadoHastaErht = hastaErht;
 
         // El chip de danza sigue a la danza buscada.
-        for (Node n : etiquetasDanza.getChildren()) {
+        for (Node n : etiquetasDanzaErht.getChildren()) {
             Opcion o = (Opcion) n.getUserData();
             if ((d == null && o == null) || (d != null && o != null && o.id().equals(d.id()))) {
                 ((ToggleButton) n).setSelected(true);
             }
         }
-        pintar();
+        pintarErht();
     }
 
-    private void pintar() {
-        if (buscadoDesde == null) {
+    private void pintarErht() {
+        if (buscadoDesdeErht == null) {
             return;
         }
-        Opcion filtro = filtroDanza.getSelectedToggle() == null ? null
-                : (Opcion) filtroDanza.getSelectedToggle().getUserData();
-        List<TrajeFila> lista = new ArrayList<>(encontrados.stream()
-                .filter(t -> filtro == null || t.danza().equals(filtro.nombre())).toList());
+        Opcion filtroErht = filtroDanzaErht.getSelectedToggle() == null ? null
+                : (Opcion) filtroDanzaErht.getSelectedToggle().getUserData();
+        List<TrajeFila> listaErht = new ArrayList<>(encontradosErht.stream()
+                .filter(t -> filtroErht == null || t.danza().equals(filtroErht.nombre())).toList());
 
-        Comparator<TrajeFila> porPrecio = Comparator.comparing(TrajeFila::precioAlquiler);
-        switch (orden.getValue() == null ? ORDEN_RECOMENDADO : orden.getValue()) {
-            case ORDEN_MENOR -> lista.sort(porPrecio);
-            case ORDEN_MAYOR -> lista.sort(porPrecio.reversed());
-            case ORDEN_POPULAR -> lista.sort(Comparator.comparingLong(TrajeFila::vecesAlquilado).reversed());
-            default -> lista.sort(Comparator.comparing((TrajeFila t) -> !masAlquilados.contains(t.idTraje()))
-                    .thenComparing(t -> !listoHoy(t))
+        Comparator<TrajeFila> porPrecioErht = Comparator.comparing(TrajeFila::precioAlquiler);
+        switch (ordenErht.getValue() == null ? ORDEN_RECOMENDADO : ordenErht.getValue()) {
+            case ORDEN_MENOR -> listaErht.sort(porPrecioErht);
+            case ORDEN_MAYOR -> listaErht.sort(porPrecioErht.reversed());
+            case ORDEN_POPULAR -> listaErht.sort(Comparator.comparingLong(TrajeFila::vecesAlquilado).reversed());
+            default -> listaErht.sort(Comparator.comparing((TrajeFila t) -> !masAlquiladosErht.contains(t.idTraje()))
+                    .thenComparing(t -> !listoHoyErht(t))
                     .thenComparing(Comparator.comparingLong(TrajeFila::vecesAlquilado).reversed()));
         }
 
-        long n = lista.size();
-        long dias = dias(buscadoDesde, buscadoHasta);
-        tituloResultados.setText(n + (n == 1 ? " traje disponible" : " trajes disponibles") + " para la Candelaria");
-        subResultados.setText("Libres del " + UtilidadesInterfaz.fecha(buscadoDesde) + " al " + UtilidadesInterfaz.fecha(buscadoHasta) + " · "
-                + textoDias(dias) + ". El precio es por todo el periodo; la garantía se paga aparte y se devuelve.");
+        long n = listaErht.size();
+        long diasErht = diasErht(buscadoDesdeErht, buscadoHastaErht);
+        tituloResultadosErht.setText(n + (n == 1 ? " traje disponible" : " trajes disponibles") + " para la Candelaria");
+        subResultadosErht.setText("Libres del " + UtilidadesInterfaz.fecha(buscadoDesdeErht) + " al " + UtilidadesInterfaz.fecha(buscadoHastaErht) + " · "
+                + textoDiasErht(diasErht) + ". El precio es por todo el periodo; la garantía se paga aparte y se devuelve.");
 
-        if (lista.isEmpty()) {
-            VBox caja = new VBox(UtilidadesInterfaz.seccion("No hay trajes libres con esos filtros"),
+        if (listaErht.isEmpty()) {
+            VBox cajaErht = new VBox(UtilidadesInterfaz.seccion("No hay trajes libres con esos filtros"),
                     UtilidadesInterfaz.subtitulo("Prueba con otras fechas u otra danza."));
-            caja.getStyleClass().add("vacio-catalogo");
-            cuadricula.mostrar(List.of(caja));
+            cajaErht.getStyleClass().add("vacio-catalogo");
+            cuadriculaErht.mostrar(List.of(cajaErht));
             return;
         }
-        String sufijo = "/ " + textoDias(dias);
-        List<Node> tarjetasTrajes = new ArrayList<>();
-        for (TrajeFila t : lista) {
-            boolean hoy = listoHoy(t);
-            LocalDate libre = libreDesde.getOrDefault(t.idTraje(), LocalDate.now());
-            tarjetasTrajes.add(TarjetaTraje.crear(new TarjetaTraje.Datos(t, masAlquilados.contains(t.idTraje()),
-                    hoy ? "Listo hoy en tienda" : "Disponible desde " + libre.format(DIA_MES),
-                    hoy ? TarjetaTraje.Punto.VERDE : TarjetaTraje.Punto.AMBAR,
-                    piezas(t.idTraje()), TarjetaTraje.tallas(t, encontrados), sufijo, true,
-                    () -> reservar(t),
+        String sufijoErht = "/ " + textoDiasErht(diasErht);
+        List<Node> tarjetasTrajesErht = new ArrayList<>();
+        for (TrajeFila t : listaErht) {
+            boolean hoyErht = listoHoyErht(t);
+            LocalDate libreErht = libreDesdeErht.getOrDefault(t.idTraje(), LocalDate.now());
+            tarjetasTrajesErht.add(TarjetaTraje.crear(new TarjetaTraje.Datos(t, masAlquiladosErht.contains(t.idTraje()),
+                    hoyErht ? "Listo hoy en tienda" : "Disponible desde " + libreErht.format(DIA_MES),
+                    hoyErht ? TarjetaTraje.Punto.VERDE : TarjetaTraje.Punto.AMBAR,
+                    piezasErht(t.idTraje()), TarjetaTraje.tallas(t, encontradosErht), sufijoErht, true,
+                    () -> reservarErht(t),
                     // el cliente abre el detalle del portal con un clic; la tienda, el diálogo con doble clic
-                    tienda ? () -> new TrajeDetalleDialogo(s, t.idTraje()).mostrar() : () -> reservar(t),
-                    tienda ? "Reservar" : "Ver traje", !tienda)));
+                    tiendaErht ? () -> new TrajeDetalleDialogo(sErht, t.idTraje()).mostrar() : () -> reservarErht(t),
+                    tiendaErht ? "Reservar" : "Ver traje", !tiendaErht)));
         }
-        cuadricula.mostrar(tarjetasTrajes);
+        cuadriculaErht.mostrar(tarjetasTrajesErht);
     }
 
-    private boolean listoHoy(TrajeFila t) {
+    private boolean listoHoyErht(TrajeFila t) {
         return "DISPONIBLE".equals(t.estado())
-                && !libreDesde.getOrDefault(t.idTraje(), LocalDate.now()).isAfter(LocalDate.now());
+                && !libreDesdeErht.getOrDefault(t.idTraje(), LocalDate.now()).isAfter(LocalDate.now());
     }
 
-    private List<String> piezas(int idTraje) {
-        return piezas.computeIfAbsent(idTraje,
-                id -> s.trajes().piezas(id).stream().map(PiezaFila::tipo).toList());
+    private List<String> piezasErht(int idTraje) {
+        return piezasErht.computeIfAbsent(idTraje,
+                id -> sErht.trajes().piezas(id).stream().map(PiezaFila::tipo).toList());
     }
 
-    private void reservar(TrajeFila t) {
-        accion.reservar(t, buscadoDesde, buscadoHasta, tienda ? conjunto.getValue() : null,
-                esEntregaEnTienda() ? "Entrega en local del conjunto" : null);
+    private void reservarErht(TrajeFila t) {
+        accionErht.reservar(t, buscadoDesdeErht, buscadoHastaErht, tiendaErht ? conjuntoErht.getValue() : null,
+                esEntregaEnTiendaErht() ? "Entrega en local del conjunto" : null);
     }
 
     // ------------------------------------------------------------------ próximos movimientos
 
-    private VBox movimientos() {
-        tabla.getColumns().add(UtilidadesInterfaz.colNumero("N°", AlquilerResumen::idAlquiler, 60));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Movimiento",
+    private VBox movimientosErht() {
+        tablaErht.getColumns().add(UtilidadesInterfaz.colNumero("N°", AlquilerResumen::idAlquiler, 60));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Movimiento",
                 a -> switch (a.estado()) {
                     case "SOLICITADO" -> "Por aprobar";
                     case "RESERVADO" -> "Sale";
                     default -> "Debe volver";
                 }, 110));
-        tabla.getColumns().add(UtilidadesInterfaz.colFecha("Fecha",
+        tablaErht.getColumns().add(UtilidadesInterfaz.colFecha("Fecha",
                 a -> "ENTREGADO".equals(a.estado()) ? a.fechaDevolucionPrevista() : a.fechaSalida(), 100));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Cliente", AlquilerResumen::cliente, 230));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Conjunto", AlquilerResumen::conjunto, 180));
-        tabla.getColumns().add(UtilidadesInterfaz.colNumero("Trajes", AlquilerResumen::numTrajes, 70));
-        tabla.getColumns().add(UtilidadesInterfaz.colSoles("Saldo", AlquilerResumen::saldo, 110));
-        tabla.getColumns().add(UtilidadesInterfaz.colEstadoAlquiler(200));
-        UtilidadesInterfaz.alDobleClic(tabla, a -> {
-            new AlquilerDetalleDialogo(s, a.idAlquiler()).mostrar();
-            UtilidadesInterfaz.ejecutar(this::cargarMovimientos);
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Cliente", AlquilerResumen::cliente, 230));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Conjunto", AlquilerResumen::conjunto, 180));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colNumero("Trajes", AlquilerResumen::numTrajes, 70));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colSoles("Saldo", AlquilerResumen::saldo, 110));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colEstadoAlquiler(200));
+        UtilidadesInterfaz.alDobleClic(tablaErht, a -> {
+            new AlquilerDetalleDialogo(sErht, a.idAlquiler()).mostrar();
+            UtilidadesInterfaz.ejecutar(this::cargarMovimientosErht);
         });
-        tabla.setPrefHeight(440);
-        tabla.setMinHeight(320);
+        tablaErht.setPrefHeight(440);
+        tablaErht.setMinHeight(320);
 
-        Button actualizar = new Button("Actualizar", UtilidadesInterfaz.icono(Feather.REFRESH_CW));
-        actualizar.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarMovimientos));
-        Label titulo = new Label("Próximos movimientos");
-        titulo.getStyleClass().add("resultados-titulo");
-        VBox titulos = new VBox(6, UtilidadesInterfaz.sobretitulo("Agenda de la tienda"), titulo,
+        Button actualizarErht = new Button("Actualizar", UtilidadesInterfaz.icono(Feather.REFRESH_CW));
+        actualizarErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarMovimientosErht));
+        Label tituloErht = new Label("Próximos movimientos");
+        tituloErht.getStyleClass().add("resultados-titulo");
+        VBox titulosErht = new VBox(6, UtilidadesInterfaz.sobretitulo("Agenda de la tienda"), tituloErht,
                 UtilidadesInterfaz.subtitulo("Solicitudes de clientes por aprobar, reservas que salen en los próximos 30 días "
                         + "y alquileres en curso. Doble clic para ver el detalle."));
-        HBox cabecera = new HBox(10, titulos, UtilidadesInterfaz.espacio(), actualizar);
-        cabecera.setAlignment(Pos.BOTTOM_LEFT);
+        HBox cabeceraErht = new HBox(10, titulosErht, UtilidadesInterfaz.espacio(), actualizarErht);
+        cabeceraErht.setAlignment(Pos.BOTTOM_LEFT);
 
-        VBox caja = new VBox(18, cabecera, tarjetas, tabla);
-        caja.getStyleClass().add("inicio-seccion");
-        return caja;
+        VBox cajaErht = new VBox(18, cabeceraErht, tarjetasErht, tablaErht);
+        cajaErht.getStyleClass().add("inicio-seccion");
+        return cajaErht;
     }
 
-    private void cargarMovimientos() {
-        Resumen r = s.alquileres().resumen();
-        List<AlquilerResumen> proximos = s.alquileres().proximosMovimientos();
-        LocalDate hoy = LocalDate.now();
-        long devolucionesHoy = proximos.stream()
-                .filter(a -> "ENTREGADO".equals(a.estado()) && hoy.equals(a.fechaDevolucionPrevista()))
+    private void cargarMovimientosErht() {
+        Resumen r = sErht.alquileres().resumen();
+        List<AlquilerResumen> proximosErht = sErht.alquileres().proximosMovimientos();
+        LocalDate hoyErht = LocalDate.now();
+        long devolucionesHoyErht = proximosErht.stream()
+                .filter(a -> "ENTREGADO".equals(a.estado()) && hoyErht.equals(a.fechaDevolucionPrevista()))
                 .count();
-        int solicitudes = s.alquileres().contarSolicitudes();
-        javafx.scene.layout.HBox tSolicitudes = UtilidadesInterfaz.tarjeta("Solicitudes pendientes", String.valueOf(solicitudes),
-                solicitudes > 0 ? "granate" : "gris", Feather.INBOX);
-        if (verSolicitudes != null) {
-            tSolicitudes.getStyleClass().add("tarjeta-clic");
-            tSolicitudes.setOnMouseClicked(e -> verSolicitudes.run());
+        int solicitudesErht = sErht.alquileres().contarSolicitudes();
+        javafx.scene.layout.HBox tSolicitudesErht = UtilidadesInterfaz.tarjeta("Solicitudes pendientes", String.valueOf(solicitudesErht),
+                solicitudesErht > 0 ? "granate" : "gris", Feather.INBOX);
+        if (verSolicitudesErht != null) {
+            tSolicitudesErht.getStyleClass().add("tarjeta-clic");
+            tSolicitudesErht.setOnMouseClicked(e -> verSolicitudesErht.run());
         }
-        tarjetas.getChildren().setAll(tSolicitudes,
+        tarjetasErht.getChildren().setAll(tSolicitudesErht,
                 UtilidadesInterfaz.tarjeta("Trajes disponibles", String.valueOf(r.disponibles()), "verde", Feather.CHECK_CIRCLE),
                 UtilidadesInterfaz.tarjeta("Alquileres activos", String.valueOf(r.fuera()), "azul", Feather.SHOPPING_BAG),
-                UtilidadesInterfaz.tarjeta("Devoluciones para hoy", String.valueOf(devolucionesHoy), "naranja", Feather.ROTATE_CCW),
+                UtilidadesInterfaz.tarjeta("Devoluciones para hoy", String.valueOf(devolucionesHoyErht), "naranja", Feather.ROTATE_CCW),
                 UtilidadesInterfaz.tarjeta("Ingresos del mes",
                         UtilidadesInterfaz.soles(r.ingresosMes() == null ? BigDecimal.ZERO : r.ingresosMes()), "dorado",
                         Feather.TRENDING_UP));
-        tabla.getItems().setAll(proximos);
+        tablaErht.getItems().setAll(proximosErht);
     }
 }

@@ -34,37 +34,37 @@ public class UsuariosVista extends VBox {
 
     private static final DateTimeFormatter FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    private final Servicios s;
-    private final TableView<UsuarioFila> tabla = UtilidadesInterfaz.tabla("No hay usuarios.");
+    private final Servicios sErht;
+    private final TableView<UsuarioFila> tablaErht = UtilidadesInterfaz.tabla("No hay usuarios.");
 
     public UsuariosVista(Servicios s) {
         if (!Usuario.ADMIN.equals(Sesion.actual().usuario().rol())) {
             throw new IllegalStateException("Solo el ADMIN puede administrar usuarios.");
         }
-        this.s = s;
+        this.sErht = s;
         getStyleClass().add("contenido");
 
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Usuario", f -> "@" + f.nombreUsuario(), 160));
-        tabla.getColumns().add(UtilidadesInterfaz.colEstado("Rol", UsuarioFila::rol, 120));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Cliente vinculado", UsuarioFila::cliente, 240));
-        tabla.getColumns().add(UtilidadesInterfaz.colEstado("Estado", f -> f.activo() ? "ACTIVO" : "INACTIVO", 120));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Creado", f -> f.fechaCreacion().format(FECHA_HORA), 150));
-        tabla.setMinHeight(360);
-        VBox.setVgrow(tabla, Priority.ALWAYS);
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Usuario", f -> "@" + f.nombreUsuario(), 160));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colEstado("Rol", UsuarioFila::rol, 120));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Cliente vinculado", UsuarioFila::cliente, 240));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colEstado("Estado", f -> f.activo() ? "ACTIVO" : "INACTIVO", 120));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Creado", f -> f.fechaCreacion().format(FECHA_HORA), 150));
+        tablaErht.setMinHeight(360);
+        VBox.setVgrow(tablaErht, Priority.ALWAYS);
 
-        Button activar = new Button("Activar / desactivar", UtilidadesInterfaz.icono(Feather.POWER));
-        activar.setOnAction(e -> conSeleccion(f -> {
-            String accion = f.activo() ? "DESACTIVAR" : "ACTIVAR";
-            if (UtilidadesInterfaz.confirmar("¿" + accion + " la cuenta @" + f.nombreUsuario() + "?"
+        Button activarErht = new Button("Activar / desactivar", UtilidadesInterfaz.icono(Feather.POWER));
+        activarErht.setOnAction(e -> conSeleccionErht(f -> {
+            String accionErht = f.activo() ? "DESACTIVAR" : "ACTIVAR";
+            if (UtilidadesInterfaz.confirmar("¿" + accionErht + " la cuenta @" + f.nombreUsuario() + "?"
                     + (f.activo() ? "\nNo podrá iniciar sesión hasta que la actives de nuevo." : ""))) {
                 UtilidadesInterfaz.ejecutar(() -> {
                     s.usuarios().cambiarActivo(f.idUsuario(), !f.activo(), Sesion.actual().usuario().idUsuario());
-                    cargar();
+                    cargarErht();
                 });
             }
         }));
-        Button clave = new Button("Restablecer contraseña", UtilidadesInterfaz.icono(Feather.KEY));
-        clave.setOnAction(e -> conSeleccion(f -> UtilidadesInterfaz.pedirTexto("Nueva contraseña para @" + f.nombreUsuario(),
+        Button claveErht = new Button("Restablecer contraseña", UtilidadesInterfaz.icono(Feather.KEY));
+        claveErht.setOnAction(e -> conSeleccionErht(f -> UtilidadesInterfaz.pedirTexto("Nueva contraseña para @" + f.nombreUsuario(),
                         "Comunícale la contraseña nueva a la persona; podrá cambiarla desde su perfil.",
                         "NUEVA CONTRASEÑA", "", "Mínimo 6 caracteres")
                 .ifPresent(nueva -> {
@@ -73,44 +73,44 @@ public class UsuariosVista extends VBox {
                     }
                 })));
 
-        HBox cabecera = new HBox(10, UtilidadesInterfaz.encabezado("Administración", "Usuarios",
+        HBox cabeceraErht = new HBox(10, UtilidadesInterfaz.encabezado("Administración", "Usuarios",
                 "Cuentas de la tienda y de los clientes. Los clientes se registran solos desde la pantalla de ingreso."),
-                UtilidadesInterfaz.espacio(), clave, activar);
-        cabecera.setAlignment(Pos.BOTTOM_LEFT);
-        getChildren().addAll(cabecera, formularioNuevo(), tabla);
-        cargar();
+                UtilidadesInterfaz.espacio(), claveErht, activarErht);
+        cabeceraErht.setAlignment(Pos.BOTTOM_LEFT);
+        getChildren().addAll(cabeceraErht, formularioNuevoErht(), tablaErht);
+        cargarErht();
     }
 
-    private HBox formularioNuevo() {
-        TextField usuario = UtilidadesInterfaz.campo("", "Ej.: rosa.vendedora");
-        PasswordField clave = new PasswordField();
-        clave.setPromptText("Mínimo 6 caracteres");
-        ComboBox<String> rol = UtilidadesInterfaz.comboTexto(List.of(Usuario.VENDEDOR, Usuario.ADMIN), null);
-        rol.setPrefWidth(150);
-        HBox.setHgrow(usuario, Priority.ALWAYS);
-        HBox.setHgrow(clave, Priority.ALWAYS);
-        Button crear = UtilidadesInterfaz.estilo(new Button("Crear usuario", UtilidadesInterfaz.icono(Feather.USER_PLUS)), "boton-primario");
-        crear.setOnAction(e -> {
-            if (UtilidadesInterfaz.ejecutar(() -> s.usuarios().crearInterno(usuario.getText(), clave.getText(), rol.getValue()))) {
-                UtilidadesInterfaz.mostrarInformacion("Usuario @" + usuario.getText().trim().toLowerCase() + " creado.");
-                usuario.clear();
-                clave.clear();
-                cargar();
+    private HBox formularioNuevoErht() {
+        TextField usuarioErht = UtilidadesInterfaz.campo("", "Ej.: rosa.vendedora");
+        PasswordField claveErht = new PasswordField();
+        claveErht.setPromptText("Mínimo 6 caracteres");
+        ComboBox<String> rolErht = UtilidadesInterfaz.comboTexto(List.of(Usuario.VENDEDOR, Usuario.ADMIN), null);
+        rolErht.setPrefWidth(150);
+        HBox.setHgrow(usuarioErht, Priority.ALWAYS);
+        HBox.setHgrow(claveErht, Priority.ALWAYS);
+        Button crearErht = UtilidadesInterfaz.estilo(new Button("Crear usuario", UtilidadesInterfaz.icono(Feather.USER_PLUS)), "boton-primario");
+        crearErht.setOnAction(e -> {
+            if (UtilidadesInterfaz.ejecutar(() -> sErht.usuarios().crearInterno(usuarioErht.getText(), claveErht.getText(), rolErht.getValue()))) {
+                UtilidadesInterfaz.mostrarInformacion("Usuario @" + usuarioErht.getText().trim().toLowerCase() + " creado.");
+                usuarioErht.clear();
+                claveErht.clear();
+                cargarErht();
             }
         });
-        Label titulo = UtilidadesInterfaz.etiqueta("Nuevo usuario de la tienda");
-        HBox caja = new HBox(12, titulo, usuario, clave, rol, crear);
-        caja.setAlignment(Pos.CENTER_LEFT);
-        caja.getStyleClass().add("barra-filtros");
-        return caja;
+        Label tituloErht = UtilidadesInterfaz.etiqueta("Nuevo usuario de la tienda");
+        HBox cajaErht = new HBox(12, tituloErht, usuarioErht, claveErht, rolErht, crearErht);
+        cajaErht.setAlignment(Pos.CENTER_LEFT);
+        cajaErht.getStyleClass().add("barra-filtros");
+        return cajaErht;
     }
 
-    private void cargar() {
-        tabla.getItems().setAll(s.usuarios().listar());
+    private void cargarErht() {
+        tablaErht.getItems().setAll(sErht.usuarios().listar());
     }
 
-    private void conSeleccion(Consumer<UsuarioFila> accion) {
-        UsuarioFila f = tabla.getSelectionModel().getSelectedItem();
+    private void conSeleccionErht(Consumer<UsuarioFila> accion) {
+        UsuarioFila f = tablaErht.getSelectionModel().getSelectedItem();
         if (f == null) {
             UtilidadesInterfaz.mostrarError("Primero elige un usuario de la lista.");
             return;

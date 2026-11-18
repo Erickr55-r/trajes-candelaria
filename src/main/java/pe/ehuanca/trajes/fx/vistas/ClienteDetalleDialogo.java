@@ -27,79 +27,79 @@ import java.util.List;
  */
 public class ClienteDetalleDialogo {
 
-    private final Servicios s;
-    private final int idCliente;
-    private final BorderPane raiz = new BorderPane();
-    private Stage ventanaDialogo;
+    private final Servicios sErht;
+    private final int idClienteErht;
+    private final BorderPane raizErht = new BorderPane();
+    private Stage ventanaDialogoErht;
 
     public ClienteDetalleDialogo(Servicios s, int idCliente) {
-        this.s = s;
-        this.idCliente = idCliente;
+        this.sErht = s;
+        this.idClienteErht = idCliente;
     }
 
     public void mostrar() {
-        if (!UtilidadesInterfaz.ejecutar(this::cargar)) {
+        if (!UtilidadesInterfaz.ejecutar(this::cargarErht)) {
             return;
         }
-        ventanaDialogo = UtilidadesInterfaz.ventana("Detalle del cliente", raiz, 1000, 660);
-        ventanaDialogo.showAndWait();
+        ventanaDialogoErht = UtilidadesInterfaz.ventana("Detalle del cliente", raizErht, 1000, 660);
+        ventanaDialogoErht.showAndWait();
     }
 
-    private void cargar() {
-        Cliente c = s.clientes().buscar(idCliente);
-        List<AlquilerResumen> alquileres = s.alquileres().delCliente(idCliente);
+    private void cargarErht() {
+        Cliente c = sErht.clientes().buscar(idClienteErht);
+        List<AlquilerResumen> alquileresErht = sErht.alquileres().delCliente(idClienteErht);
 
-        String nombre = c.nombres() + (c.apellidos() != null ? " " + c.apellidos() : "");
-        Button editar = new Button("Editar datos");
-        editar.setOnAction(e -> {
-            new ClienteFormularioDialogo(s, idCliente).mostrar();
-            UtilidadesInterfaz.ejecutar(this::cargar);
+        String nombreErht = c.nombres() + (c.apellidos() != null ? " " + c.apellidos() : "");
+        Button editarErht = new Button("Editar datos");
+        editarErht.setOnAction(e -> {
+            new ClienteFormularioDialogo(sErht, idClienteErht).mostrar();
+            UtilidadesInterfaz.ejecutar(this::cargarErht);
         });
-        HBox arriba = new HBox(UtilidadesInterfaz.titulo(nombre), UtilidadesInterfaz.espacio(), editar);
-        arriba.setAlignment(Pos.CENTER_LEFT);
-        VBox cabecera = new VBox(4, arriba,
+        HBox arribaErht = new HBox(UtilidadesInterfaz.titulo(nombreErht), UtilidadesInterfaz.espacio(), editarErht);
+        arribaErht.setAlignment(Pos.CENTER_LEFT);
+        VBox cabeceraErht = new VBox(4, arribaErht,
                 UtilidadesInterfaz.subtitulo(c.tipoDocumento() + " " + c.numeroDocumento()
                         + "   ·   Teléfono: " + UtilidadesInterfaz.texto(c.telefono())
                         + "   ·   Email: " + UtilidadesInterfaz.texto(c.correo())),
                 UtilidadesInterfaz.subtitulo("Dirección: " + UtilidadesInterfaz.texto(c.direccion())
                         + "   ·   Cliente desde: " + UtilidadesInterfaz.fecha(c.fechaRegistro())));
-        cabecera.getStyleClass().add("cabecera");
-        raiz.setTop(cabecera);
+        cabeceraErht.getStyleClass().add("cabecera");
+        raizErht.setTop(cabeceraErht);
 
-        BigDecimal total = alquileres.stream().filter(a -> !List.of("ANULADO", "SOLICITADO", "RECHAZADO").contains(a.estado()))
+        BigDecimal totalErht = alquileresErht.stream().filter(a -> !List.of("ANULADO", "SOLICITADO", "RECHAZADO").contains(a.estado()))
                 .map(AlquilerResumen::montoAlquiler).reduce(BigDecimal.ZERO, BigDecimal::add);
-        long activos = alquileres.stream()
+        long activosErht = alquileresErht.stream()
                 .filter(a -> "RESERVADO".equals(a.estado()) || "ENTREGADO".equals(a.estado())).count();
-        HBox tarjetas = new HBox(12,
-                UtilidadesInterfaz.tarjeta("Alquileres", String.valueOf(alquileres.size()), "granate"),
-                UtilidadesInterfaz.tarjeta("Reservados o en curso", String.valueOf(activos), "azul"),
-                UtilidadesInterfaz.tarjeta("Total gastado", UtilidadesInterfaz.soles(total), "dorado"));
+        HBox tarjetasErht = new HBox(12,
+                UtilidadesInterfaz.tarjeta("Alquileres", String.valueOf(alquileresErht.size()), "granate"),
+                UtilidadesInterfaz.tarjeta("Reservados o en curso", String.valueOf(activosErht), "azul"),
+                UtilidadesInterfaz.tarjeta("Total gastado", UtilidadesInterfaz.soles(totalErht), "dorado"));
 
-        TableView<AlquilerResumen> tabla = UtilidadesInterfaz.tabla("Este cliente todavía no tiene alquileres.");
-        tabla.getColumns().add(UtilidadesInterfaz.colNumero("N°", AlquilerResumen::idAlquiler, 60));
-        tabla.getColumns().add(UtilidadesInterfaz.colTexto("Conjunto", AlquilerResumen::conjunto, 180));
-        tabla.getColumns().add(UtilidadesInterfaz.colFecha("Salida", AlquilerResumen::fechaSalida, 95));
-        tabla.getColumns().add(UtilidadesInterfaz.colFecha("Devolución", AlquilerResumen::fechaDevolucionPrevista, 95));
-        tabla.getColumns().add(UtilidadesInterfaz.colNumero("Trajes", AlquilerResumen::numTrajes, 60));
-        tabla.getColumns().add(UtilidadesInterfaz.colSoles("Monto", AlquilerResumen::montoAlquiler, 105));
-        tabla.getColumns().add(UtilidadesInterfaz.colSoles("Saldo", AlquilerResumen::saldo, 100));
-        tabla.getColumns().add(UtilidadesInterfaz.colEstadoAlquiler(170));
-        tabla.getItems().setAll(alquileres);
-        UtilidadesInterfaz.alDobleClic(tabla, a -> {
-            new AlquilerDetalleDialogo(s, a.idAlquiler()).mostrar();
-            UtilidadesInterfaz.ejecutar(this::cargar);
+        TableView<AlquilerResumen> tablaErht = UtilidadesInterfaz.tabla("Este cliente todavía no tiene alquileres.");
+        tablaErht.getColumns().add(UtilidadesInterfaz.colNumero("N°", AlquilerResumen::idAlquiler, 60));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Conjunto", AlquilerResumen::conjunto, 180));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colFecha("Salida", AlquilerResumen::fechaSalida, 95));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colFecha("Devolución", AlquilerResumen::fechaDevolucionPrevista, 95));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colNumero("Trajes", AlquilerResumen::numTrajes, 60));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colSoles("Monto", AlquilerResumen::montoAlquiler, 105));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colSoles("Saldo", AlquilerResumen::saldo, 100));
+        tablaErht.getColumns().add(UtilidadesInterfaz.colEstadoAlquiler(170));
+        tablaErht.getItems().setAll(alquileresErht);
+        UtilidadesInterfaz.alDobleClic(tablaErht, a -> {
+            new AlquilerDetalleDialogo(sErht, a.idAlquiler()).mostrar();
+            UtilidadesInterfaz.ejecutar(this::cargarErht);
         });
-        VBox.setVgrow(tabla, Priority.ALWAYS);
+        VBox.setVgrow(tablaErht, Priority.ALWAYS);
 
-        VBox centro = new VBox(14, tarjetas, UtilidadesInterfaz.seccion("Alquileres del cliente"),
-                UtilidadesInterfaz.subtitulo("Doble clic para abrir el alquiler."), tabla);
-        centro.getStyleClass().add("contenido");
-        raiz.setCenter(centro);
+        VBox centroErht = new VBox(14, tarjetasErht, UtilidadesInterfaz.seccion("Alquileres del cliente"),
+                UtilidadesInterfaz.subtitulo("Doble clic para abrir el alquiler."), tablaErht);
+        centroErht.getStyleClass().add("contenido");
+        raizErht.setCenter(centroErht);
 
-        Button cerrar = new Button("Cerrar");
-        cerrar.setOnAction(e -> ventanaDialogo.close());
-        HBox pie = new HBox(cerrar);
-        pie.getStyleClass().add("barra-acciones");
-        raiz.setBottom(pie);
+        Button cerrarErht = new Button("Cerrar");
+        cerrarErht.setOnAction(e -> ventanaDialogoErht.close());
+        HBox pieErht = new HBox(cerrarErht);
+        pieErht.getStyleClass().add("barra-acciones");
+        raizErht.setBottom(pieErht);
     }
 }

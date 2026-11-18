@@ -51,18 +51,18 @@ public final class AnimacionConfirmacion extends StackPane {
     private AnimacionConfirmacion(String titulo, String mensaje, Opcion... opciones) {
         getStyleClass().add("confirmacion-velo");
 
-        Circle circulo = new Circle(44);
-        circulo.getStyleClass().add("visto-circulo");
-        Polyline check = new Polyline(-19, 1, -6, 14, 21, -14);
-        check.getStyleClass().add("visto-trazo");
-        check.setStrokeLineCap(StrokeLineCap.ROUND);
-        check.setStrokeLineJoin(StrokeLineJoin.ROUND);
-        double largo = Math.hypot(13, 13) + Math.hypot(27, 28);
-        check.getStrokeDashArray().setAll(largo, largo);
-        check.setStrokeDashOffset(largo);
-        StackPane icono = new StackPane(circulo, check);
-        icono.setMinSize(96, 96);
-        icono.setMaxSize(96, 96);
+        Circle circuloErht = new Circle(44);
+        circuloErht.getStyleClass().add("visto-circulo");
+        Polyline checkErht = new Polyline(-19, 1, -6, 14, 21, -14);
+        checkErht.getStyleClass().add("visto-trazo");
+        checkErht.setStrokeLineCap(StrokeLineCap.ROUND);
+        checkErht.setStrokeLineJoin(StrokeLineJoin.ROUND);
+        double largoErht = Math.hypot(13, 13) + Math.hypot(27, 28);
+        checkErht.getStrokeDashArray().setAll(largoErht, largoErht);
+        checkErht.setStrokeDashOffset(largoErht);
+        StackPane iconoErht = new StackPane(circuloErht, checkErht);
+        iconoErht.setMinSize(96, 96);
+        iconoErht.setMaxSize(96, 96);
 
         Label t = new Label(titulo);
         t.getStyleClass().add("confirmacion-titulo");
@@ -71,37 +71,37 @@ public final class AnimacionConfirmacion extends StackPane {
         m.setWrapText(true);
         m.setMinHeight(Region.USE_PREF_SIZE);
 
-        HBox botones = new HBox(10);
-        botones.setAlignment(Pos.CENTER);
+        HBox botonesErht = new HBox(10);
+        botonesErht.setAlignment(Pos.CENTER);
         for (Opcion o : opciones) {
             Button b = new Button(o.texto());
             b.getStyleClass().add(o.principal() ? "boton-primario" : "boton-secundario");
             b.setOnAction(e -> {
-                cerrar();
+                cerrarErht();
                 o.accion().run();
             });
-            botones.getChildren().add(b);
+            botonesErht.getChildren().add(b);
         }
 
-        VBox tarjeta = new VBox(16, icono, t, m, botones);
-        tarjeta.setAlignment(Pos.CENTER);
-        tarjeta.getStyleClass().add("confirmacion-tarjeta");
-        tarjeta.setMaxSize(460, Region.USE_PREF_SIZE);
-        getChildren().add(tarjeta);
+        VBox tarjetaErht = new VBox(16, iconoErht, t, m, botonesErht);
+        tarjetaErht.setAlignment(Pos.CENTER);
+        tarjetaErht.getStyleClass().add("confirmacion-tarjeta");
+        tarjetaErht.setMaxSize(460, Region.USE_PREF_SIZE);
+        getChildren().add(tarjetaErht);
 
         // Animación: velo y tarjeta aparecen, el círculo rebota y el check se dibuja.
         setOpacity(0);
-        circulo.setScaleX(0);
-        circulo.setScaleY(0);
-        FadeTransition aparece = new FadeTransition(Duration.millis(180), this);
-        aparece.setToValue(1);
-        ScaleTransition rebote = new ScaleTransition(Duration.millis(420), circulo);
-        rebote.setToX(1);
-        rebote.setToY(1);
-        rebote.setInterpolator(REBOTE);
-        Timeline dibuja = new Timeline(new KeyFrame(Duration.millis(360),
-                new KeyValue(check.strokeDashOffsetProperty(), 0, Interpolator.EASE_OUT)));
-        new SequentialTransition(aparece, rebote, dibuja).play();
+        circuloErht.setScaleX(0);
+        circuloErht.setScaleY(0);
+        FadeTransition apareceErht = new FadeTransition(Duration.millis(180), this);
+        apareceErht.setToValue(1);
+        ScaleTransition reboteErht = new ScaleTransition(Duration.millis(420), circuloErht);
+        reboteErht.setToX(1);
+        reboteErht.setToY(1);
+        reboteErht.setInterpolator(REBOTE);
+        Timeline dibujaErht = new Timeline(new KeyFrame(Duration.millis(360),
+                new KeyValue(checkErht.strokeDashOffsetProperty(), 0, Interpolator.EASE_OUT)));
+        new SequentialTransition(apareceErht, reboteErht, dibujaErht).play();
     }
 
     /** Muestra la confirmación encima de {@code capa} (un StackPane que cubre la ventana). */
@@ -110,7 +110,7 @@ public final class AnimacionConfirmacion extends StackPane {
         capa.getChildren().add(new AnimacionConfirmacion(titulo, mensaje, opciones));
     }
 
-    private void cerrar() {
+    private void cerrarErht() {
         if (getParent() instanceof StackPane p) {
             p.getChildren().remove(this);
         }

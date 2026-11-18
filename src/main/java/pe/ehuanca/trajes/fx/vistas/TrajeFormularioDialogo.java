@@ -29,83 +29,83 @@ import java.util.List;
  */
 public class TrajeFormularioDialogo {
 
-    private final Servicios s;
-    private final Integer idTraje;
-    private Integer guardado;
+    private final Servicios sErht;
+    private final Integer idTrajeErht;
+    private Integer guardadoErht;
 
     public TrajeFormularioDialogo(Servicios s, Integer idTraje) {
-        this.s = s;
-        this.idTraje = idTraje;
+        this.sErht = s;
+        this.idTrajeErht = idTraje;
     }
 
     /** Muestra el formulario; devuelve el id del traje guardado o null si se canceló. */
     public Integer mostrar() {
-        UtilidadesInterfaz.ejecutar(this::abrir);
-        return guardado;
+        UtilidadesInterfaz.ejecutar(this::abrirErht);
+        return guardadoErht;
     }
 
-    private void abrir() {
-        Traje t = idTraje == null ? null : s.trajes().buscar(idTraje);
-        List<Opcion> danzas = s.trajes().danzas();
+    private void abrirErht() {
+        Traje t = idTrajeErht == null ? null : sErht.trajes().buscar(idTrajeErht);
+        List<Opcion> danzasErht = sErht.trajes().danzas();
 
-        TextField codigo = UtilidadesInterfaz.campo(t == null ? "" : t.codigo(), "Ej.: DIA-021");
-        ComboBox<Opcion> danza = UtilidadesInterfaz.combo(danzas, Opcion::nombre, null);
+        TextField codigoErht = UtilidadesInterfaz.campo(t == null ? "" : t.codigo(), "Ej.: DIA-021");
+        ComboBox<Opcion> danzaErht = UtilidadesInterfaz.combo(danzasErht, Opcion::nombre, null);
         if (t != null) {
-            danzas.stream().filter(d -> d.id().equals(t.idDanza())).findFirst().ifPresent(danza::setValue);
+            danzasErht.stream().filter(d -> d.id().equals(t.idDanza())).findFirst().ifPresent(danzaErht::setValue);
         }
-        TextField personaje = UtilidadesInterfaz.campo(t == null ? "" : t.personaje(), "Ej.: Caporal");
-        ComboBox<String> genero = UtilidadesInterfaz.comboTexto(List.of("VARON", "MUJER", "UNISEX"), null);
-        ComboBox<String> talla = UtilidadesInterfaz.comboTexto(UtilidadesInterfaz.TALLAS, null);
-        talla.setValue(t == null ? "M" : t.talla());
+        TextField personajeErht = UtilidadesInterfaz.campo(t == null ? "" : t.personaje(), "Ej.: Caporal");
+        ComboBox<String> generoErht = UtilidadesInterfaz.comboTexto(List.of("VARON", "MUJER", "UNISEX"), null);
+        ComboBox<String> tallaErht = UtilidadesInterfaz.comboTexto(UtilidadesInterfaz.TALLAS, null);
+        tallaErht.setValue(t == null ? "M" : t.talla());
         if (t != null) {
-            genero.setValue(t.genero());
+            generoErht.setValue(t.genero());
         }
-        TextField color = UtilidadesInterfaz.campo(t == null ? "" : t.color(), "Opcional");
-        TextField precio = UtilidadesInterfaz.campo(t == null ? "" : UtilidadesInterfaz.montoEditable(t.precioAlquiler()), "Precio del alquiler S/");
-        TextField garantia = UtilidadesInterfaz.campo(t == null ? "" : UtilidadesInterfaz.montoEditable(t.garantia()), "Garantía S/");
-        DatePicker adquisicion = UtilidadesInterfaz.selectorFecha(t == null ? null : t.fechaAdquisicion());
+        TextField colorErht = UtilidadesInterfaz.campo(t == null ? "" : t.color(), "Opcional");
+        TextField precioErht = UtilidadesInterfaz.campo(t == null ? "" : UtilidadesInterfaz.montoEditable(t.precioAlquiler()), "Precio del alquiler S/");
+        TextField garantiaErht = UtilidadesInterfaz.campo(t == null ? "" : UtilidadesInterfaz.montoEditable(t.garantia()), "Garantía S/");
+        DatePicker adquisicionErht = UtilidadesInterfaz.selectorFecha(t == null ? null : t.fechaAdquisicion());
 
         GridPane g = UtilidadesInterfaz.formulario();
-        UtilidadesInterfaz.fila(g, 0, "Código *", codigo);
-        UtilidadesInterfaz.fila(g, 1, "Danza *", danza);
-        UtilidadesInterfaz.fila(g, 2, "Personaje *", personaje);
-        UtilidadesInterfaz.fila(g, 3, "Género *", genero);
-        UtilidadesInterfaz.fila(g, 4, "Talla *", talla);
-        UtilidadesInterfaz.fila(g, 5, "Color", color);
-        UtilidadesInterfaz.fila(g, 6, "Precio de alquiler (S/) *", precio);
-        UtilidadesInterfaz.fila(g, 7, "Garantía (S/) *", garantia);
-        UtilidadesInterfaz.fila(g, 8, "Fecha de adquisición", adquisicion);
+        UtilidadesInterfaz.fila(g, 0, "Código *", codigoErht);
+        UtilidadesInterfaz.fila(g, 1, "Danza *", danzaErht);
+        UtilidadesInterfaz.fila(g, 2, "Personaje *", personajeErht);
+        UtilidadesInterfaz.fila(g, 3, "Género *", generoErht);
+        UtilidadesInterfaz.fila(g, 4, "Talla *", tallaErht);
+        UtilidadesInterfaz.fila(g, 5, "Color", colorErht);
+        UtilidadesInterfaz.fila(g, 6, "Precio de alquiler (S/) *", precioErht);
+        UtilidadesInterfaz.fila(g, 7, "Garantía (S/) *", garantiaErht);
+        UtilidadesInterfaz.fila(g, 8, "Fecha de adquisición", adquisicionErht);
 
-        BorderPane raiz = new BorderPane();
-        VBox cabecera = new VBox(4, UtilidadesInterfaz.titulo(t == null ? "Nuevo traje" : "Editar traje " + t.codigo()),
+        BorderPane raizErht = new BorderPane();
+        VBox cabeceraErht = new VBox(4, UtilidadesInterfaz.titulo(t == null ? "Nuevo traje" : "Editar traje " + t.codigo()),
                 UtilidadesInterfaz.subtitulo("Los campos con * son obligatorios."));
-        cabecera.getStyleClass().add("cabecera");
-        raiz.setTop(cabecera);
-        VBox centro = new VBox(g);
-        centro.getStyleClass().add("contenido");
-        raiz.setCenter(centro);
+        cabeceraErht.getStyleClass().add("cabecera");
+        raizErht.setTop(cabeceraErht);
+        VBox centroErht = new VBox(g);
+        centroErht.getStyleClass().add("contenido");
+        raizErht.setCenter(centroErht);
 
-        Stage ventanaDialogo = UtilidadesInterfaz.ventana(t == null ? "Nuevo traje" : "Editar traje", raiz, 520, 560);
-        Button cancelar = new Button("Cancelar");
-        cancelar.setOnAction(e -> ventanaDialogo.close());
-        Button guardar = UtilidadesInterfaz.estilo(new Button("Guardar"), "boton-primario");
-        guardar.setDefaultButton(true);
-        guardar.setOnAction(e -> UtilidadesInterfaz.ejecutar(() -> {
-            BigDecimal p = UtilidadesInterfaz.monto(UtilidadesInterfaz.requerido(precio, "Precio de alquiler"));
-            BigDecimal gar = UtilidadesInterfaz.monto(UtilidadesInterfaz.requerido(garantia, "Garantía"));
+        Stage ventanaDialogoErht = UtilidadesInterfaz.ventana(t == null ? "Nuevo traje" : "Editar traje", raizErht, 520, 560);
+        Button cancelarErht = new Button("Cancelar");
+        cancelarErht.setOnAction(e -> ventanaDialogoErht.close());
+        Button guardarErht = UtilidadesInterfaz.estilo(new Button("Guardar"), "boton-primario");
+        guardarErht.setDefaultButton(true);
+        guardarErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(() -> {
+            BigDecimal p = UtilidadesInterfaz.monto(UtilidadesInterfaz.requerido(precioErht, "Precio de alquiler"));
+            BigDecimal garErht = UtilidadesInterfaz.monto(UtilidadesInterfaz.requerido(garantiaErht, "Garantía"));
             if (p.signum() <= 0) {
                 throw new ExcepcionReglaNegocio("El precio de alquiler debe ser mayor que cero.");
             }
-            guardado = s.trajes().guardar(idTraje, UtilidadesInterfaz.requerido(codigo, "Código"),
-                    UtilidadesInterfaz.requerido(danza, "Danza").id(), UtilidadesInterfaz.requerido(personaje, "Personaje"),
-                    UtilidadesInterfaz.requerido(genero, "Género"), UtilidadesInterfaz.requerido(talla, "Talla"), color.getText(),
-                    p, gar, UtilidadesInterfaz.fechaDe(adquisicion));
-            ventanaDialogo.close();
+            guardadoErht = sErht.trajes().guardar(idTrajeErht, UtilidadesInterfaz.requerido(codigoErht, "Código"),
+                    UtilidadesInterfaz.requerido(danzaErht, "Danza").id(), UtilidadesInterfaz.requerido(personajeErht, "Personaje"),
+                    UtilidadesInterfaz.requerido(generoErht, "Género"), UtilidadesInterfaz.requerido(tallaErht, "Talla"), colorErht.getText(),
+                    p, garErht, UtilidadesInterfaz.fechaDe(adquisicionErht));
+            ventanaDialogoErht.close();
             UtilidadesInterfaz.mostrarInformacion("Traje guardado correctamente.");
         }));
-        HBox pie = new HBox(cancelar, guardar);
-        pie.getStyleClass().add("barra-acciones");
-        raiz.setBottom(pie);
-        ventanaDialogo.showAndWait();
+        HBox pieErht = new HBox(cancelarErht, guardarErht);
+        pieErht.getStyleClass().add("barra-acciones");
+        raizErht.setBottom(pieErht);
+        ventanaDialogoErht.showAndWait();
     }
 }

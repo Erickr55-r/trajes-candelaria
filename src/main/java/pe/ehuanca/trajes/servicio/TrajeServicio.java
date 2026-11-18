@@ -28,10 +28,10 @@ import java.util.List;
 @Service
 public class TrajeServicio {
 
-    private final JdbcTemplate jdbc;
+    private final JdbcTemplate jdbcErht;
 
     public TrajeServicio(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
+        this.jdbcErht = jdbc;
     }
 
     private static final RowMapper<TrajeFila> TRAJE_FILA = (rs, i) -> new TrajeFila(
@@ -51,7 +51,7 @@ public class TrajeServicio {
     // ------------------------------------------------------------------ consultas
 
     public List<TrajeFila> listar(Integer idDanza, String estado, String talla, String texto) {
-        StringBuilder sql = new StringBuilder("""
+        StringBuilder sqlErht = new StringBuilder("""
                 SELECT t.id_traje, t.codigo, d.nombre AS danza, t.personaje, t.genero, t.talla, t.color,
                        t.precio_alquiler, t.garantia, t.estado,
                        (SELECT COUNT(*) FROM detalle_alquiler da WHERE da.id_traje = t.id_traje) AS veces_alquilado
@@ -59,53 +59,53 @@ public class TrajeServicio {
                 JOIN danza d ON d.id_danza = t.id_danza
                 WHERE 1 = 1
                 """);
-        List<Object> parametros = new ArrayList<>();
+        List<Object> parametrosErht = new ArrayList<>();
         if (idDanza != null) {
-            sql.append(" AND t.id_danza = ?");
-            parametros.add(idDanza);
+            sqlErht.append(" AND t.id_danza = ?");
+            parametrosErht.add(idDanza);
         }
         if (tieneTexto(estado)) {
-            sql.append(" AND t.estado = ?");
-            parametros.add(estado);
+            sqlErht.append(" AND t.estado = ?");
+            parametrosErht.add(estado);
         }
         if (tieneTexto(talla)) {
-            sql.append(" AND t.talla = ?");
-            parametros.add(talla);
+            sqlErht.append(" AND t.talla = ?");
+            parametrosErht.add(talla);
         }
         if (tieneTexto(texto)) {
-            sql.append(" AND (t.codigo ILIKE ? OR t.personaje ILIKE ? OR t.color ILIKE ?)");
-            String patron = "%" + texto.trim() + "%";
-            parametros.add(patron);
-            parametros.add(patron);
-            parametros.add(patron);
+            sqlErht.append(" AND (t.codigo ILIKE ? OR t.personaje ILIKE ? OR t.color ILIKE ?)");
+            String patronErht = "%" + texto.trim() + "%";
+            parametrosErht.add(patronErht);
+            parametrosErht.add(patronErht);
+            parametrosErht.add(patronErht);
         }
-        sql.append(" ORDER BY d.nombre, t.personaje, t.talla, t.codigo");
-        return jdbc.query(sql.toString(), TRAJE_FILA, parametros.toArray());
+        sqlErht.append(" ORDER BY d.nombre, t.personaje, t.talla, t.codigo");
+        return jdbcErht.query(sqlErht.toString(), TRAJE_FILA, parametrosErht.toArray());
     }
 
     public Traje buscar(int idTraje) {
-        List<Traje> lista = jdbc.query("""
+        List<Traje> listaErht = jdbcErht.query("""
                 SELECT t.*, d.nombre AS danza
                 FROM traje t
                 JOIN danza d ON d.id_danza = t.id_danza
                 WHERE t.id_traje = ?
                 """, TRAJE, idTraje);
-        if (lista.isEmpty()) {
+        if (listaErht.isEmpty()) {
             throw new ExcepcionReglaNegocio("No existe el traje " + idTraje);
         }
-        return lista.get(0);
+        return listaErht.get(0);
     }
 
     public List<Opcion> danzas() {
-        return jdbc.query("SELECT id_danza AS id, nombre FROM danza ORDER BY nombre", OPCION);
+        return jdbcErht.query("SELECT id_danza AS id, nombre FROM danza ORDER BY nombre", OPCION);
     }
 
     public List<Opcion> tiposPieza() {
-        return jdbc.query("SELECT id_tipo_pieza AS id, nombre FROM tipo_pieza ORDER BY nombre", OPCION);
+        return jdbcErht.query("SELECT id_tipo_pieza AS id, nombre FROM tipo_pieza ORDER BY nombre", OPCION);
     }
 
     public List<PiezaFila> piezas(int idTraje) {
-        return jdbc.query("""
+        return jdbcErht.query("""
                 SELECT p.id_pieza, tp.nombre AS tipo, p.descripcion, p.estado, p.valor_reposicion
                 FROM pieza p
                 JOIN tipo_pieza tp ON tp.id_tipo_pieza = p.id_tipo_pieza
@@ -116,7 +116,7 @@ public class TrajeServicio {
     }
 
     public List<HistorialTraje> historial(int idTraje) {
-        return jdbc.query("""
+        return jdbcErht.query("""
                 SELECT a.id_alquiler, CONCAT_WS(' ', c.nombres, c.apellidos) AS cliente,
                        a.fecha_salida, a.fecha_devolucion_prevista, a.estado, d.precio
                 FROM detalle_alquiler d
@@ -130,7 +130,7 @@ public class TrajeServicio {
     }
 
     public List<MantenimientoFila> mantenimientos(int idTraje) {
-        return jdbc.query("""
+        return jdbcErht.query("""
                 SELECT id_mantenimiento, tipo, fecha_inicio, fecha_fin, costo, detalle
                 FROM mantenimiento
                 WHERE id_traje = ?
@@ -145,78 +145,78 @@ public class TrajeServicio {
     /** Crea un traje nuevo (idTraje null) o actualiza uno existente. Devuelve su id. */
     public int guardar(Integer idTraje, String codigo, int idDanza, String personaje, String genero, String talla,
                        String color, BigDecimal precio, BigDecimal garantia, LocalDate fechaAdquisicion) {
-        String codigoLimpio = codigo.trim().toUpperCase();
+        String codigoLimpioErht = codigo.trim().toUpperCase();
         if (idTraje == null) {
-            return jdbc.queryForObject("""
+            return jdbcErht.queryForObject("""
                     INSERT INTO traje (codigo, id_danza, personaje, genero, talla, color,
                                        precio_alquiler, garantia, fecha_adquisicion)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                     RETURNING id_traje
-                    """, Integer.class, codigoLimpio, idDanza, personaje.trim(), genero, talla,
+                    """, Integer.class, codigoLimpioErht, idDanza, personaje.trim(), genero, talla,
                     vacioANulo(color), precio, garantia, fechaAdquisicion);
         }
-        jdbc.update("""
+        jdbcErht.update("""
                 UPDATE traje
                 SET codigo = ?, id_danza = ?, personaje = ?, genero = ?, talla = ?, color = ?,
                     precio_alquiler = ?, garantia = ?, fecha_adquisicion = ?
                 WHERE id_traje = ?
-                """, codigoLimpio, idDanza, personaje.trim(), genero, talla, vacioANulo(color),
+                """, codigoLimpioErht, idDanza, personaje.trim(), genero, talla, vacioANulo(color),
                 precio, garantia, fechaAdquisicion, idTraje);
         return idTraje;
     }
 
     public void agregarPieza(int idTraje, int idTipoPieza, String descripcion, BigDecimal valor) {
-        jdbc.update("""
+        jdbcErht.update("""
                 INSERT INTO pieza (id_traje, id_tipo_pieza, descripcion, valor_reposicion)
                 VALUES (?, ?, ?, ?)
                 """, idTraje, idTipoPieza, vacioANulo(descripcion), valor);
     }
 
     public void eliminarPieza(int idPieza) {
-        jdbc.update("DELETE FROM pieza WHERE id_pieza = ?", idPieza);
+        jdbcErht.update("DELETE FROM pieza WHERE id_pieza = ?", idPieza);
     }
 
     /** Envía el traje a lavado o reparación: queda bloqueado para alquilar. */
     @Transactional
     public void enviarAMantenimiento(int idTraje, String tipo, String detalle) {
-        validarSinAlquileresActivos(idTraje, "enviar a mantenimiento");
-        jdbc.update("""
+        validarSinAlquileresActivosErht(idTraje, "enviar a mantenimiento");
+        jdbcErht.update("""
                 INSERT INTO mantenimiento (id_traje, tipo, fecha_inicio, detalle)
                 VALUES (?, ?, CURRENT_DATE, ?)
                 """, idTraje, tipo, vacioANulo(detalle));
-        jdbc.update("UPDATE traje SET estado = 'MANTENIMIENTO' WHERE id_traje = ?", idTraje);
+        jdbcErht.update("UPDATE traje SET estado = 'MANTENIMIENTO' WHERE id_traje = ?", idTraje);
     }
 
     /** Cierra el mantenimiento abierto, registra su costo y deja el traje disponible. */
     @Transactional
     public void terminarMantenimiento(int idTraje, BigDecimal costo) {
-        jdbc.update("""
+        jdbcErht.update("""
                 UPDATE mantenimiento
                 SET fecha_fin = CURRENT_DATE, costo = ?
                 WHERE id_traje = ? AND fecha_fin IS NULL
                 """, costo == null ? BigDecimal.ZERO : costo, idTraje);
-        jdbc.update("UPDATE traje SET estado = 'DISPONIBLE' WHERE id_traje = ?", idTraje);
+        jdbcErht.update("UPDATE traje SET estado = 'DISPONIBLE' WHERE id_traje = ?", idTraje);
     }
 
     public void darDeBaja(int idTraje) {
-        validarSinAlquileresActivos(idTraje, "dar de baja");
-        jdbc.update("UPDATE traje SET estado = 'BAJA' WHERE id_traje = ?", idTraje);
+        validarSinAlquileresActivosErht(idTraje, "dar de baja");
+        jdbcErht.update("UPDATE traje SET estado = 'BAJA' WHERE id_traje = ?", idTraje);
     }
 
     public void reactivar(int idTraje) {
-        jdbc.update("UPDATE traje SET estado = 'DISPONIBLE' WHERE id_traje = ? AND estado = 'BAJA'", idTraje);
+        jdbcErht.update("UPDATE traje SET estado = 'DISPONIBLE' WHERE id_traje = ? AND estado = 'BAJA'", idTraje);
     }
 
-    private void validarSinAlquileresActivos(int idTraje, String accion) {
-        Integer activos = jdbc.queryForObject("""
+    private void validarSinAlquileresActivosErht(int idTraje, String accion) {
+        Integer activosErht = jdbcErht.queryForObject("""
                 SELECT COUNT(*)
                 FROM detalle_alquiler d
                 JOIN alquiler a ON a.id_alquiler = d.id_alquiler
                 WHERE d.id_traje = ? AND a.estado IN ('SOLICITADO', 'RESERVADO', 'ENTREGADO')
                 """, Integer.class, idTraje);
-        if (activos != null && activos > 0) {
+        if (activosErht != null && activosErht > 0) {
             throw new ExcepcionReglaNegocio("No se puede " + accion
-                    + ": el traje tiene " + activos + " alquiler(es) solicitado(s), reservado(s) o entregado(s).");
+                    + ": el traje tiene " + activosErht + " alquiler(es) solicitado(s), reservado(s) o entregado(s).");
         }
     }
 

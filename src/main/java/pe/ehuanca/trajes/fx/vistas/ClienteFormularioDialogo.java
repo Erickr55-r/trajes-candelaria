@@ -25,68 +25,68 @@ import java.util.List;
  */
 public class ClienteFormularioDialogo {
 
-    private final Servicios s;
-    private final Integer idCliente;
-    private Integer guardado;
+    private final Servicios sErht;
+    private final Integer idClienteErht;
+    private Integer guardadoErht;
 
     public ClienteFormularioDialogo(Servicios s, Integer idCliente) {
-        this.s = s;
-        this.idCliente = idCliente;
+        this.sErht = s;
+        this.idClienteErht = idCliente;
     }
 
     /** Muestra el formulario; devuelve el id del cliente guardado o null si se canceló. */
     public Integer mostrar() {
-        UtilidadesInterfaz.ejecutar(this::abrir);
-        return guardado;
+        UtilidadesInterfaz.ejecutar(this::abrirErht);
+        return guardadoErht;
     }
 
-    private void abrir() {
-        Cliente c = idCliente == null ? null : s.clientes().buscar(idCliente);
+    private void abrirErht() {
+        Cliente c = idClienteErht == null ? null : sErht.clientes().buscar(idClienteErht);
 
-        ComboBox<String> tipo = UtilidadesInterfaz.comboTexto(List.of("DNI", "RUC", "CE"), null);
+        ComboBox<String> tipoErht = UtilidadesInterfaz.comboTexto(List.of("DNI", "RUC", "CE"), null);
         if (c != null) {
-            tipo.setValue(c.tipoDocumento());
+            tipoErht.setValue(c.tipoDocumento());
         }
-        TextField numero = UtilidadesInterfaz.campo(c == null ? "" : c.numeroDocumento(), "DNI 8 dígitos · RUC 11 dígitos");
-        TextField nombres = UtilidadesInterfaz.campo(c == null ? "" : c.nombres(), "Nombres o razón social");
-        TextField apellidos = UtilidadesInterfaz.campo(c == null ? "" : c.apellidos(), "Opcional");
-        TextField telefono = UtilidadesInterfaz.campo(c == null ? "" : c.telefono(), "Opcional");
-        TextField correo = UtilidadesInterfaz.campo(c == null ? "" : c.correo(), "Opcional");
-        TextField direccion = UtilidadesInterfaz.campo(c == null ? "" : c.direccion(), "Opcional");
+        TextField numeroErht = UtilidadesInterfaz.campo(c == null ? "" : c.numeroDocumento(), "DNI 8 dígitos · RUC 11 dígitos");
+        TextField nombresErht = UtilidadesInterfaz.campo(c == null ? "" : c.nombres(), "Nombres o razón social");
+        TextField apellidosErht = UtilidadesInterfaz.campo(c == null ? "" : c.apellidos(), "Opcional");
+        TextField telefonoErht = UtilidadesInterfaz.campo(c == null ? "" : c.telefono(), "Opcional");
+        TextField correoErht = UtilidadesInterfaz.campo(c == null ? "" : c.correo(), "Opcional");
+        TextField direccionErht = UtilidadesInterfaz.campo(c == null ? "" : c.direccion(), "Opcional");
 
         GridPane g = UtilidadesInterfaz.formulario();
-        UtilidadesInterfaz.fila(g, 0, "Tipo de documento *", tipo);
-        UtilidadesInterfaz.fila(g, 1, "Número de documento *", numero);
-        UtilidadesInterfaz.fila(g, 2, "Nombres *", nombres);
-        UtilidadesInterfaz.fila(g, 3, "Apellidos", apellidos);
-        UtilidadesInterfaz.fila(g, 4, "Teléfono", telefono);
-        UtilidadesInterfaz.fila(g, 5, "Email", correo);
-        UtilidadesInterfaz.fila(g, 6, "Dirección", direccion);
+        UtilidadesInterfaz.fila(g, 0, "Tipo de documento *", tipoErht);
+        UtilidadesInterfaz.fila(g, 1, "Número de documento *", numeroErht);
+        UtilidadesInterfaz.fila(g, 2, "Nombres *", nombresErht);
+        UtilidadesInterfaz.fila(g, 3, "Apellidos", apellidosErht);
+        UtilidadesInterfaz.fila(g, 4, "Teléfono", telefonoErht);
+        UtilidadesInterfaz.fila(g, 5, "Email", correoErht);
+        UtilidadesInterfaz.fila(g, 6, "Dirección", direccionErht);
 
-        BorderPane raiz = new BorderPane();
-        VBox cabecera = new VBox(4, UtilidadesInterfaz.titulo(c == null ? "Nuevo cliente" : "Editar cliente"),
+        BorderPane raizErht = new BorderPane();
+        VBox cabeceraErht = new VBox(4, UtilidadesInterfaz.titulo(c == null ? "Nuevo cliente" : "Editar cliente"),
                 UtilidadesInterfaz.subtitulo("Los campos con * son obligatorios."));
-        cabecera.getStyleClass().add("cabecera");
-        raiz.setTop(cabecera);
-        VBox centro = new VBox(g);
-        centro.getStyleClass().add("contenido");
-        raiz.setCenter(centro);
+        cabeceraErht.getStyleClass().add("cabecera");
+        raizErht.setTop(cabeceraErht);
+        VBox centroErht = new VBox(g);
+        centroErht.getStyleClass().add("contenido");
+        raizErht.setCenter(centroErht);
 
-        Stage ventanaDialogo = UtilidadesInterfaz.ventana(c == null ? "Nuevo cliente" : "Editar cliente", raiz, 540, 480);
-        Button cancelar = new Button("Cancelar");
-        cancelar.setOnAction(e -> ventanaDialogo.close());
-        Button guardar = UtilidadesInterfaz.estilo(new Button("Guardar"), "boton-primario");
-        guardar.setDefaultButton(true);
-        guardar.setOnAction(e -> UtilidadesInterfaz.ejecutar(() -> {
-            guardado = s.clientes().guardar(idCliente, UtilidadesInterfaz.requerido(tipo, "Tipo de documento"),
-                    UtilidadesInterfaz.requerido(numero, "Número de documento"), UtilidadesInterfaz.requerido(nombres, "Nombres"),
-                    apellidos.getText(), telefono.getText(), correo.getText(), direccion.getText());
-            ventanaDialogo.close();
+        Stage ventanaDialogoErht = UtilidadesInterfaz.ventana(c == null ? "Nuevo cliente" : "Editar cliente", raizErht, 540, 480);
+        Button cancelarErht = new Button("Cancelar");
+        cancelarErht.setOnAction(e -> ventanaDialogoErht.close());
+        Button guardarErht = UtilidadesInterfaz.estilo(new Button("Guardar"), "boton-primario");
+        guardarErht.setDefaultButton(true);
+        guardarErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(() -> {
+            guardadoErht = sErht.clientes().guardar(idClienteErht, UtilidadesInterfaz.requerido(tipoErht, "Tipo de documento"),
+                    UtilidadesInterfaz.requerido(numeroErht, "Número de documento"), UtilidadesInterfaz.requerido(nombresErht, "Nombres"),
+                    apellidosErht.getText(), telefonoErht.getText(), correoErht.getText(), direccionErht.getText());
+            ventanaDialogoErht.close();
             UtilidadesInterfaz.mostrarInformacion("Cliente guardado correctamente.");
         }));
-        HBox pie = new HBox(cancelar, guardar);
-        pie.getStyleClass().add("barra-acciones");
-        raiz.setBottom(pie);
-        ventanaDialogo.showAndWait();
+        HBox pieErht = new HBox(cancelarErht, guardarErht);
+        pieErht.getStyleClass().add("barra-acciones");
+        raizErht.setBottom(pieErht);
+        ventanaDialogoErht.showAndWait();
     }
 }

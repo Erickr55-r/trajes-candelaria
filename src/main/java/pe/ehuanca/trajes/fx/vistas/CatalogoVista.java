@@ -57,33 +57,33 @@ public class CatalogoVista extends VBox {
 
     private enum Estado { HOY, LUEGO, MANTENIMIENTO }
 
-    private final Servicios s;
+    private final Servicios sErht;
     /** Botón de la tarjeta: la tienda abre Nueva reserva; el cliente, el detalle del traje. */
-    private final java.util.function.BiConsumer<TrajeFila, LocalDate> alReservar;
+    private final java.util.function.BiConsumer<TrajeFila, LocalDate> alReservarErht;
     /** Clic en la tarjeta: la tienda abre el diálogo del traje (doble clic); el cliente, el detalle (un clic). */
-    private final java.util.function.Consumer<TrajeFila> alAbrir;
-    private final boolean tienda;
+    private final java.util.function.Consumer<TrajeFila> alAbrirErht;
+    private final boolean tiendaErht;
 
-    private final ComboBox<Opcion> fDanza;
-    private final ComboBox<String> fTalla = UtilidadesInterfaz.comboTexto(UtilidadesInterfaz.TALLAS, "Todas las tallas");
-    private final ComboBox<String> fEstado = UtilidadesInterfaz.comboTexto(List.of(EST_HOY, EST_LUEGO, EST_MANT), "Todos los estados");
-    private final TextField fTexto = UtilidadesInterfaz.campo("", "Código, personaje o color");
-    private final ComboBox<String> orden = UtilidadesInterfaz.comboTexto(
+    private final ComboBox<Opcion> fDanzaErht;
+    private final ComboBox<String> fTallaErht = UtilidadesInterfaz.comboTexto(UtilidadesInterfaz.TALLAS, "Todas las tallas");
+    private final ComboBox<String> fEstadoErht = UtilidadesInterfaz.comboTexto(List.of(EST_HOY, EST_LUEGO, EST_MANT), "Todos los estados");
+    private final TextField fTextoErht = UtilidadesInterfaz.campo("", "Código, personaje o color");
+    private final ComboBox<String> ordenErht = UtilidadesInterfaz.comboTexto(
             List.of(ORDEN_RECOMENDADO, ORDEN_MENOR, ORDEN_MAYOR, ORDEN_POPULAR), null);
 
-    private final Label titulo = UtilidadesInterfaz.titulo("");
-    private final TarjetaTraje.Cuadricula cuadricula = new TarjetaTraje.Cuadricula();
-    private final Map<Integer, List<String>> piezas = new HashMap<>();
+    private final Label tituloErht = UtilidadesInterfaz.titulo("");
+    private final TarjetaTraje.Cuadricula cuadriculaErht = new TarjetaTraje.Cuadricula();
+    private final Map<Integer, List<String>> piezasErht = new HashMap<>();
 
-    private List<TrajeFila> lista = List.of();
-    private List<TrajeFila> todos = List.of();
-    private Set<Integer> masAlquilados = Set.of();
-    private Map<Integer, LocalDate> libreDesde = Map.of();
+    private List<TrajeFila> listaErht = List.of();
+    private List<TrajeFila> todosErht = List.of();
+    private Set<Integer> masAlquiladosErht = Set.of();
+    private Map<Integer, LocalDate> libreDesdeErht = Map.of();
 
     public static CatalogoVista paraTienda(Servicios s, VistaPanelVendedor ventana) {
         return new CatalogoVista(s, (t, libre) -> {
-            LocalDate desde = libre.isBefore(LocalDate.now()) ? LocalDate.now() : libre;
-            ventana.reservar(t.idTraje(), desde, desde.plusDays(DIAS_POR_DEFECTO), null, null);
+            LocalDate desdeErht = libre.isBefore(LocalDate.now()) ? LocalDate.now() : libre;
+            ventana.reservar(t.idTraje(), desdeErht, desdeErht.plusDays(DIAS_POR_DEFECTO), null, null);
         }, t -> new TrajeDetalleDialogo(s, t.idTraje()).mostrar(), true);
     }
 
@@ -93,146 +93,146 @@ public class CatalogoVista extends VBox {
 
     private CatalogoVista(Servicios s, java.util.function.BiConsumer<TrajeFila, LocalDate> alReservar,
                           java.util.function.Consumer<TrajeFila> alAbrir, boolean tienda) {
-        this.s = s;
-        this.alReservar = alReservar;
-        this.alAbrir = alAbrir;
-        this.tienda = tienda;
+        this.sErht = s;
+        this.alReservarErht = alReservar;
+        this.alAbrirErht = alAbrir;
+        this.tiendaErht = tienda;
         getStyleClass().add("contenido");
-        fDanza = UtilidadesInterfaz.combo(s.trajes().danzas(), Opcion::nombre, "Todas las danzas");
+        fDanzaErht = UtilidadesInterfaz.combo(s.trajes().danzas(), Opcion::nombre, "Todas las danzas");
 
-        getChildren().addAll(cabecera(), filtros(), cuadricula);
-        VBox.setMargin(cuadricula, new Insets(6, 0, 10, 0));
-        UtilidadesInterfaz.ejecutar(this::cargar);
+        getChildren().addAll(cabeceraErht(), filtrosErht(), cuadriculaErht);
+        VBox.setMargin(cuadriculaErht, new Insets(6, 0, 10, 0));
+        UtilidadesInterfaz.ejecutar(this::cargarErht);
     }
 
-    private HBox cabecera() {
-        Label sub = UtilidadesInterfaz.subtitulo(tienda
+    private HBox cabeceraErht() {
+        Label subErht = UtilidadesInterfaz.subtitulo(tiendaErht
                 ? "Todo el vestuario de trajes de luces y autóctonos, con su estado de hoy. "
                         + "Doble clic en una tarjeta para ver piezas, mantenimiento e historial."
                 : "Todo nuestro vestuario de trajes de luces y autóctonos. Elige uno para ver sus piezas, "
                         + "las fechas libres y solicitar tu reserva.");
-        sub.setMinHeight(Region.USE_PREF_SIZE);
-        VBox textos = new VBox(6, UtilidadesInterfaz.sobretitulo("Juliaca – Tienda principal", Feather.MAP_PIN), titulo, sub);
-        HBox.setHgrow(textos, Priority.ALWAYS);
+        subErht.setMinHeight(Region.USE_PREF_SIZE);
+        VBox textosErht = new VBox(6, UtilidadesInterfaz.sobretitulo("Juliaca – Tienda principal", Feather.MAP_PIN), tituloErht, subErht);
+        HBox.setHgrow(textosErht, Priority.ALWAYS);
 
-        orden.setValue(ORDEN_RECOMENDADO);
-        orden.setPrefWidth(200);
-        orden.setMinWidth(200);
-        orden.setOnAction(e -> pintar());
-        Label lOrden = UtilidadesInterfaz.etiqueta("Ordenar por");
-        lOrden.setMinWidth(Region.USE_PREF_SIZE);
-        HBox acciones = new HBox(10, lOrden, orden);
-        acciones.setAlignment(Pos.CENTER_RIGHT);
-        acciones.setMinWidth(Region.USE_PREF_SIZE);
+        ordenErht.setValue(ORDEN_RECOMENDADO);
+        ordenErht.setPrefWidth(200);
+        ordenErht.setMinWidth(200);
+        ordenErht.setOnAction(e -> pintarErht());
+        Label lOrdenErht = UtilidadesInterfaz.etiqueta("Ordenar por");
+        lOrdenErht.setMinWidth(Region.USE_PREF_SIZE);
+        HBox accionesErht = new HBox(10, lOrdenErht, ordenErht);
+        accionesErht.setAlignment(Pos.CENTER_RIGHT);
+        accionesErht.setMinWidth(Region.USE_PREF_SIZE);
 
-        HBox caja = new HBox(16, textos, acciones);
-        caja.setAlignment(Pos.BOTTOM_LEFT);
-        return caja;
+        HBox cajaErht = new HBox(16, textosErht, accionesErht);
+        cajaErht.setAlignment(Pos.BOTTOM_LEFT);
+        return cajaErht;
     }
 
-    private HBox filtros() {
-        fDanza.setPrefWidth(210);
-        fTalla.setPrefWidth(160);
-        fEstado.setPrefWidth(220);
-        HBox.setHgrow(fTexto, Priority.ALWAYS);
-        Button aplicar = UtilidadesInterfaz.estilo(new Button("Filtrar", UtilidadesInterfaz.icono(Feather.SLIDERS)), "boton-primario");
-        aplicar.setMinWidth(Region.USE_PREF_SIZE);
-        aplicar.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargar));
-        fTexto.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargar));
-        fEstado.setOnAction(e -> pintar());
-        Button limpiar = new Button("Limpiar");
-        limpiar.setMinWidth(Region.USE_PREF_SIZE);
-        limpiar.setOnAction(e -> {
-            fDanza.getSelectionModel().selectFirst();
-            fTalla.getSelectionModel().selectFirst();
-            fEstado.getSelectionModel().selectFirst();
-            fTexto.clear();
-            UtilidadesInterfaz.ejecutar(this::cargar);
+    private HBox filtrosErht() {
+        fDanzaErht.setPrefWidth(210);
+        fTallaErht.setPrefWidth(160);
+        fEstadoErht.setPrefWidth(220);
+        HBox.setHgrow(fTextoErht, Priority.ALWAYS);
+        Button aplicarErht = UtilidadesInterfaz.estilo(new Button("Filtrar", UtilidadesInterfaz.icono(Feather.SLIDERS)), "boton-primario");
+        aplicarErht.setMinWidth(Region.USE_PREF_SIZE);
+        aplicarErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarErht));
+        fTextoErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::cargarErht));
+        fEstadoErht.setOnAction(e -> pintarErht());
+        Button limpiarErht = new Button("Limpiar");
+        limpiarErht.setMinWidth(Region.USE_PREF_SIZE);
+        limpiarErht.setOnAction(e -> {
+            fDanzaErht.getSelectionModel().selectFirst();
+            fTallaErht.getSelectionModel().selectFirst();
+            fEstadoErht.getSelectionModel().selectFirst();
+            fTextoErht.clear();
+            UtilidadesInterfaz.ejecutar(this::cargarErht);
         });
-        HBox barra = new HBox(12, fDanza, fTalla, fEstado, fTexto, limpiar, aplicar);
-        barra.getStyleClass().add("barra-filtros");
-        return barra;
+        HBox barraErht = new HBox(12, fDanzaErht, fTallaErht, fEstadoErht, fTextoErht, limpiarErht, aplicarErht);
+        barraErht.getStyleClass().add("barra-filtros");
+        return barraErht;
     }
 
     // ------------------------------------------------------------------ datos
 
-    private void cargar() {
-        Opcion d = fDanza.getValue();
-        todos = s.trajes().listar(null, null, null, null);
-        lista = s.trajes().listar(d == null ? null : d.id(), null, fTalla.getValue(), fTexto.getText())
+    private void cargarErht() {
+        Opcion d = fDanzaErht.getValue();
+        todosErht = sErht.trajes().listar(null, null, null, null);
+        listaErht = sErht.trajes().listar(d == null ? null : d.id(), null, fTallaErht.getValue(), fTextoErht.getText())
                 .stream().filter(t -> !"BAJA".equals(t.estado())).toList();
-        masAlquilados = new HashSet<>();
-        todos.stream()
+        masAlquiladosErht = new HashSet<>();
+        todosErht.stream()
                 .filter(t -> t.vecesAlquilado() > 0 && !"BAJA".equals(t.estado()))
                 .sorted(Comparator.comparingLong(TrajeFila::vecesAlquilado).reversed())
                 .limit(CANTIDAD_MAS_ALQUILADOS)
-                .forEach(t -> masAlquilados.add(t.idTraje()));
-        libreDesde = TarjetaTraje.proximaFechaLibre(s.alquileres().ocupaciones(), LocalDate.now());
-        pintar();
+                .forEach(t -> masAlquiladosErht.add(t.idTraje()));
+        libreDesdeErht = TarjetaTraje.proximaFechaLibre(sErht.alquileres().ocupaciones(), LocalDate.now());
+        pintarErht();
     }
 
-    private Estado estado(TrajeFila t) {
+    private Estado estadoErht(TrajeFila t) {
         if ("MANTENIMIENTO".equals(t.estado())) {
             return Estado.MANTENIMIENTO;
         }
-        return libreDesde.getOrDefault(t.idTraje(), LocalDate.now()).isAfter(LocalDate.now())
+        return libreDesdeErht.getOrDefault(t.idTraje(), LocalDate.now()).isAfter(LocalDate.now())
                 ? Estado.LUEGO : Estado.HOY;
     }
 
-    private void pintar() {
-        List<TrajeFila> visibles = new ArrayList<>(lista);
-        if (fEstado.getValue() != null) {
-            Estado buscado = switch (fEstado.getValue()) {
+    private void pintarErht() {
+        List<TrajeFila> visiblesErht = new ArrayList<>(listaErht);
+        if (fEstadoErht.getValue() != null) {
+            Estado buscadoErht = switch (fEstadoErht.getValue()) {
                 case EST_HOY -> Estado.HOY;
                 case EST_LUEGO -> Estado.LUEGO;
                 default -> Estado.MANTENIMIENTO;
             };
-            visibles.removeIf(t -> estado(t) != buscado);
+            visiblesErht.removeIf(t -> estadoErht(t) != buscadoErht);
         }
-        Comparator<TrajeFila> porPrecio = Comparator.comparing(TrajeFila::precioAlquiler);
-        switch (orden.getValue() == null ? ORDEN_RECOMENDADO : orden.getValue()) {
-            case ORDEN_MENOR -> visibles.sort(porPrecio);
-            case ORDEN_MAYOR -> visibles.sort(porPrecio.reversed());
-            case ORDEN_POPULAR -> visibles.sort(Comparator.comparingLong(TrajeFila::vecesAlquilado).reversed());
-            default -> visibles.sort(Comparator.comparing((TrajeFila t) -> estado(t).ordinal())
-                    .thenComparing(t -> !masAlquilados.contains(t.idTraje())));
+        Comparator<TrajeFila> porPrecioErht = Comparator.comparing(TrajeFila::precioAlquiler);
+        switch (ordenErht.getValue() == null ? ORDEN_RECOMENDADO : ordenErht.getValue()) {
+            case ORDEN_MENOR -> visiblesErht.sort(porPrecioErht);
+            case ORDEN_MAYOR -> visiblesErht.sort(porPrecioErht.reversed());
+            case ORDEN_POPULAR -> visiblesErht.sort(Comparator.comparingLong(TrajeFila::vecesAlquilado).reversed());
+            default -> visiblesErht.sort(Comparator.comparing((TrajeFila t) -> estadoErht(t).ordinal())
+                    .thenComparing(t -> !masAlquiladosErht.contains(t.idTraje())));
         }
 
-        long hoy = visibles.stream().filter(t -> estado(t) == Estado.HOY).count();
-        titulo.setText(visibles.size() + " trajes en catálogo · " + hoy + " listos hoy");
+        long hoyErht = visiblesErht.stream().filter(t -> estadoErht(t) == Estado.HOY).count();
+        tituloErht.setText(visiblesErht.size() + " trajes en catálogo · " + hoyErht + " listos hoy");
 
-        if (visibles.isEmpty()) {
-            VBox caja = new VBox(UtilidadesInterfaz.seccion("No hay trajes con esos filtros"),
+        if (visiblesErht.isEmpty()) {
+            VBox cajaErht = new VBox(UtilidadesInterfaz.seccion("No hay trajes con esos filtros"),
                     UtilidadesInterfaz.subtitulo("Cambia o limpia los filtros."));
-            caja.getStyleClass().add("vacio-catalogo");
-            cuadricula.mostrar(List.of(caja));
+            cajaErht.getStyleClass().add("vacio-catalogo");
+            cuadriculaErht.mostrar(List.of(cajaErht));
             return;
         }
-        List<Node> tarjetas = new ArrayList<>();
-        for (TrajeFila t : visibles) {
-            Estado e = estado(t);
-            LocalDate libre = libreDesde.getOrDefault(t.idTraje(), LocalDate.now());
-            String texto = switch (e) {
+        List<Node> tarjetasErht = new ArrayList<>();
+        for (TrajeFila t : visiblesErht) {
+            Estado e = estadoErht(t);
+            LocalDate libreErht = libreDesdeErht.getOrDefault(t.idTraje(), LocalDate.now());
+            String textoErht = switch (e) {
                 case HOY -> EST_HOY;
-                case LUEGO -> "Disponible desde " + libre.format(DIA_MES);
+                case LUEGO -> "Disponible desde " + libreErht.format(DIA_MES);
                 case MANTENIMIENTO -> EST_MANT;
             };
-            TarjetaTraje.Punto punto = switch (e) {
+            TarjetaTraje.Punto puntoErht = switch (e) {
                 case HOY -> TarjetaTraje.Punto.VERDE;
                 case LUEGO -> TarjetaTraje.Punto.AMBAR;
                 case MANTENIMIENTO -> TarjetaTraje.Punto.ROJO;
             };
-            tarjetas.add(TarjetaTraje.crear(new TarjetaTraje.Datos(t, masAlquilados.contains(t.idTraje()), texto,
-                    punto, piezas(t.idTraje()), TarjetaTraje.tallas(t, todos), "/ alquiler",
-                    e != Estado.MANTENIMIENTO, () -> alReservar.accept(t, libre), () -> alAbrir.accept(t),
-                    tienda ? "Reservar" : "Ver traje", !tienda)));
+            tarjetasErht.add(TarjetaTraje.crear(new TarjetaTraje.Datos(t, masAlquiladosErht.contains(t.idTraje()), textoErht,
+                    puntoErht, piezasErht(t.idTraje()), TarjetaTraje.tallas(t, todosErht), "/ alquiler",
+                    e != Estado.MANTENIMIENTO, () -> alReservarErht.accept(t, libreErht), () -> alAbrirErht.accept(t),
+                    tiendaErht ? "Reservar" : "Ver traje", !tiendaErht)));
         }
-        cuadricula.mostrar(tarjetas);
+        cuadriculaErht.mostrar(tarjetasErht);
     }
 
-    private List<String> piezas(int idTraje) {
-        return piezas.computeIfAbsent(idTraje,
-                id -> s.trajes().piezas(id).stream().map(PiezaFila::tipo).toList());
+    private List<String> piezasErht(int idTraje) {
+        return piezasErht.computeIfAbsent(idTraje,
+                id -> sErht.trajes().piezas(id).stream().map(PiezaFila::tipo).toList());
     }
 
 }

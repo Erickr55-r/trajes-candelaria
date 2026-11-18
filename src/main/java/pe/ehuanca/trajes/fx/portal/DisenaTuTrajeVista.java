@@ -87,280 +87,280 @@ public class DisenaTuTrajeVista extends HBox {
         }
     }
 
-    private final Servicios s;
-    private final VistaPortalCliente portal;
-    private final Map<String, List<String>> renders = CatalogoRenderizados.danzas();
-    private final List<ColorTraje> paleta;
-    private final List<Implemento> implementos;
+    private final Servicios sErht;
+    private final VistaPortalCliente portalErht;
+    private final Map<String, List<String>> rendersErht = CatalogoRenderizados.danzas();
+    private final List<ColorTraje> paletaErht;
+    private final List<Implemento> implementosErht;
 
     // estado del diseño
-    private Opcion danza;
-    private final Map<String, RenderizadoCapas> angulos = new LinkedHashMap<>();
-    private List<String> nombresAngulos = List.of();
-    private int angulo;
+    private Opcion danzaErht;
+    private final Map<String, RenderizadoCapas> angulosErht = new LinkedHashMap<>();
+    private List<String> nombresAngulosErht = List.of();
+    private int anguloErht;
     /** clave de prenda ("pantalon") → parte_traje de la danza (null si la tienda no la cobra). */
-    private final Map<String, ParteTraje> partePorPrenda = new LinkedHashMap<>();
-    private final Map<String, String> nombrePrenda = new LinkedHashMap<>();
-    private final Map<String, ColorElegido> colores = new LinkedHashMap<>();
-    private String prendaActual;
-    private final Map<Integer, CheckBox> marcasImplementos = new LinkedHashMap<>();
+    private final Map<String, ParteTraje> partePorPrendaErht = new LinkedHashMap<>();
+    private final Map<String, String> nombrePrendaErht = new LinkedHashMap<>();
+    private final Map<String, ColorElegido> coloresErht = new LinkedHashMap<>();
+    private String prendaActualErht;
+    private final Map<Integer, CheckBox> marcasImplementosErht = new LinkedHashMap<>();
 
     // nodos
-    private final StackPane escenario = new StackPane();
-    private final StackPane capas = new StackPane();
-    private final Label lAngulo = new Label();
-    private final Button antes = new Button(null, UtilidadesInterfaz.icono(Feather.CHEVRON_LEFT, 22));
-    private final Button despues = new Button(null, UtilidadesInterfaz.icono(Feather.CHEVRON_RIGHT, 22));
-    private final Label aviso = new Label();
-    private final FlowPane opcionesDanza = new FlowPane(8, 8);
-    private final FlowPane opcionesPrenda = new FlowPane(8, 8);
-    private final FlowPane circulos = new FlowPane(10, 10);
-    private final ColorPicker selectorColor = new ColorPicker(Color.WHITE);
-    private final Label lColor = new Label();
-    private final ToggleGroup modalidad = new ToggleGroup();
-    private final ToggleGroup tallas = new ToggleGroup();
-    private final DatePicker entrega = UtilidadesInterfaz.selectorFecha(LocalDate.now().plusDays(21));
-    private final VBox lineasResumen = new VBox(6);
-    private final Label total = new Label();
-    private final Button enviar = new Button("Enviar mi diseño a la tienda", UtilidadesInterfaz.icono(Feather.SEND));
-    private boolean pintando;
+    private final StackPane escenarioErht = new StackPane();
+    private final StackPane capasErht = new StackPane();
+    private final Label lAnguloErht = new Label();
+    private final Button antesErht = new Button(null, UtilidadesInterfaz.icono(Feather.CHEVRON_LEFT, 22));
+    private final Button despuesErht = new Button(null, UtilidadesInterfaz.icono(Feather.CHEVRON_RIGHT, 22));
+    private final Label avisoErht = new Label();
+    private final FlowPane opcionesDanzaErht = new FlowPane(8, 8);
+    private final FlowPane opcionesPrendaErht = new FlowPane(8, 8);
+    private final FlowPane circulosErht = new FlowPane(10, 10);
+    private final ColorPicker selectorColorErht = new ColorPicker(Color.WHITE);
+    private final Label lColorErht = new Label();
+    private final ToggleGroup modalidadErht = new ToggleGroup();
+    private final ToggleGroup tallasErht = new ToggleGroup();
+    private final DatePicker entregaErht = UtilidadesInterfaz.selectorFecha(LocalDate.now().plusDays(21));
+    private final VBox lineasResumenErht = new VBox(6);
+    private final Label totalErht = new Label();
+    private final Button enviarErht = new Button("Enviar mi diseño a la tienda", UtilidadesInterfaz.icono(Feather.SEND));
+    private boolean pintandoErht;
 
     public DisenaTuTrajeVista(Servicios s, VistaPortalCliente portal) {
-        this.s = s;
-        this.portal = portal;
-        this.paleta = s.personalizador().colores();
-        this.implementos = s.personalizador().implementos();
+        this.sErht = s;
+        this.portalErht = portal;
+        this.paletaErht = s.personalizador().colores();
+        this.implementosErht = s.personalizador().implementos();
         getStyleClass().addAll("contenido", "disena");
         setSpacing(26);
 
-        VBox izquierda = new VBox(14, UtilidadesInterfaz.encabezado("Personalizador", "Diseña tu traje",
+        VBox izquierdaErht = new VBox(14, UtilidadesInterfaz.encabezado("Personalizador", "Diseña tu traje",
                 "Elige la danza, el color de cada prenda y los implementos. Te mostramos el precio estimado al instante."),
-                estudio());
-        HBox.setHgrow(izquierda, Priority.ALWAYS);
-        VBox.setVgrow(escenario, Priority.ALWAYS);
+                estudioErht());
+        HBox.setHgrow(izquierdaErht, Priority.ALWAYS);
+        VBox.setVgrow(escenarioErht, Priority.ALWAYS);
 
-        ScrollPane pasos = new ScrollPane(tarjetaPasos());
-        pasos.setFitToWidth(true);
-        pasos.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        pasos.getStyleClass().add("pasos-scroll");
-        pasos.setMinWidth(430);
-        pasos.setPrefWidth(460);
-        pasos.setMaxWidth(480);
-        getChildren().addAll(izquierda, pasos);
+        ScrollPane pasosErht = new ScrollPane(tarjetaPasosErht());
+        pasosErht.setFitToWidth(true);
+        pasosErht.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        pasosErht.getStyleClass().add("pasos-scroll");
+        pasosErht.setMinWidth(430);
+        pasosErht.setPrefWidth(460);
+        pasosErht.setMaxWidth(480);
+        getChildren().addAll(izquierdaErht, pasosErht);
 
-        selectorColor.valueProperty().addListener((o, a, b) -> {
-            if (!pintando && b != null) {
-                elegirColor(new ColorElegido(b, null, "Personalizado"));
+        selectorColorErht.valueProperty().addListener((o, a, b) -> {
+            if (!pintandoErht && b != null) {
+                elegirColorErht(new ColorElegido(b, null, "Personalizado"));
             }
         });
         // primera danza con render
-        Opcion primera = null;
-        for (Node n : opcionesDanza.getChildren()) {
+        Opcion primeraErht = null;
+        for (Node n : opcionesDanzaErht.getChildren()) {
             if (!n.isDisabled()) {
-                primera = (Opcion) n.getUserData();
+                primeraErht = (Opcion) n.getUserData();
                 ((ToggleButton) n).setSelected(true);
                 break;
             }
         }
-        if (primera != null) {
-            elegirDanza(primera);
+        if (primeraErht != null) {
+            elegirDanzaErht(primeraErht);
         } else {
-            aviso.setText("Todavía no hay renders de trajes para personalizar.");
-            aviso.setVisible(true);
+            avisoErht.setText("Todavía no hay renders de trajes para personalizar.");
+            avisoErht.setVisible(true);
         }
     }
 
     // ------------------------------------------------------------------ estudio (foto grande)
 
-    private StackPane estudio() {
-        escenario.getStyleClass().add("estudio");
-        escenario.setMinSize(0, 0);
-        escenario.setPrefSize(500, 560);
-        escenario.setPadding(new Insets(24));
-        escenario.getChildren().add(capas);
+    private StackPane estudioErht() {
+        escenarioErht.getStyleClass().add("estudio");
+        escenarioErht.setMinSize(0, 0);
+        escenarioErht.setPrefSize(500, 560);
+        escenarioErht.setPadding(new Insets(24));
+        escenarioErht.getChildren().add(capasErht);
 
-        antes.getStyleClass().add("flecha-angulo");
-        despues.getStyleClass().add("flecha-angulo");
-        antes.setOnAction(e -> girar(-1));
-        despues.setOnAction(e -> girar(1));
-        StackPane.setAlignment(antes, Pos.CENTER_LEFT);
-        StackPane.setAlignment(despues, Pos.CENTER_RIGHT);
-        lAngulo.getStyleClass().addAll("etiqueta-opcion", "etiqueta-opcion-portada");
-        StackPane.setAlignment(lAngulo, Pos.BOTTOM_CENTER);
-        aviso.getStyleClass().add("aviso-capa");
-        aviso.setWrapText(true);
-        aviso.setMaxWidth(420);
-        aviso.setVisible(false);
-        StackPane.setAlignment(aviso, Pos.TOP_CENTER);
-        escenario.getChildren().addAll(antes, despues, lAngulo, aviso);
-        return escenario;
+        antesErht.getStyleClass().add("flecha-angulo");
+        despuesErht.getStyleClass().add("flecha-angulo");
+        antesErht.setOnAction(e -> girarErht(-1));
+        despuesErht.setOnAction(e -> girarErht(1));
+        StackPane.setAlignment(antesErht, Pos.CENTER_LEFT);
+        StackPane.setAlignment(despuesErht, Pos.CENTER_RIGHT);
+        lAnguloErht.getStyleClass().addAll("etiqueta-opcion", "etiqueta-opcion-portada");
+        StackPane.setAlignment(lAnguloErht, Pos.BOTTOM_CENTER);
+        avisoErht.getStyleClass().add("aviso-capa");
+        avisoErht.setWrapText(true);
+        avisoErht.setMaxWidth(420);
+        avisoErht.setVisible(false);
+        StackPane.setAlignment(avisoErht, Pos.TOP_CENTER);
+        escenarioErht.getChildren().addAll(antesErht, despuesErht, lAnguloErht, avisoErht);
+        return escenarioErht;
     }
 
-    private void mostrarAngulo() {
-        capas.getChildren().clear();
-        if (nombresAngulos.isEmpty()) {
+    private void mostrarAnguloErht() {
+        capasErht.getChildren().clear();
+        if (nombresAngulosErht.isEmpty()) {
             return;
         }
-        RenderizadoCapas r = angulos.get(nombresAngulos.get(angulo));
-        capas.getChildren().add(vista(new ImageView(r.base())));
+        RenderizadoCapas r = angulosErht.get(nombresAngulosErht.get(anguloErht));
+        capasErht.getChildren().add(vistaErht(new ImageView(r.base())));
         for (PrendaTenible p : r.prendas()) {
-            capas.getChildren().add(vista(new ImageView(p.imagen())));
+            capasErht.getChildren().add(vistaErht(new ImageView(p.imagen())));
         }
-        boolean varios = nombresAngulos.size() > 1;
-        antes.setVisible(varios);
-        despues.setVisible(varios);
-        String a = nombresAngulos.get(angulo);
-        lAngulo.setText(a.substring(0, 1).toUpperCase(Locale.ROOT) + a.substring(1)
-                + (varios ? "  ·  " + (angulo + 1) + " de " + nombresAngulos.size() : ""));
+        boolean variosErht = nombresAngulosErht.size() > 1;
+        antesErht.setVisible(variosErht);
+        despuesErht.setVisible(variosErht);
+        String a = nombresAngulosErht.get(anguloErht);
+        lAnguloErht.setText(a.substring(0, 1).toUpperCase(Locale.ROOT) + a.substring(1)
+                + (variosErht ? "  ·  " + (anguloErht + 1) + " de " + nombresAngulosErht.size() : ""));
         // render sin transparencia: se avisa (se teñiría el cuadro entero)
-        boolean opaco = r.prendas().stream().anyMatch(p -> p.fraccionTransparente() < 0.05);
-        aviso.setText("Vista previa aproximada: este render aún no tiene fondo transparente.");
-        aviso.setVisible(opaco);
+        boolean opacoErht = r.prendas().stream().anyMatch(p -> p.fraccionTransparente() < 0.05);
+        avisoErht.setText("Vista previa aproximada: este render aún no tiene fondo transparente.");
+        avisoErht.setVisible(opacoErht);
     }
 
-    private ImageView vista(ImageView iv) {
+    private ImageView vistaErht(ImageView iv) {
         iv.setPreserveRatio(true);
         iv.setSmooth(true);
-        iv.fitWidthProperty().bind(escenario.widthProperty().subtract(48));
-        iv.fitHeightProperty().bind(escenario.heightProperty().subtract(48));
+        iv.fitWidthProperty().bind(escenarioErht.widthProperty().subtract(48));
+        iv.fitHeightProperty().bind(escenarioErht.heightProperty().subtract(48));
         return iv;
     }
 
-    private void girar(int paso) {
-        if (nombresAngulos.isEmpty()) {
+    private void girarErht(int paso) {
+        if (nombresAngulosErht.isEmpty()) {
             return;
         }
-        angulo = Math.floorMod(angulo + paso, nombresAngulos.size());
-        mostrarAngulo();
+        anguloErht = Math.floorMod(anguloErht + paso, nombresAngulosErht.size());
+        mostrarAnguloErht();
     }
 
     // ------------------------------------------------------------------ pasos
 
-    private VBox tarjetaPasos() {
-        for (Opcion d : s.trajes().danzas()) {
+    private VBox tarjetaPasosErht() {
+        for (Opcion d : sErht.trajes().danzas()) {
             ToggleButton b = new ToggleButton(d.nombre());
             b.getStyleClass().add("etiqueta-opcion-filtro");
             b.setUserData(d);
-            boolean hay = CatalogoRenderizados.carpetaDe(d.nombre(), renders) != null;
-            b.setDisable(!hay);
-            if (!hay) {
+            boolean hayErht = CatalogoRenderizados.carpetaDe(d.nombre(), rendersErht) != null;
+            b.setDisable(!hayErht);
+            if (!hayErht) {
                 b.setTooltip(new Tooltip("Pronto podrás personalizar esta danza."));
             }
             b.setOnAction(e -> {
                 b.setSelected(true);
-                opcionesDanza.getChildren().forEach(n -> {
+                opcionesDanzaErht.getChildren().forEach(n -> {
                     if (n != b) {
                         ((ToggleButton) n).setSelected(false);
                     }
                 });
-                UtilidadesInterfaz.ejecutar(() -> elegirDanza(d));
+                UtilidadesInterfaz.ejecutar(() -> elegirDanzaErht(d));
             });
-            opcionesDanza.getChildren().add(b);
+            opcionesDanzaErht.getChildren().add(b);
         }
 
         // paleta de la tabla color
-        for (ColorTraje c : paleta) {
-            Circle circ = new Circle(15, Color.web(c.colorHex()));
-            circ.getStyleClass().add("circulo-color");
-            StackPane boton = new StackPane(circ);
-            boton.getStyleClass().add("muestra");
-            boton.setUserData(c);
-            Tooltip.install(boton, new Tooltip(c.nombre() + "  " + c.colorHex()));
-            boton.setOnMouseClicked(e -> elegirColor(new ColorElegido(Color.web(c.colorHex()), c.idColor(), c.nombre())));
-            circulos.getChildren().add(boton);
+        for (ColorTraje c : paletaErht) {
+            Circle circErht = new Circle(15, Color.web(c.colorHex()));
+            circErht.getStyleClass().add("circulo-color");
+            StackPane botonErht = new StackPane(circErht);
+            botonErht.getStyleClass().add("muestra");
+            botonErht.setUserData(c);
+            Tooltip.install(botonErht, new Tooltip(c.nombre() + "  " + c.colorHex()));
+            botonErht.setOnMouseClicked(e -> elegirColorErht(new ColorElegido(Color.web(c.colorHex()), c.idColor(), c.nombre())));
+            circulosErht.getChildren().add(botonErht);
         }
-        selectorColor.setPrefWidth(200);
-        lColor.getStyleClass().add("nota");
-        Label otro = UtilidadesInterfaz.etiqueta("Otro color");
-        otro.setMinWidth(Region.USE_PREF_SIZE);
-        HBox filaSelector = new HBox(12, otro, selectorColor);
-        filaSelector.setAlignment(Pos.CENTER_LEFT);
-        lColor.setWrapText(true);
-        VBox lineaSelector = new VBox(8, filaSelector, lColor);
+        selectorColorErht.setPrefWidth(200);
+        lColorErht.getStyleClass().add("nota");
+        Label otroErht = UtilidadesInterfaz.etiqueta("Otro color");
+        otroErht.setMinWidth(Region.USE_PREF_SIZE);
+        HBox filaSelectorErht = new HBox(12, otroErht, selectorColorErht);
+        filaSelectorErht.setAlignment(Pos.CENTER_LEFT);
+        lColorErht.setWrapText(true);
+        VBox lineaSelectorErht = new VBox(8, filaSelectorErht, lColorErht);
 
         // implementos
-        VBox cajaImplementos = new VBox(8);
-        for (Implemento imp : implementos) {
-            int n = cantidadSugerida(imp.nombre());
-            CheckBox cb = new CheckBox(imp.nombre() + (n > 1 ? "  ×" + n : ""));
+        VBox cajaImplementosErht = new VBox(8);
+        for (Implemento impErht : implementosErht) {
+            int n = cantidadSugeridaErht(impErht.nombre());
+            CheckBox cb = new CheckBox(impErht.nombre() + (n > 1 ? "  ×" + n : ""));
             cb.setUserData(n);
-            Label precio = new Label(UtilidadesInterfaz.soles(imp.precio()) + (n > 1 ? " c/u" : ""));
-            precio.getStyleClass().add("nota");
-            cb.setOnAction(e -> recalcular());
-            if (imp.parteDestino() != null) {
-                cb.setTooltip(new Tooltip("Va en: " + imp.parteDestino()));
+            Label precioErht = new Label(UtilidadesInterfaz.soles(impErht.precio()) + (n > 1 ? " c/u" : ""));
+            precioErht.getStyleClass().add("nota");
+            cb.setOnAction(e -> recalcularErht());
+            if (impErht.parteDestino() != null) {
+                cb.setTooltip(new Tooltip("Va en: " + impErht.parteDestino()));
             }
-            HBox fila = new HBox(8, cb, UtilidadesInterfaz.espacio(), precio);
-            fila.setAlignment(Pos.CENTER_LEFT);
-            cajaImplementos.getChildren().add(fila);
-            marcasImplementos.put(imp.idImplemento(), cb);
+            HBox filaErht = new HBox(8, cb, UtilidadesInterfaz.espacio(), precioErht);
+            filaErht.setAlignment(Pos.CENTER_LEFT);
+            cajaImplementosErht.getChildren().add(filaErht);
+            marcasImplementosErht.put(impErht.idImplemento(), cb);
         }
 
         // modalidad, talla y entrega
-        ToggleButton confeccion = tarjetaModalidad("CONFECCION", "Confeccionar", "El traje es tuyo", Feather.SCISSORS);
-        ToggleButton alquilar = tarjetaModalidad("ALQUILER", "Alquilar", "30% del costo de confección", Feather.REPEAT);
-        confeccion.setSelected(true);
-        modalidad.selectedToggleProperty().addListener((o, a, b) -> {
+        ToggleButton confeccionErht = tarjetaModalidadErht("CONFECCION", "Confeccionar", "El traje es tuyo", Feather.SCISSORS);
+        ToggleButton alquilarErht = tarjetaModalidadErht("ALQUILER", "Alquilar", "30% del costo de confección", Feather.REPEAT);
+        confeccionErht.setSelected(true);
+        modalidadErht.selectedToggleProperty().addListener((o, a, b) -> {
             if (b == null) {
-                modalidad.selectToggle(a);
+                modalidadErht.selectToggle(a);
             } else {
-                recalcular();
+                recalcularErht();
             }
         });
-        HBox cajaModalidad = new HBox(10, confeccion, alquilar);
-        cajaModalidad.getChildren().forEach(n -> HBox.setHgrow(n, Priority.ALWAYS));
-        HBox cajaTallas = new HBox(6);
+        HBox cajaModalidadErht = new HBox(10, confeccionErht, alquilarErht);
+        cajaModalidadErht.getChildren().forEach(n -> HBox.setHgrow(n, Priority.ALWAYS));
+        HBox cajaTallasErht = new HBox(6);
         for (String t : UtilidadesInterfaz.TALLAS) {
             ToggleButton tb = new ToggleButton(t);
             tb.getStyleClass().add("talla-etiqueta");
-            tb.setToggleGroup(tallas);
+            tb.setToggleGroup(tallasErht);
             tb.setUserData(t);
             tb.setMinWidth(Region.USE_PREF_SIZE);
             if ("M".equals(t)) {
                 tb.setSelected(true);
             }
-            cajaTallas.getChildren().add(tb);
+            cajaTallasErht.getChildren().add(tb);
         }
-        tallas.selectedToggleProperty().addListener((o, a, b) -> {
+        tallasErht.selectedToggleProperty().addListener((o, a, b) -> {
             if (b == null) {
-                tallas.selectToggle(a);
+                tallasErht.selectToggle(a);
             }
         });
-        entrega.setPrefWidth(170);
+        entregaErht.setPrefWidth(170);
         // talla y entrega una debajo de la otra: así las 5 tallas caben sin recortarse
-        VBox tallaEntrega = new VBox(12, new VBox(6, UtilidadesInterfaz.etiqueta("TALLA"), cajaTallas),
-                new VBox(6, UtilidadesInterfaz.etiqueta("ENTREGA"), entrega));
+        VBox tallaEntregaErht = new VBox(12, new VBox(6, UtilidadesInterfaz.etiqueta("TALLA"), cajaTallasErht),
+                new VBox(6, UtilidadesInterfaz.etiqueta("ENTREGA"), entregaErht));
 
         // resumen
-        Label tituloResumen = new Label("Precio estimado");
-        tituloResumen.getStyleClass().add("resumen-titulo");
-        total.getStyleClass().add("resumen-total");
-        enviar.getStyleClass().addAll("boton-primario", "boton-solicitar");
-        enviar.setMaxWidth(Double.MAX_VALUE);
-        enviar.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::enviarDiseno));
-        Label nota = new Label("Es un estimado: la tienda revisa tu diseño, te envía el precio final y tú lo apruebas.");
-        nota.getStyleClass().add("nota");
-        nota.setWrapText(true);
-        Region sep = new Region();
-        sep.getStyleClass().add("traje-separador");
-        HBox lineaTotal = new HBox(10, new Label("Total estimado"), UtilidadesInterfaz.espacio(), total);
-        lineaTotal.setAlignment(Pos.CENTER_LEFT);
-        lineaTotal.getChildren().get(0).getStyleClass().add("resumen-total-texto");
-        VBox resumen = new VBox(10, tituloResumen, lineasResumen, sep, lineaTotal, enviar, nota);
-        resumen.getStyleClass().add("resumen-disena");
+        Label tituloResumenErht = new Label("Precio estimado");
+        tituloResumenErht.getStyleClass().add("resumen-titulo");
+        totalErht.getStyleClass().add("resumen-total");
+        enviarErht.getStyleClass().addAll("boton-primario", "boton-solicitar");
+        enviarErht.setMaxWidth(Double.MAX_VALUE);
+        enviarErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(this::enviarDisenoErht));
+        Label notaErht = new Label("Es un estimado: la tienda revisa tu diseño, te envía el precio final y tú lo apruebas.");
+        notaErht.getStyleClass().add("nota");
+        notaErht.setWrapText(true);
+        Region sepErht = new Region();
+        sepErht.getStyleClass().add("traje-separador");
+        HBox lineaTotalErht = new HBox(10, new Label("Total estimado"), UtilidadesInterfaz.espacio(), totalErht);
+        lineaTotalErht.setAlignment(Pos.CENTER_LEFT);
+        lineaTotalErht.getChildren().get(0).getStyleClass().add("resumen-total-texto");
+        VBox resumenErht = new VBox(10, tituloResumenErht, lineasResumenErht, sepErht, lineaTotalErht, enviarErht, notaErht);
+        resumenErht.getStyleClass().add("resumen-disena");
 
-        VBox tarjeta = new VBox(18,
-                paso(1, "Danza", opcionesDanza),
-                paso(2, "Prenda", opcionesPrenda),
-                paso(3, "Color", new VBox(12, circulos, lineaSelector)),
-                paso(4, "Implementos", cajaImplementos),
-                paso(5, "Modalidad", new VBox(14, cajaModalidad, tallaEntrega)),
-                resumen);
-        tarjeta.getStyleClass().add("pasos-tarjeta");
-        return tarjeta;
+        VBox tarjetaErht = new VBox(18,
+                pasoErht(1, "Danza", opcionesDanzaErht),
+                pasoErht(2, "Prenda", opcionesPrendaErht),
+                pasoErht(3, "Color", new VBox(12, circulosErht, lineaSelectorErht)),
+                pasoErht(4, "Implementos", cajaImplementosErht),
+                pasoErht(5, "Modalidad", new VBox(14, cajaModalidadErht, tallaEntregaErht)),
+                resumenErht);
+        tarjetaErht.getStyleClass().add("pasos-tarjeta");
+        return tarjetaErht;
     }
 
-    private ToggleButton tarjetaModalidad(String tipo, String titulo, String texto, Feather icono) {
+    private ToggleButton tarjetaModalidadErht(String tipo, String titulo, String texto, Feather icono) {
         Label t = new Label(titulo, UtilidadesInterfaz.icono(icono, 16));
         t.getStyleClass().add("modalidad-titulo");
         Label x = new Label(texto);
@@ -369,95 +369,95 @@ public class DisenaTuTrajeVista extends HBox {
         b.setGraphic(new VBox(4, t, x));
         b.getStyleClass().add("modalidad");
         b.setUserData(tipo);
-        b.setToggleGroup(modalidad);
+        b.setToggleGroup(modalidadErht);
         b.setMaxWidth(Double.MAX_VALUE);
         return b;
     }
 
-    private static VBox paso(int n, String titulo, Node contenido) {
-        Label num = new Label(String.valueOf(n));
-        num.getStyleClass().add("paso-num");
+    private static VBox pasoErht(int n, String titulo, Node contenido) {
+        Label numErht = new Label(String.valueOf(n));
+        numErht.getStyleClass().add("paso-num");
         Label t = new Label(titulo);
         t.getStyleClass().add("paso-titulo");
-        HBox cab = new HBox(10, num, t);
-        cab.setAlignment(Pos.CENTER_LEFT);
-        VBox v = new VBox(12, cab, contenido);
+        HBox cabErht = new HBox(10, numErht, t);
+        cabErht.setAlignment(Pos.CENTER_LEFT);
+        VBox v = new VBox(12, cabErht, contenido);
         v.getStyleClass().add("paso");
         return v;
     }
 
     // ------------------------------------------------------------------ lógica
 
-    private void elegirDanza(Opcion d) {
-        String carpeta = CatalogoRenderizados.carpetaDe(d.nombre(), renders);
-        if (carpeta == null) {
+    private void elegirDanzaErht(Opcion d) {
+        String carpetaErht = CatalogoRenderizados.carpetaDe(d.nombre(), rendersErht);
+        if (carpetaErht == null) {
             throw new ExcepcionReglaNegocio("No hay render para " + d.nombre() + ".");
         }
-        danza = d;
-        angulos.clear();
-        for (String a : renders.get(carpeta)) {
-            angulos.put(a, RenderizadoCapas.cargar("render/" + carpeta + "/" + a));
+        danzaErht = d;
+        angulosErht.clear();
+        for (String a : rendersErht.get(carpetaErht)) {
+            angulosErht.put(a, RenderizadoCapas.cargar("render/" + carpetaErht + "/" + a));
         }
-        nombresAngulos = List.copyOf(angulos.keySet());
-        angulo = 0;
+        nombresAngulosErht = List.copyOf(angulosErht.keySet());
+        anguloErht = 0;
 
         // prendas del primer ángulo ↔ partes de la danza (por nombre, sin tildes)
-        partePorPrenda.clear();
-        nombrePrenda.clear();
-        colores.clear();
-        List<ParteTraje> partes = s.personalizador().partesDe(d.id());
-        ColorTraje inicial = paleta.isEmpty() ? null : paleta.get(0);
-        for (PrendaTenible p : angulos.get(nombresAngulos.get(0)).prendas()) {
+        partePorPrendaErht.clear();
+        nombrePrendaErht.clear();
+        coloresErht.clear();
+        List<ParteTraje> partesErht = sErht.personalizador().partesDe(d.id());
+        ColorTraje inicialErht = paletaErht.isEmpty() ? null : paletaErht.get(0);
+        for (PrendaTenible p : angulosErht.get(nombresAngulosErht.get(0)).prendas()) {
             String k = CatalogoRenderizados.clave(p.nombre());
-            nombrePrenda.put(k, p.nombre());
-            partePorPrenda.put(k, partes.stream().filter(pt -> CatalogoRenderizados.clave(pt.nombre()).equals(k))
+            nombrePrendaErht.put(k, p.nombre());
+            partePorPrendaErht.put(k, partesErht.stream().filter(pt -> CatalogoRenderizados.clave(pt.nombre()).equals(k))
                     .findFirst().orElse(null));
-            colores.put(k, inicial == null ? new ColorElegido(Color.WHITE, null, "Blanco")
-                    : new ColorElegido(Color.web(inicial.colorHex()), inicial.idColor(), inicial.nombre()));
+            coloresErht.put(k, inicialErht == null ? new ColorElegido(Color.WHITE, null, "Blanco")
+                    : new ColorElegido(Color.web(inicialErht.colorHex()), inicialErht.idColor(), inicialErht.nombre()));
         }
-        colores.keySet().forEach(this::tenirPrenda);
+        coloresErht.keySet().forEach(this::tenirPrendaErht);
 
-        opcionesPrenda.getChildren().clear();
-        for (String k : nombrePrenda.keySet()) {
-            ToggleButton b = new ToggleButton(nombrePrenda.get(k));
+        opcionesPrendaErht.getChildren().clear();
+        for (String k : nombrePrendaErht.keySet()) {
+            ToggleButton b = new ToggleButton(nombrePrendaErht.get(k));
             b.getStyleClass().add("etiqueta-opcion-filtro");
             b.setUserData(k);
-            if (partePorPrenda.get(k) == null) {
+            if (partePorPrendaErht.get(k) == null) {
                 b.setDisable(true);
                 b.setTooltip(new Tooltip("La tienda aún no confecciona esta prenda para " + d.nombre() + "."));
             }
-            b.setOnAction(e -> elegirPrenda(k));
-            opcionesPrenda.getChildren().add(b);
+            b.setOnAction(e -> elegirPrendaErht(k));
+            opcionesPrendaErht.getChildren().add(b);
         }
-        String primera = nombrePrenda.keySet().stream().filter(k -> partePorPrenda.get(k) != null).findFirst().orElse(null);
-        prendaActual = null;
-        if (primera != null) {
-            elegirPrenda(primera);
+        String primeraErht = nombrePrendaErht.keySet().stream().filter(k -> partePorPrendaErht.get(k) != null).findFirst().orElse(null);
+        prendaActualErht = null;
+        if (primeraErht != null) {
+            elegirPrendaErht(primeraErht);
         }
-        mostrarAngulo();
-        recalcular();
+        mostrarAnguloErht();
+        recalcularErht();
     }
 
-    private void elegirPrenda(String k) {
-        prendaActual = k;
-        opcionesPrenda.getChildren().forEach(n -> ((ToggleButton) n).setSelected(k.equals(n.getUserData())));
-        marcarColor();
+    private void elegirPrendaErht(String k) {
+        prendaActualErht = k;
+        opcionesPrendaErht.getChildren().forEach(n -> ((ToggleButton) n).setSelected(k.equals(n.getUserData())));
+        marcarColorErht();
     }
 
-    private void elegirColor(ColorElegido c) {
-        if (prendaActual == null) {
+    private void elegirColorErht(ColorElegido c) {
+        if (prendaActualErht == null) {
             return;
         }
-        colores.put(prendaActual, c);
-        tenirPrenda(prendaActual);
-        marcarColor();
-        recalcular();
+        coloresErht.put(prendaActualErht, c);
+        tenirPrendaErht(prendaActualErht);
+        marcarColorErht();
+        recalcularErht();
     }
 
     /** Teñido de capas: aplica el color elegido a la prenda en todos los ángulos (así al girar se ve igual). */
-    private void tenirPrenda(String clave) {
-        Color c = colores.get(clave).color();
-        for (RenderizadoCapas r : angulos.values()) {
+    private void tenirPrendaErht(String clave) {
+        Color c = coloresErht.get(clave).color();
+        for (RenderizadoCapas r : angulosErht.values()) {
             for (PrendaTenible p : r.prendas()) {
                 if (CatalogoRenderizados.clave(p.nombre()).equals(clave)) {
                     p.aplicarColor(c);
@@ -466,64 +466,64 @@ public class DisenaTuTrajeVista extends HBox {
         }
     }
 
-    private void marcarColor() {
-        ColorElegido c = prendaActual == null ? null : colores.get(prendaActual);
-        for (Node n : circulos.getChildren()) {
+    private void marcarColorErht() {
+        ColorElegido c = prendaActualErht == null ? null : coloresErht.get(prendaActualErht);
+        for (Node n : circulosErht.getChildren()) {
             ColorTraje ct = (ColorTraje) n.getUserData();
-            boolean igual = c != null && ct.idColor().equals(c.idColor());
+            boolean igualErht = c != null && ct.idColor().equals(c.idColor());
             n.getStyleClass().remove("elegida");
-            if (igual) {
+            if (igualErht) {
                 n.getStyleClass().add("elegida");
             }
         }
         if (c != null) {
-            pintando = true;
-            selectorColor.setValue(c.color());
-            pintando = false;
-            lColor.setText(nombrePrenda.get(prendaActual) + ": " + c.nombre() + " " + c.colorHex());
+            pintandoErht = true;
+            selectorColorErht.setValue(c.color());
+            pintandoErht = false;
+            lColorErht.setText(nombrePrendaErht.get(prendaActualErht) + ": " + c.nombre() + " " + c.colorHex());
         }
     }
 
-    private String tipo() {
-        return modalidad.getSelectedToggle() == null ? "CONFECCION" : (String) modalidad.getSelectedToggle().getUserData();
+    private String tipoErht() {
+        return modalidadErht.getSelectedToggle() == null ? "CONFECCION" : (String) modalidadErht.getSelectedToggle().getUserData();
     }
 
     /** Misma fórmula que el trigger fn_recalcular_pedido. */
-    private void recalcular() {
-        lineasResumen.getChildren().clear();
-        BigDecimal partes = BigDecimal.ZERO;
-        for (Map.Entry<String, ParteTraje> e : partePorPrenda.entrySet()) {
+    private void recalcularErht() {
+        lineasResumenErht.getChildren().clear();
+        BigDecimal partesErht = BigDecimal.ZERO;
+        for (Map.Entry<String, ParteTraje> e : partePorPrendaErht.entrySet()) {
             if (e.getValue() == null) {
                 continue;
             }
-            ColorElegido c = colores.get(e.getKey());
-            Circle muestra = new Circle(6, c.color());
-            muestra.getStyleClass().add("circulo-color");
-            lineasResumen.getChildren().add(linea(muestra, e.getValue().nombre() + " · " + c.nombre(),
+            ColorElegido c = coloresErht.get(e.getKey());
+            Circle muestraErht = new Circle(6, c.color());
+            muestraErht.getStyleClass().add("circulo-color");
+            lineasResumenErht.getChildren().add(lineaErht(muestraErht, e.getValue().nombre() + " · " + c.nombre(),
                     UtilidadesInterfaz.soles(e.getValue().precioBase())));
-            partes = partes.add(e.getValue().precioBase());
+            partesErht = partesErht.add(e.getValue().precioBase());
         }
-        BigDecimal montoImplementos = BigDecimal.ZERO;
-        for (Implemento imp : implementos) {
-            CheckBox cb = marcasImplementos.get(imp.idImplemento());
+        BigDecimal montoImplementosErht = BigDecimal.ZERO;
+        for (Implemento impErht : implementosErht) {
+            CheckBox cb = marcasImplementosErht.get(impErht.idImplemento());
             if (cb != null && cb.isSelected()) {
                 int n = (Integer) cb.getUserData();
-                BigDecimal sub = imp.precio().multiply(BigDecimal.valueOf(n));
-                lineasResumen.getChildren().add(linea(null, imp.nombre() + (n > 1 ? " ×" + n : ""), UtilidadesInterfaz.soles(sub)));
-                montoImplementos = montoImplementos.add(sub);
+                BigDecimal subErht = impErht.precio().multiply(BigDecimal.valueOf(n));
+                lineasResumenErht.getChildren().add(lineaErht(null, impErht.nombre() + (n > 1 ? " ×" + n : ""), UtilidadesInterfaz.soles(subErht)));
+                montoImplementosErht = montoImplementosErht.add(subErht);
             }
         }
-        BigDecimal costo = partes.add(montoImplementos);
-        boolean alquiler = "ALQUILER".equals(tipo());
-        BigDecimal t = (alquiler ? costo.multiply(FACTOR_ALQUILER) : costo).setScale(2, RoundingMode.HALF_UP);
-        if (alquiler) {
-            lineasResumen.getChildren().add(linea(null, "Costo de confección " + UtilidadesInterfaz.soles(costo) + " · alquiler 30%", ""));
+        BigDecimal costoErht = partesErht.add(montoImplementosErht);
+        boolean alquilerErht = "ALQUILER".equals(tipoErht());
+        BigDecimal t = (alquilerErht ? costoErht.multiply(FACTOR_ALQUILER) : costoErht).setScale(2, RoundingMode.HALF_UP);
+        if (alquilerErht) {
+            lineasResumenErht.getChildren().add(lineaErht(null, "Costo de confección " + UtilidadesInterfaz.soles(costoErht) + " · alquiler 30%", ""));
         }
-        total.setText(UtilidadesInterfaz.soles(t));
-        enviar.setDisable(danza == null || partePorPrenda.values().stream().allMatch(java.util.Objects::isNull));
+        totalErht.setText(UtilidadesInterfaz.soles(t));
+        enviarErht.setDisable(danzaErht == null || partePorPrendaErht.values().stream().allMatch(java.util.Objects::isNull));
     }
 
-    private static HBox linea(Node icono, String texto, String monto) {
+    private static HBox lineaErht(Node icono, String texto, String monto) {
         Label l = new Label(texto);
         l.getStyleClass().add("resumen-concepto");
         Label m = new Label(monto);
@@ -533,58 +533,58 @@ public class DisenaTuTrajeVista extends HBox {
         return h;
     }
 
-    private void enviarDiseno() {
-        int idCliente = Sesion.actual().idCliente();
-        List<ParteElegida> partes = new ArrayList<>();
-        partePorPrenda.forEach((k, parte) -> {
+    private void enviarDisenoErht() {
+        int idClienteErht = Sesion.actual().idCliente();
+        List<ParteElegida> partesErht = new ArrayList<>();
+        partePorPrendaErht.forEach((k, parte) -> {
             if (parte != null) {
-                ColorElegido c = colores.get(k);
-                partes.add(new ParteElegida(parte.idParte(), c.idColor(), c.colorHex()));
+                ColorElegido c = coloresErht.get(k);
+                partesErht.add(new ParteElegida(parte.idParte(), c.idColor(), c.colorHex()));
             }
         });
-        Map<Integer, Integer> cantidadesImplementos = new LinkedHashMap<>();
-        marcasImplementos.forEach((id, cb) -> {
+        Map<Integer, Integer> cantidadesImplementosErht = new LinkedHashMap<>();
+        marcasImplementosErht.forEach((id, cb) -> {
             if (cb.isSelected()) {
-                cantidadesImplementos.put(id, (Integer) cb.getUserData());
+                cantidadesImplementosErht.put(id, (Integer) cb.getUserData());
             }
         });
-        String talla = tallas.getSelectedToggle() == null ? null : (String) tallas.getSelectedToggle().getUserData();
-        int id = s.personalizador().crearPedidoDiseno(idCliente, danza.id(), talla, tipo(), entrega.getValue(),
-                partes, cantidadesImplementos, null);
+        String tallaErht = tallasErht.getSelectedToggle() == null ? null : (String) tallasErht.getSelectedToggle().getUserData();
+        int id = sErht.personalizador().crearPedidoDiseno(idClienteErht, danzaErht.id(), tallaErht, tipoErht(), entregaErht.getValue(),
+                partesErht, cantidadesImplementosErht, null);
 
         // imagen final: el ángulo que se está viendo, a la resolución del render
-        byte[] png = UtilidadesInterfaz.aBytesPng(componer());
-        s.personalizador().guardarImagen(id, idCliente, png);
+        byte[] pngErht = UtilidadesInterfaz.aBytesPng(componerErht());
+        sErht.personalizador().guardarImagen(id, idClienteErht, pngErht);
         try {
             Files.createDirectories(CARPETA_DISENOS);
-            Path archivo = CARPETA_DISENOS.resolve("pedido_" + id + ".png");
-            Files.write(archivo, png);
-            s.personalizador().guardarRutaImagen(id, idCliente, "disenos/" + archivo.getFileName());
+            Path archivoErht = CARPETA_DISENOS.resolve("pedido_" + id + ".png");
+            Files.write(archivoErht, pngErht);
+            sErht.personalizador().guardarRutaImagen(id, idClienteErht, "disenos/" + archivoErht.getFileName());
         } catch (IOException e) {
             // la imagen ya quedó en la base; la copia en disco es un respaldo
         }
-        portal.confirmar("¡Diseño enviado!",
-                "Tu diseño N° " + id + " llegó a la tienda con un precio estimado de " + total.getText()
+        portalErht.confirmar("¡Diseño enviado!",
+                "Tu diseño N° " + id + " llegó a la tienda con un precio estimado de " + totalErht.getText()
                         + ". Te enviaremos el precio final para que lo apruebes en «Mis diseños».",
-                new AnimacionConfirmacion.Opcion("Ver mis diseños", true, () -> portal.ir(VistaPortalCliente.MIS_DISENOS)),
-                new AnimacionConfirmacion.Opcion("Diseñar otro", false, () -> portal.ir(VistaPortalCliente.DISENIO)));
+                new AnimacionConfirmacion.Opcion("Ver mis diseños", true, () -> portalErht.ir(VistaPortalCliente.MIS_DISENOS)),
+                new AnimacionConfirmacion.Opcion("Diseñar otro", false, () -> portalErht.ir(VistaPortalCliente.DISENIO)));
     }
 
-    private WritableImage componer() {
-        RenderizadoCapas r = angulos.get(nombresAngulos.get(angulo));
-        StackPane composicion = new StackPane(new ImageView(r.base()));
+    private WritableImage componerErht() {
+        RenderizadoCapas r = angulosErht.get(nombresAngulosErht.get(anguloErht));
+        StackPane composicionErht = new StackPane(new ImageView(r.base()));
         for (PrendaTenible p : r.prendas()) {
-            composicion.getChildren().add(new ImageView(p.imagen()));
+            composicionErht.getChildren().add(new ImageView(p.imagen()));
         }
-        composicion.setBackground(FONDO_ESTUDIO);
-        composicion.resize(r.ancho(), r.alto());
-        composicion.layout();
-        SnapshotParameters parametros = new SnapshotParameters();
-        parametros.setFill(Color.TRANSPARENT);
-        return composicion.snapshot(parametros, null);
+        composicionErht.setBackground(FONDO_ESTUDIO);
+        composicionErht.resize(r.ancho(), r.alto());
+        composicionErht.layout();
+        SnapshotParameters parametrosErht = new SnapshotParameters();
+        parametrosErht.setFill(Color.TRANSPARENT);
+        return composicionErht.snapshot(parametrosErht, null);
     }
 
-    private static int cantidadSugerida(String implemento) {
+    private static int cantidadSugeridaErht(String implemento) {
         String k = CatalogoRenderizados.clave(implemento);
         if (k.contains("cascabel")) {
             return 24;

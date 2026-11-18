@@ -39,69 +39,69 @@ public class AlquilerDetalleDialogo {
 
     private static final int FILAS_DANIO = 4;
 
-    private final Servicios s;
-    private final int idAlquiler;
-    private final BorderPane raiz = new BorderPane();
-    private Stage ventanaDialogo;
+    private final Servicios sErht;
+    private final int idAlquilerErht;
+    private final BorderPane raizErht = new BorderPane();
+    private Stage ventanaDialogoErht;
 
     public AlquilerDetalleDialogo(Servicios s, int idAlquiler) {
-        this.s = s;
-        this.idAlquiler = idAlquiler;
+        this.sErht = s;
+        this.idAlquilerErht = idAlquiler;
     }
 
     /** Abre el diálogo y espera a que se cierre. */
     public void mostrar() {
-        if (!UtilidadesInterfaz.ejecutar(this::cargar)) {
+        if (!UtilidadesInterfaz.ejecutar(this::cargarErht)) {
             return;
         }
-        ventanaDialogo = UtilidadesInterfaz.ventana("Alquiler N° " + idAlquiler, raiz, 1080, 760);
-        ventanaDialogo.showAndWait();
+        ventanaDialogoErht = UtilidadesInterfaz.ventana("Alquiler N° " + idAlquilerErht, raizErht, 1080, 760);
+        ventanaDialogoErht.showAndWait();
     }
 
-    private void cargar() {
-        AlquilerResumen a = s.alquileres().buscar(idAlquiler);
-        List<AlquilerDetalleTraje> trajes = s.alquileres().trajes(idAlquiler);
-        List<PagoFila> pagos = s.alquileres().pagos(idAlquiler);
-        List<DanioFila> danios = s.alquileres().danios(idAlquiler);
+    private void cargarErht() {
+        AlquilerResumen a = sErht.alquileres().buscar(idAlquilerErht);
+        List<AlquilerDetalleTraje> trajesErht = sErht.alquileres().trajes(idAlquilerErht);
+        List<PagoFila> pagosErht = sErht.alquileres().pagos(idAlquilerErht);
+        List<DanioFila> daniosErht = sErht.alquileres().danios(idAlquilerErht);
 
-        raiz.setTop(cabecera(a));
+        raizErht.setTop(cabeceraErht(a));
 
-        HBox tarjetas = new HBox(12,
+        HBox tarjetasErht = new HBox(12,
                 UtilidadesInterfaz.tarjeta("Monto del alquiler", UtilidadesInterfaz.soles(a.montoAlquiler()), "granate"),
                 UtilidadesInterfaz.tarjeta("Pagado del alquiler", UtilidadesInterfaz.soles(a.pagadoAlquiler()), "verde"),
                 UtilidadesInterfaz.tarjeta("Saldo pendiente", UtilidadesInterfaz.soles(a.saldo()), a.saldo().signum() > 0 ? "naranja" : "verde"),
                 UtilidadesInterfaz.tarjeta("Garantía", UtilidadesInterfaz.soles(a.montoGarantia()), "dorado"),
                 UtilidadesInterfaz.tarjeta("Daños", UtilidadesInterfaz.soles(a.montoDanios()), a.montoDanios().signum() > 0 ? "rojo" : "gris"));
 
-        VBox cuerpo = new VBox(16, tarjetas);
-        cuerpo.getStyleClass().add("contenido");
+        VBox cuerpoErht = new VBox(16, tarjetasErht);
+        cuerpoErht.getStyleClass().add("contenido");
         switch (a.estado()) {
-            case "SOLICITADO" -> cuerpo.getChildren().add(accionesSolicitud(a));
-            case "RECHAZADO" -> cuerpo.getChildren().add(UtilidadesInterfaz.panel(UtilidadesInterfaz.seccion("Solicitud rechazada"),
-                    UtilidadesInterfaz.subtitulo("Motivo: " + UtilidadesInterfaz.texto(s.alquileres().motivoRechazo(idAlquiler)))));
-            case "RESERVADO" -> cuerpo.getChildren().add(accionesReserva(a));
-            case "ENTREGADO" -> cuerpo.getChildren().add(devolucion(a));
+            case "SOLICITADO" -> cuerpoErht.getChildren().add(accionesSolicitudErht(a));
+            case "RECHAZADO" -> cuerpoErht.getChildren().add(UtilidadesInterfaz.panel(UtilidadesInterfaz.seccion("Solicitud rechazada"),
+                    UtilidadesInterfaz.subtitulo("Motivo: " + UtilidadesInterfaz.texto(sErht.alquileres().motivoRechazo(idAlquilerErht)))));
+            case "RESERVADO" -> cuerpoErht.getChildren().add(accionesReservaErht(a));
+            case "ENTREGADO" -> cuerpoErht.getChildren().add(devolucionErht(a));
             default -> { }
         }
-        cuerpo.getChildren().addAll(
-                UtilidadesInterfaz.seccion("Trajes (" + trajes.size() + ")"), tablaTrajes(trajes),
-                new HBox(16, columna("Pagos", tablaPagos(pagos)), columna("Daños registrados", tablaDanios(danios))));
+        cuerpoErht.getChildren().addAll(
+                UtilidadesInterfaz.seccion("Trajes (" + trajesErht.size() + ")"), tablaTrajesErht(trajesErht),
+                new HBox(16, columnaErht("Pagos", tablaPagosErht(pagosErht)), columnaErht("Daños registrados", tablaDaniosErht(daniosErht))));
 
-        ScrollPane desplazable = new ScrollPane(cuerpo);
-        desplazable.setFitToWidth(true);
-        raiz.setCenter(desplazable);
+        ScrollPane desplazableErht = new ScrollPane(cuerpoErht);
+        desplazableErht.setFitToWidth(true);
+        raizErht.setCenter(desplazableErht);
 
-        Button cerrar = new Button("Cerrar");
-        cerrar.setOnAction(e -> ventanaDialogo.close());
-        HBox pie = new HBox(cerrar);
-        pie.getStyleClass().add("barra-acciones");
-        raiz.setBottom(pie);
+        Button cerrarErht = new Button("Cerrar");
+        cerrarErht.setOnAction(e -> ventanaDialogoErht.close());
+        HBox pieErht = new HBox(cerrarErht);
+        pieErht.getStyleClass().add("barra-acciones");
+        raizErht.setBottom(pieErht);
     }
 
-    private VBox cabecera(AlquilerResumen a) {
-        HBox linea = new HBox(12, UtilidadesInterfaz.titulo("Alquiler N° " + a.idAlquiler()), UtilidadesInterfaz.insigniasAlquiler(a));
-        linea.setAlignment(Pos.CENTER_LEFT);
-        VBox caja = new VBox(4, linea,
+    private VBox cabeceraErht(AlquilerResumen a) {
+        HBox lineaErht = new HBox(12, UtilidadesInterfaz.titulo("Alquiler N° " + a.idAlquiler()), UtilidadesInterfaz.insigniasAlquiler(a));
+        lineaErht.setAlignment(Pos.CENTER_LEFT);
+        VBox cajaErht = new VBox(4, lineaErht,
                 UtilidadesInterfaz.subtitulo("Cliente: " + a.cliente()
                         + (a.conjunto() != null ? "   ·   Conjunto: " + a.conjunto() : "")),
                 UtilidadesInterfaz.subtitulo("Salida: " + UtilidadesInterfaz.fecha(a.fechaSalida())
@@ -109,164 +109,164 @@ public class AlquilerDetalleDialogo {
                         + (a.fechaDevolucionReal() != null ? "   ·   Devuelto: " + UtilidadesInterfaz.fecha(a.fechaDevolucionReal()) : "")
                         + "   ·   " + a.numTrajes() + " traje(s)"));
         if (a.observacion() != null && !a.observacion().isBlank()) {
-            caja.getChildren().add(UtilidadesInterfaz.subtitulo("Observación: " + a.observacion()));
+            cajaErht.getChildren().add(UtilidadesInterfaz.subtitulo("Observación: " + a.observacion()));
         }
-        caja.getStyleClass().add("cabecera");
-        return caja;
+        cajaErht.getStyleClass().add("cabecera");
+        return cajaErht;
     }
 
     // ------------------------------------------------------------------ acciones
 
     /** Solicitud hecha por el cliente desde su portal: la tienda la aprueba o la rechaza con un motivo. */
-    private VBox accionesSolicitud(AlquilerResumen a) {
-        Button aprobar = UtilidadesInterfaz.estilo(new Button("Aprobar solicitud"), "boton-primario");
-        aprobar.setOnAction(e -> {
-            if (UtilidadesInterfaz.confirmar("La solicitud N° " + idAlquiler + " de " + a.cliente() + " pasará a RESERVADO.\n"
+    private VBox accionesSolicitudErht(AlquilerResumen a) {
+        Button aprobarErht = UtilidadesInterfaz.estilo(new Button("Aprobar solicitud"), "boton-primario");
+        aprobarErht.setOnAction(e -> {
+            if (UtilidadesInterfaz.confirmar("La solicitud N° " + idAlquilerErht + " de " + a.cliente() + " pasará a RESERVADO.\n"
                     + "Después podrás registrar el adelanto y la entrega. ¿Aprobar?")) {
-                hacer(() -> s.alquileres().aprobar(idAlquiler), "Solicitud aprobada: ahora es una reserva.");
+                hacerErht(() -> sErht.alquileres().aprobar(idAlquilerErht), "Solicitud aprobada: ahora es una reserva.");
             }
         });
-        TextField motivo = UtilidadesInterfaz.campo("", "Motivo del rechazo (lo verá el cliente)");
-        HBox.setHgrow(motivo, Priority.ALWAYS);
-        Button rechazar = UtilidadesInterfaz.estilo(new Button("Rechazar"), "boton-peligro");
-        rechazar.setOnAction(e -> {
-            if (UtilidadesInterfaz.confirmar("¿Rechazar la solicitud N° " + idAlquiler + "? Los trajes quedarán libres.")) {
-                hacer(() -> s.alquileres().rechazar(idAlquiler, motivo.getText()), "Solicitud rechazada.");
+        TextField motivoErht = UtilidadesInterfaz.campo("", "Motivo del rechazo (lo verá el cliente)");
+        HBox.setHgrow(motivoErht, Priority.ALWAYS);
+        Button rechazarErht = UtilidadesInterfaz.estilo(new Button("Rechazar"), "boton-peligro");
+        rechazarErht.setOnAction(e -> {
+            if (UtilidadesInterfaz.confirmar("¿Rechazar la solicitud N° " + idAlquilerErht + "? Los trajes quedarán libres.")) {
+                hacerErht(() -> sErht.alquileres().rechazar(idAlquilerErht, motivoErht.getText()), "Solicitud rechazada.");
             }
         });
-        HBox fila1 = new HBox(10, aprobar);
-        fila1.setAlignment(Pos.CENTER_LEFT);
-        HBox fila2 = new HBox(10, UtilidadesInterfaz.etiqueta("Motivo"), motivo, rechazar);
-        fila2.setAlignment(Pos.CENTER_LEFT);
+        HBox fila1Erht = new HBox(10, aprobarErht);
+        fila1Erht.setAlignment(Pos.CENTER_LEFT);
+        HBox fila2Erht = new HBox(10, UtilidadesInterfaz.etiqueta("Motivo"), motivoErht, rechazarErht);
+        fila2Erht.setAlignment(Pos.CENTER_LEFT);
         return UtilidadesInterfaz.panel(UtilidadesInterfaz.seccion("Solicitud del cliente por aprobar"),
                 UtilidadesInterfaz.subtitulo("El cliente pidió estos trajes desde su portal. Mientras esté SOLICITADO, nadie más puede "
                         + "pedirlos en esas fechas."),
-                fila1, fila2);
+                fila1Erht, fila2Erht);
     }
 
-    private VBox accionesReserva(AlquilerResumen a) {
-        ComboBox<String> metodo = UtilidadesInterfaz.comboTexto(UtilidadesInterfaz.METODOS, null);
-        metodo.setPrefWidth(170);
+    private VBox accionesReservaErht(AlquilerResumen a) {
+        ComboBox<String> metodoErht = UtilidadesInterfaz.comboTexto(UtilidadesInterfaz.METODOS, null);
+        metodoErht.setPrefWidth(170);
 
-        Button entregar = UtilidadesInterfaz.estilo(new Button("Registrar entrega"), "boton-primario");
-        entregar.setOnAction(e -> {
-            String m = metodo.getValue();
+        Button entregarErht = UtilidadesInterfaz.estilo(new Button("Registrar entrega"), "boton-primario");
+        entregarErht.setOnAction(e -> {
+            String m = metodoErht.getValue();
             if (UtilidadesInterfaz.confirmar("Se entregarán los trajes y se cobrará con " + m + ":\n\n"
                     + "  · Saldo del alquiler: " + UtilidadesInterfaz.soles(a.saldo()) + "\n"
                     + "  · Garantía: " + UtilidadesInterfaz.soles(a.montoGarantia()) + "\n\n¿Registrar la entrega?")) {
-                hacer(() -> s.alquileres().entregar(idAlquiler, m), "Entrega registrada.");
+                hacerErht(() -> sErht.alquileres().entregar(idAlquilerErht, m), "Entrega registrada.");
             }
         });
 
-        TextField adelanto = UtilidadesInterfaz.campo("", "Monto S/");
-        adelanto.setPrefWidth(120);
-        Button pagar = UtilidadesInterfaz.estilo(new Button("Registrar adelanto"), "boton-dorado");
-        pagar.setOnAction(e -> hacer(() -> s.alquileres().registrarPago(idAlquiler, "ADELANTO",
-                UtilidadesInterfaz.monto(adelanto.getText()), metodo.getValue()), "Adelanto registrado."));
+        TextField adelantoErht = UtilidadesInterfaz.campo("", "Monto S/");
+        adelantoErht.setPrefWidth(120);
+        Button pagarErht = UtilidadesInterfaz.estilo(new Button("Registrar adelanto"), "boton-dorado");
+        pagarErht.setOnAction(e -> hacerErht(() -> sErht.alquileres().registrarPago(idAlquilerErht, "ADELANTO",
+                UtilidadesInterfaz.monto(adelantoErht.getText()), metodoErht.getValue()), "Adelanto registrado."));
 
-        Button anular = UtilidadesInterfaz.estilo(new Button("Anular alquiler"), "boton-peligro");
-        anular.setOnAction(e -> {
-            if (UtilidadesInterfaz.confirmar("¿Seguro que deseas ANULAR el alquiler N° " + idAlquiler + "?\n"
+        Button anularErht = UtilidadesInterfaz.estilo(new Button("Anular alquiler"), "boton-peligro");
+        anularErht.setOnAction(e -> {
+            if (UtilidadesInterfaz.confirmar("¿Seguro que deseas ANULAR el alquiler N° " + idAlquilerErht + "?\n"
                     + "Los trajes quedarán libres para esas fechas. Esta acción no se puede deshacer.")) {
-                hacer(() -> s.alquileres().anular(idAlquiler), "Alquiler anulado.");
+                hacerErht(() -> sErht.alquileres().anular(idAlquilerErht), "Alquiler anulado.");
             }
         });
 
-        HBox fila1 = new HBox(10, UtilidadesInterfaz.etiqueta("Método de pago"), metodo, entregar, UtilidadesInterfaz.espacio(), anular);
-        fila1.setAlignment(Pos.CENTER_LEFT);
-        HBox fila2 = new HBox(10, UtilidadesInterfaz.etiqueta("Adelanto"), adelanto, pagar);
-        fila2.setAlignment(Pos.CENTER_LEFT);
+        HBox fila1Erht = new HBox(10, UtilidadesInterfaz.etiqueta("Método de pago"), metodoErht, entregarErht, UtilidadesInterfaz.espacio(), anularErht);
+        fila1Erht.setAlignment(Pos.CENTER_LEFT);
+        HBox fila2Erht = new HBox(10, UtilidadesInterfaz.etiqueta("Adelanto"), adelantoErht, pagarErht);
+        fila2Erht.setAlignment(Pos.CENTER_LEFT);
         return UtilidadesInterfaz.panel(UtilidadesInterfaz.seccion("Acciones de la reserva"),
                 UtilidadesInterfaz.subtitulo("Al entregar se cobra el saldo pendiente y la garantía con el método elegido."),
-                fila1, fila2);
+                fila1Erht, fila2Erht);
     }
 
-    private VBox devolucion(AlquilerResumen a) {
-        DatePicker fecha = UtilidadesInterfaz.selectorFecha(LocalDate.now());
-        fecha.setMaxWidth(160);
-        ComboBox<String> metodo = UtilidadesInterfaz.comboTexto(UtilidadesInterfaz.METODOS, null);
-        metodo.setPrefWidth(170);
+    private VBox devolucionErht(AlquilerResumen a) {
+        DatePicker fechaErht = UtilidadesInterfaz.selectorFecha(LocalDate.now());
+        fechaErht.setMaxWidth(160);
+        ComboBox<String> metodoErht = UtilidadesInterfaz.comboTexto(UtilidadesInterfaz.METODOS, null);
+        metodoErht.setPrefWidth(170);
 
-        List<PiezaAlquiler> piezas = s.alquileres().piezasDelAlquiler(idAlquiler);
-        GridPane rejilla = new GridPane();
-        rejilla.setHgap(10);
-        rejilla.setVgap(8);
-        rejilla.addRow(0, UtilidadesInterfaz.etiqueta("Pieza dañada"), UtilidadesInterfaz.etiqueta("Tipo"), UtilidadesInterfaz.etiqueta("Descripción"),
+        List<PiezaAlquiler> piezasErht = sErht.alquileres().piezasDelAlquiler(idAlquilerErht);
+        GridPane rejillaErht = new GridPane();
+        rejillaErht.setHgap(10);
+        rejillaErht.setVgap(8);
+        rejillaErht.addRow(0, UtilidadesInterfaz.etiqueta("Pieza dañada"), UtilidadesInterfaz.etiqueta("Tipo"), UtilidadesInterfaz.etiqueta("Descripción"),
                 UtilidadesInterfaz.etiqueta("Monto S/ (vacío = automático)"));
-        List<ComboBox<PiezaAlquiler>> cPiezas = new ArrayList<>();
-        List<ComboBox<String>> cTipos = new ArrayList<>();
-        List<TextField> cDescripciones = new ArrayList<>();
-        List<TextField> cMontos = new ArrayList<>();
+        List<ComboBox<PiezaAlquiler>> cPiezasErht = new ArrayList<>();
+        List<ComboBox<String>> cTiposErht = new ArrayList<>();
+        List<TextField> cDescripcionesErht = new ArrayList<>();
+        List<TextField> cMontosErht = new ArrayList<>();
         for (int k = 0; k < FILAS_DANIO; k++) {
-            ComboBox<PiezaAlquiler> pieza = UtilidadesInterfaz.combo(piezas,
+            ComboBox<PiezaAlquiler> piezaErht = UtilidadesInterfaz.combo(piezasErht,
                     p -> p.etiqueta() + " · repos. " + UtilidadesInterfaz.soles(p.valorReposicion()), "— Sin daño —");
-            pieza.setPrefWidth(470);
-            ComboBox<String> tipo = UtilidadesInterfaz.comboTexto(List.of("LEVE", "GRAVE", "PERDIDA"), null);
-            tipo.setPrefWidth(110);
-            TextField descripcion = UtilidadesInterfaz.campo("", "Ej.: costura rota");
-            TextField monto = UtilidadesInterfaz.campo("", "Automático");
-            monto.setPrefWidth(130);
-            rejilla.addRow(k + 1, pieza, tipo, descripcion, monto);
-            GridPane.setHgrow(descripcion, Priority.ALWAYS);
-            cPiezas.add(pieza);
-            cTipos.add(tipo);
-            cDescripciones.add(descripcion);
-            cMontos.add(monto);
+            piezaErht.setPrefWidth(470);
+            ComboBox<String> tipoErht = UtilidadesInterfaz.comboTexto(List.of("LEVE", "GRAVE", "PERDIDA"), null);
+            tipoErht.setPrefWidth(110);
+            TextField descripcionErht = UtilidadesInterfaz.campo("", "Ej.: costura rota");
+            TextField montoErht = UtilidadesInterfaz.campo("", "Automático");
+            montoErht.setPrefWidth(130);
+            rejillaErht.addRow(k + 1, piezaErht, tipoErht, descripcionErht, montoErht);
+            GridPane.setHgrow(descripcionErht, Priority.ALWAYS);
+            cPiezasErht.add(piezaErht);
+            cTiposErht.add(tipoErht);
+            cDescripcionesErht.add(descripcionErht);
+            cMontosErht.add(montoErht);
         }
 
-        Button registrar = UtilidadesInterfaz.estilo(new Button("Registrar devolución"), "boton-primario");
-        registrar.setOnAction(e -> UtilidadesInterfaz.ejecutar(() -> {
-            LocalDate fechaReal = UtilidadesInterfaz.requerido(fecha, "Fecha de devolución");
-            String[] idPiezas = new String[FILAS_DANIO];
-            String[] tipos = new String[FILAS_DANIO];
-            String[] descripciones = new String[FILAS_DANIO];
-            String[] montos = new String[FILAS_DANIO];
-            int conDanio = 0;
+        Button registrarErht = UtilidadesInterfaz.estilo(new Button("Registrar devolución"), "boton-primario");
+        registrarErht.setOnAction(e -> UtilidadesInterfaz.ejecutar(() -> {
+            LocalDate fechaRealErht = UtilidadesInterfaz.requerido(fechaErht, "Fecha de devolución");
+            String[] idPiezasErht = new String[FILAS_DANIO];
+            String[] tiposErht = new String[FILAS_DANIO];
+            String[] descripcionesErht = new String[FILAS_DANIO];
+            String[] montosErht = new String[FILAS_DANIO];
+            int conDanioErht = 0;
             for (int k = 0; k < FILAS_DANIO; k++) {
-                PiezaAlquiler p = cPiezas.get(k).getValue();
-                idPiezas[k] = p == null ? "" : String.valueOf(p.idPieza());
-                tipos[k] = cTipos.get(k).getValue();
-                descripciones[k] = cDescripciones.get(k).getText();
-                BigDecimal m = UtilidadesInterfaz.monto(cMontos.get(k).getText());
-                montos[k] = m == null ? "" : m.toPlainString();
+                PiezaAlquiler p = cPiezasErht.get(k).getValue();
+                idPiezasErht[k] = p == null ? "" : String.valueOf(p.idPieza());
+                tiposErht[k] = cTiposErht.get(k).getValue();
+                descripcionesErht[k] = cDescripcionesErht.get(k).getText();
+                BigDecimal m = UtilidadesInterfaz.monto(cMontosErht.get(k).getText());
+                montosErht[k] = m == null ? "" : m.toPlainString();
                 if (p != null) {
-                    conDanio++;
+                    conDanioErht++;
                 }
             }
-            if (!UtilidadesInterfaz.confirmar("Se registrará la devolución del " + UtilidadesInterfaz.fecha(fechaReal) + " con "
-                    + (conDanio == 0 ? "ningún daño" : conDanio + " pieza(s) dañada(s)")
-                    + ".\nLa garantía se liquida con " + metodo.getValue() + ". ¿Continuar?")) {
+            if (!UtilidadesInterfaz.confirmar("Se registrará la devolución del " + UtilidadesInterfaz.fecha(fechaRealErht) + " con "
+                    + (conDanioErht == 0 ? "ningún daño" : conDanioErht + " pieza(s) dañada(s)")
+                    + ".\nLa garantía se liquida con " + metodoErht.getValue() + ". ¿Continuar?")) {
                 return;
             }
-            BigDecimal totalDanios = s.alquileres().devolver(idAlquiler, fechaReal, idPiezas, tipos,
-                    descripciones, montos, metodo.getValue());
-            BigDecimal diferencia = a.montoGarantia().subtract(totalDanios);
-            String liquidacion = diferencia.signum() > 0
-                    ? "Se devuelve al cliente " + UtilidadesInterfaz.soles(diferencia) + " de la garantía."
-                    : diferencia.signum() < 0
-                    ? "Los daños superan la garantía: se cobró " + UtilidadesInterfaz.soles(diferencia.negate()) + "."
+            BigDecimal totalDaniosErht = sErht.alquileres().devolver(idAlquilerErht, fechaRealErht, idPiezasErht, tiposErht,
+                    descripcionesErht, montosErht, metodoErht.getValue());
+            BigDecimal diferenciaErht = a.montoGarantia().subtract(totalDaniosErht);
+            String liquidacionErht = diferenciaErht.signum() > 0
+                    ? "Se devuelve al cliente " + UtilidadesInterfaz.soles(diferenciaErht) + " de la garantía."
+                    : diferenciaErht.signum() < 0
+                    ? "Los daños superan la garantía: se cobró " + UtilidadesInterfaz.soles(diferenciaErht.negate()) + "."
                     : "La garantía cubre exactamente los daños.";
-            cargar();
-            UtilidadesInterfaz.mostrarInformacion("Devolución registrada.\n\nDaños: " + UtilidadesInterfaz.soles(totalDanios) + "\n" + liquidacion);
+            cargarErht();
+            UtilidadesInterfaz.mostrarInformacion("Devolución registrada.\n\nDaños: " + UtilidadesInterfaz.soles(totalDaniosErht) + "\n" + liquidacionErht);
         }));
 
-        HBox fila = new HBox(10, UtilidadesInterfaz.etiqueta("Fecha de devolución"), fecha,
-                UtilidadesInterfaz.etiqueta("Método para liquidar la garantía"), metodo);
-        fila.setAlignment(Pos.CENTER_LEFT);
-        HBox boton = new HBox(registrar);
-        boton.setAlignment(Pos.CENTER_RIGHT);
+        HBox filaErht = new HBox(10, UtilidadesInterfaz.etiqueta("Fecha de devolución"), fechaErht,
+                UtilidadesInterfaz.etiqueta("Método para liquidar la garantía"), metodoErht);
+        filaErht.setAlignment(Pos.CENTER_LEFT);
+        HBox botonErht = new HBox(registrarErht);
+        botonErht.setAlignment(Pos.CENTER_RIGHT);
         return UtilidadesInterfaz.panel(UtilidadesInterfaz.seccion("Registrar devolución"),
                 UtilidadesInterfaz.subtitulo("Marca solo las piezas dañadas. Si no escribes el monto se calcula solo: "
                         + "LEVE 10%, GRAVE 35% y PERDIDA 100% del valor de reposición. "
                         + "Los daños se descuentan de la garantía " + UtilidadesInterfaz.soles(a.montoGarantia()) + "."),
-                fila, rejilla, boton);
+                filaErht, rejillaErht, botonErht);
     }
 
     /** Ejecuta una acción, recarga el diálogo y muestra el mensaje de éxito. */
-    private void hacer(UtilidadesInterfaz.Accion accion, String exito) {
+    private void hacerErht(UtilidadesInterfaz.Accion accion, String exito) {
         if (UtilidadesInterfaz.ejecutar(() -> {
             accion.ejecutar();
-            cargar();
+            cargarErht();
         })) {
             UtilidadesInterfaz.mostrarInformacion(exito);
         }
@@ -274,7 +274,7 @@ public class AlquilerDetalleDialogo {
 
     // ------------------------------------------------------------------ tablas
 
-    private TableView<AlquilerDetalleTraje> tablaTrajes(List<AlquilerDetalleTraje> trajes) {
+    private TableView<AlquilerDetalleTraje> tablaTrajesErht(List<AlquilerDetalleTraje> trajes) {
         TableView<AlquilerDetalleTraje> t = UtilidadesInterfaz.tabla("Sin trajes.");
         t.getColumns().add(UtilidadesInterfaz.colTexto("Código", AlquilerDetalleTraje::codigo, 100));
         t.getColumns().add(UtilidadesInterfaz.colTexto("Danza", AlquilerDetalleTraje::danza, 170));
@@ -287,7 +287,7 @@ public class AlquilerDetalleDialogo {
         return t;
     }
 
-    private TableView<PagoFila> tablaPagos(List<PagoFila> pagos) {
+    private TableView<PagoFila> tablaPagosErht(List<PagoFila> pagos) {
         TableView<PagoFila> t = UtilidadesInterfaz.tabla("Sin pagos registrados.");
         t.getColumns().add(UtilidadesInterfaz.colFecha("Fecha", PagoFila::fechaPago, 95));
         t.getColumns().add(UtilidadesInterfaz.colTexto("Concepto", PagoFila::concepto, 170));
@@ -298,7 +298,7 @@ public class AlquilerDetalleDialogo {
         return t;
     }
 
-    private TableView<DanioFila> tablaDanios(List<DanioFila> danios) {
+    private TableView<DanioFila> tablaDaniosErht(List<DanioFila> danios) {
         TableView<DanioFila> t = UtilidadesInterfaz.tabla("Sin daños registrados.");
         t.getColumns().add(UtilidadesInterfaz.colTexto("Traje", DanioFila::codigo, 80));
         t.getColumns().add(UtilidadesInterfaz.colTexto("Pieza", DanioFila::pieza, 110));
@@ -310,10 +310,10 @@ public class AlquilerDetalleDialogo {
         return t;
     }
 
-    private static VBox columna(String titulo, TableView<?> tabla) {
-        VBox caja = new VBox(8, UtilidadesInterfaz.seccion(titulo), tabla);
-        HBox.setHgrow(caja, Priority.ALWAYS);
-        caja.setPrefWidth(500);
-        return caja;
+    private static VBox columnaErht(String titulo, TableView<?> tabla) {
+        VBox cajaErht = new VBox(8, UtilidadesInterfaz.seccion(titulo), tabla);
+        HBox.setHgrow(cajaErht, Priority.ALWAYS);
+        cajaErht.setPrefWidth(500);
+        return cajaErht;
     }
 }
