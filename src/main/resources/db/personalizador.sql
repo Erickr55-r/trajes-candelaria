@@ -1,21 +1,5 @@
 -- Trajes Candelaria v1.0 · © 2026 Erick Reison Huanca Tiña. Todos los derechos reservados. Uso, copia o distribución solo con autorización escrita del autor.
 
--- =====================================================================
--- PERSONALIZADOR DE TRAJES EN 3D (PostgreSQL)
--- El cliente diseña su traje eligiendo el color de cada parte y los
--- implementos (cascabeles, matraca, bordados...) y luego lo pide en
--- ALQUILER o en CONFECCION.
---
--- Tablas: parte_traje, color, implemento, pedido_personalizado,
---         pedido_parte, pedido_implemento
---
--- Se ejecuta DESPUÉS de base_datos.sql. No borra nada de lo existente:
--- solo elimina y vuelve a crear sus propias tablas, así que se puede
--- ejecutar de nuevo para dejar el personalizador como al inicio.
---
--- Uso:  psql -U postgres -d alquiler_trajes -f personalizador.sql
--- =====================================================================
-
 SET client_encoding = 'UTF8';
 
 DROP VIEW IF EXISTS v_pedidos_resumen CASCADE;
@@ -24,9 +8,6 @@ DROP TABLE IF EXISTS pedido_implemento, pedido_parte, pedido_personalizado,
 DROP FUNCTION IF EXISTS fn_recalcular_pedido() CASCADE;
 DROP FUNCTION IF EXISTS fn_validar_parte_pedido() CASCADE;
 
--- ===================== CATÁLOGOS DEL PERSONALIZADOR =====================
-
--- Partes que se pueden personalizar en cada danza, con su precio de confección
 CREATE TABLE parte_traje (
     id_parte      SERIAL PRIMARY KEY,
     id_danza      INTEGER      NOT NULL REFERENCES danza(id_danza),
@@ -35,22 +16,18 @@ CREATE TABLE parte_traje (
     UNIQUE (id_danza, nombre)
 );
 
--- Colores de tela disponibles (el hex se usa para pintar el maniquí 3D)
 CREATE TABLE color (
     id_color      SERIAL PRIMARY KEY,
     nombre        VARCHAR(30)  NOT NULL UNIQUE,
     hex           CHAR(7)      NOT NULL CHECK (hex ~ '^#[0-9A-Fa-f]{6}$')
 );
 
--- Adornos y accesorios que se agregan al traje
 CREATE TABLE implemento (
     id_implemento SERIAL PRIMARY KEY,
     nombre        VARCHAR(50)  NOT NULL UNIQUE,
-    precio        NUMERIC(8,2) NOT NULL CHECK (precio >= 0),   -- por unidad
-    parte_destino VARCHAR(40)                                   -- dónde va: Botas, Chaqueta, Mano...
+    precio        NUMERIC(8,2) NOT NULL CHECK (precio >= 0),
+    parte_destino VARCHAR(40)
 );
-
--- ===================== PEDIDOS =====================
 
 CREATE TABLE pedido_personalizado (
     id_pedido     SERIAL PRIMARY KEY,
@@ -63,26 +40,24 @@ CREATE TABLE pedido_personalizado (
     estado        VARCHAR(15)   NOT NULL DEFAULT 'PENDIENTE'
                   CHECK (estado IN ('PENDIENTE', 'COTIZADO', 'APROBADO', 'EN_CONFECCION', 'LISTO',
                                     'ENTREGADO', 'CANCELADO')),
-    monto_total   NUMERIC(10,2) NOT NULL DEFAULT 0,   -- lo calcula el trigger
+    monto_total   NUMERIC(10,2) NOT NULL DEFAULT 0,
     adelanto      NUMERIC(10,2) NOT NULL DEFAULT 0 CHECK (adelanto >= 0),
     observacion   VARCHAR(200),
-    imagen_diseno BYTEA,                               -- PNG del diseño enviado desde el portal del cliente
-    imagen_ruta   VARCHAR(200),                        -- el mismo PNG guardado en la carpeta disenos/
-    precio_estimado NUMERIC(10,2),                     -- precio calculado al crear (la cotización cambia monto_total)
+    imagen_diseno BYTEA,
+    imagen_ruta   VARCHAR(200),
+    precio_estimado NUMERIC(10,2),
     CHECK (fecha_entrega >= fecha_pedido)
 );
 
--- Color elegido para cada parte del traje
 CREATE TABLE pedido_parte (
     id_pedido     INTEGER NOT NULL REFERENCES pedido_personalizado(id_pedido) ON DELETE CASCADE,
     id_parte      INTEGER NOT NULL REFERENCES parte_traje(id_parte),
-    id_color      INTEGER REFERENCES color(id_color),          -- si el color es de la paleta
-    color_hex     CHAR(7) CHECK (color_hex IS NULL OR color_hex ~ '^#[0-9A-Fa-f]{6}$'),  -- color exacto
+    id_color      INTEGER REFERENCES color(id_color),
+    color_hex     CHAR(7) CHECK (color_hex IS NULL OR color_hex ~ '^#[0-9A-Fa-f]{6}$'),
     CHECK (id_color IS NOT NULL OR color_hex IS NOT NULL),
     PRIMARY KEY (id_pedido, id_parte)
 );
 
--- Implementos que lleva el traje
 CREATE TABLE pedido_implemento (
     id_pedido     INTEGER NOT NULL REFERENCES pedido_personalizado(id_pedido) ON DELETE CASCADE,
     id_implemento INTEGER NOT NULL REFERENCES implemento(id_implemento),
@@ -90,9 +65,6 @@ CREATE TABLE pedido_implemento (
     PRIMARY KEY (id_pedido, id_implemento)
 );
 
--- ===================== TRIGGERS =====================
-
--- Una parte solo se puede pedir si pertenece a la danza del pedido
 CREATE FUNCTION fn_validar_parte_pedido() RETURNS TRIGGER AS $$
 DECLARE
     v_danza_pedido INTEGER;
@@ -111,9 +83,6 @@ CREATE TRIGGER trg_validar_parte_pedido
 BEFORE INSERT OR UPDATE ON pedido_parte
 FOR EACH ROW EXECUTE FUNCTION fn_validar_parte_pedido();
 
--- Recalcula el monto del pedido cada vez que cambian sus partes o implementos:
---   costo de confección = suma de precio_base de las partes + suma de precio * cantidad
---   CONFECCION paga el costo completo; ALQUILER paga el 30% del costo.
 CREATE FUNCTION fn_recalcular_pedido() RETURNS TRIGGER AS $$
 DECLARE
     v_id INTEGER;
@@ -149,8 +118,6 @@ CREATE TRIGGER trg_recalcular_pedido_implemento
 AFTER INSERT OR UPDATE OR DELETE ON pedido_implemento
 FOR EACH ROW EXECUTE FUNCTION fn_recalcular_pedido();
 
--- ===================== VISTA =====================
-
 CREATE VIEW v_pedidos_resumen AS
 SELECT p.id_pedido,
        p.id_cliente,
@@ -174,9 +141,6 @@ FROM pedido_personalizado p
 JOIN cliente c ON c.id_cliente = p.id_cliente
 JOIN danza d   ON d.id_danza = p.id_danza;
 
--- ===================== DATOS DE EJEMPLO =====================
-
--- Partes por danza: (danza, parte, precio de confección)
 INSERT INTO parte_traje (id_danza, nombre, precio_base)
 SELECT d.id_danza, v.parte, v.precio
 FROM (VALUES
@@ -215,7 +179,6 @@ INSERT INTO implemento (nombre, precio, parte_destino) VALUES
 ('Espejos',        3.50, 'Sombrero'),
 ('Flecos dorados', 25.00, 'Faja');
 
--- 5 pedidos de prueba con distintos estados (se toman los primeros clientes)
 INSERT INTO pedido_personalizado (id_cliente, id_danza, talla, fecha_pedido, fecha_entrega, tipo, estado, observacion)
 SELECT (SELECT id_cliente FROM cliente ORDER BY id_cliente OFFSET v.n LIMIT 1),
        (SELECT id_danza FROM danza WHERE nombre = v.danza),
@@ -229,7 +192,6 @@ FROM (VALUES
 ) AS v(n, danza, talla, desde, hasta, tipo, estado, obs)
 ORDER BY v.n;
 
--- Partes y colores de cada pedido: (pedido, parte, color)
 INSERT INTO pedido_parte (id_pedido, id_parte, id_color)
 SELECT v.pedido, pt.id_parte, c.id_color
 FROM (VALUES
@@ -248,7 +210,6 @@ JOIN pedido_personalizado p ON p.id_pedido = v.pedido
 JOIN parte_traje pt ON pt.id_danza = p.id_danza AND pt.nombre = v.parte
 JOIN color c ON c.nombre = v.color;
 
--- Implementos de cada pedido: (pedido, implemento, cantidad)
 INSERT INTO pedido_implemento (id_pedido, id_implemento, cantidad)
 SELECT v.pedido, i.id_implemento, v.cantidad
 FROM (VALUES
@@ -260,15 +221,12 @@ FROM (VALUES
 ) AS v(pedido, implemento, cantidad)
 JOIN implemento i ON i.nombre = v.implemento;
 
--- Adelantos (el trigger ya calculó monto_total). El pedido entregado quedó pagado.
 UPDATE pedido_personalizado SET adelanto = ROUND(monto_total * 0.5, 2) WHERE id_pedido IN (1, 2);
 UPDATE pedido_personalizado SET adelanto = monto_total WHERE id_pedido IN (3, 4);
 
--- Precio estimado (el calculado al crear) y el hex exacto de cada parte
 UPDATE pedido_personalizado SET precio_estimado = monto_total;
 UPDATE pedido_parte pp SET color_hex = c.hex FROM color c WHERE c.id_color = pp.id_color;
 
--- Comprobación rápida
 SELECT id_pedido, cliente, danza, tipo, estado, num_partes, num_implementos, monto_total, adelanto, saldo
 FROM v_pedidos_resumen
 ORDER BY id_pedido;

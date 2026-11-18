@@ -142,7 +142,6 @@ public class ReporteServicio {
         );
     }
 
-    /** Reporte sobre las tablas del personalizador: si aún no se ejecutó personalizador.sql, lo avisa. */
     private Tabla tablaPersonalizadorErht(String titulo, String descripcion, String sql) {
         try {
             return tablaErht(titulo, descripcion, sql);

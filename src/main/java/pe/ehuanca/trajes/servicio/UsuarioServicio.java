@@ -25,7 +25,6 @@ import static pe.ehuanca.trajes.servicio.TrajeServicio.tieneTexto;
 public class UsuarioServicio {
 
     private static final BCryptPasswordEncoder BCRYPT = new BCryptPasswordEncoder();
-    /** Hash de relleno: si el usuario no existe se compara igual, para no delatarlo por el tiempo de respuesta. */
     private static final String CLAVE_CIFRADA_RELLENO = BCRYPT.encode("relleno-sin-uso");
     private static final String CREDENCIALES_MAL = "Usuario o contraseña incorrectos.";
 
@@ -35,7 +34,6 @@ public class UsuarioServicio {
         this.jdbcErht = jdbc;
     }
 
-    /** Devuelve el usuario si el nombre y la contraseña son correctos y la cuenta está activa. */
     public Usuario autenticar(String nombreUsuario, String clave) {
         if (!tieneTexto(nombreUsuario) || clave == null || clave.isEmpty()) {
             throw new ExcepcionReglaNegocio("Escribe tu usuario y tu contraseña.");
@@ -63,10 +61,6 @@ public class UsuarioServicio {
                 (Integer) f.get("id_cliente"), nombreErht == null || nombreErht.isBlank() ? null : nombreErht);
     }
 
-    /**
-     * Crea el cliente y su usuario CLIENTE en una sola transacción (si algo falla, no queda nada a medias)
-     * y devuelve el usuario ya autenticado.
-     */
     @Transactional
     public Usuario registrarCliente(String nombre, String dni, String celular, String correo,
                                     String nombreUsuario, String clave) {
@@ -102,7 +96,6 @@ public class UsuarioServicio {
         Integer existeDniErht = jdbcErht.queryForObject("SELECT COUNT(*) FROM cliente WHERE numero_documento = ?",
                 Integer.class, d);
         if (existeDniErht != null && existeDniErht > 0) {
-            // No se vincula solo: cualquiera que conozca el DNI podría ver los alquileres de esa persona.
             throw new ExcepcionReglaNegocio("Ya hay un cliente registrado con el DNI " + d
                     + ". Pide en la tienda que te creen el acceso a tu cuenta.");
         }
@@ -119,8 +112,6 @@ public class UsuarioServicio {
         return autenticar(usuarioErht, clave);
     }
 
-    // ------------------------------------------------------------------ administración (solo ADMIN)
-
     public java.util.List<pe.ehuanca.trajes.modelo.UsuarioFila> listar() {
         return jdbcErht.query("""
                 SELECT u.id_usuario, u.username, u.rol, u.activo, u.fecha_creacion,
@@ -133,7 +124,6 @@ public class UsuarioServicio {
                 rs.getTimestamp("fecha_creacion").toLocalDateTime()));
     }
 
-    /** Crea un usuario de la tienda (ADMIN o VENDEDOR). Los clientes se registran solos desde el login. */
     public void crearInterno(String nombreUsuario, String clave, String rol) {
         String usuarioErht = limpiarErht(nombreUsuario).toLowerCase(Locale.ROOT);
         if (!usuarioErht.matches("[a-z0-9._]{4,30}")) {
@@ -152,7 +142,6 @@ public class UsuarioServicio {
         jdbcErht.update("INSERT INTO usuario (username, password_hash, rol) VALUES (?, ?, ?)", usuarioErht, BCRYPT.encode(clave), rol);
     }
 
-    /** Activa o desactiva una cuenta. Nadie puede desactivarse a sí mismo ni dejar la tienda sin ADMIN activo. */
     public void cambiarActivo(int idUsuario, boolean activo, int idUsuarioActual) {
         if (!activo && idUsuario == idUsuarioActual) {
             throw new ExcepcionReglaNegocio("No puedes desactivar tu propia cuenta.");
@@ -172,7 +161,6 @@ public class UsuarioServicio {
         jdbcErht.update("UPDATE usuario SET activo = ? WHERE id_usuario = ?", activo, idUsuario);
     }
 
-    /** El ADMIN pone una contraseña nueva (por ejemplo, si alguien la olvidó). */
     public void restablecerClave(int idUsuario, String nueva) {
         if (nueva == null || nueva.length() < 6) {
             throw new ExcepcionReglaNegocio("La contraseña debe tener al menos 6 caracteres.");
@@ -180,7 +168,6 @@ public class UsuarioServicio {
         jdbcErht.update("UPDATE usuario SET password_hash = ? WHERE id_usuario = ?", BCRYPT.encode(nueva), idUsuario);
     }
 
-    /** Cambia la contraseña verificando la actual. */
     public void cambiarClave(int idUsuario, String actual, String nueva, String repetida) {
         String claveCifradaErht = jdbcErht.queryForObject("SELECT password_hash FROM usuario WHERE id_usuario = ?", String.class,
                 idUsuario);

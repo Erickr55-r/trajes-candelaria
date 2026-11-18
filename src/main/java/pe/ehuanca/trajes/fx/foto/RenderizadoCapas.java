@@ -37,7 +37,6 @@ public final class RenderizadoCapas {
 
     public static final String BASE = "base.png";
 
-    /** Nombres con tilde para los archivos conocidos (el resto se muestra tal cual, con mayúscula inicial). */
     private static final Map<String, String> NOMBRES = Map.of(
             "pantalon", "Pantalón", "pollera", "Pollera", "mascara", "Máscara", "boton", "Botón",
             "botones", "Botones", "cinturon", "Cinturón", "camison", "Camisón");
@@ -50,7 +49,6 @@ public final class RenderizadoCapas {
         this.prendasErht = prendas;
     }
 
-    /** @param carpeta ruta dentro de resources, sin barra inicial: "render/caporal/frente" */
     public static RenderizadoCapas cargar(String carpeta) {
         Resource[] pngsErht;
         try {
@@ -84,11 +82,10 @@ public final class RenderizadoCapas {
         return new RenderizadoCapas(baseErht, List.copyOf(prendasErht));
     }
 
-    /** "20_pantalon1.png" → "Pantalón"; "chaqueta.png" → "Chaqueta"; "botas_altas.png" → "Botas altas". */
     static String nombreVisible(String archivo) {
         String n = archivo.replaceFirst("(?i)\\.png$", "")
-                .replaceFirst("^\\d+[_\\-\\s]*", "")   // prefijo de orden
-                .replaceFirst("[_\\-\\s]*\\d+$", "")   // número de versión al final
+                .replaceFirst("^\\d+[_\\-\\s]*", "")
+                .replaceFirst("[_\\-\\s]*\\d+$", "")
                 .replace('_', ' ').replace('-', ' ').trim();
         if (n.isEmpty()) {
             return archivo;

@@ -33,7 +33,6 @@ import java.util.List;
 public class PedidosVista extends VBox {
 
     private final Servicios sErht;
-    /** Avisa al panel para actualizar la insignia de pendientes. */
     private final Runnable alCambiarErht;
     private final ComboBox<String> estadoErht = UtilidadesInterfaz.comboTexto(PersonalizadorServicio.ESTADOS, "Todos");
     private final TextField textoErht = UtilidadesInterfaz.campo("", "Cliente, danza o N°...");

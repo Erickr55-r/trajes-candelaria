@@ -43,7 +43,6 @@ public final class Fuentes {
                     Font.loadFont(in, 13);
                 }
             } catch (IOException ignorada) {
-                // sin esta fuente se usa la del sistema
             }
         }
         cargadasErht = true;

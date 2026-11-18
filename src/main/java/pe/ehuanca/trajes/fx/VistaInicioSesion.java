@@ -54,8 +54,6 @@ public class VistaInicioSesion extends HBox {
         mostrarIngresoErht(null);
     }
 
-    // ------------------------------------------------------------------ panel izquierdo
-
     private StackPane panelMarcaErht() {
         Group chakanaErht = Adornos.chakanaEnGrupo(420, "inicio-sesion-chakana");
         StackPane.setAlignment(chakanaErht, Pos.CENTER_RIGHT);
@@ -100,8 +98,6 @@ public class VistaInicioSesion extends HBox {
         return panelErht;
     }
 
-    // ------------------------------------------------------------------ ingresar
-
     private void mostrarIngresoErht(String usuarioSugerido) {
         TextField usuarioErht = new TextField(usuarioSugerido == null ? "" : usuarioSugerido);
         usuarioErht.setPromptText("Tu usuario");
@@ -130,8 +126,6 @@ public class VistaInicioSesion extends HBox {
         mostrarErht(tarjetaErht);
         Platform.runLater(() -> (usuarioErht.getText().isEmpty() ? usuarioErht : claveErht).requestFocus());
     }
-
-    // ------------------------------------------------------------------ registro
 
     private void mostrarRegistroErht() {
         TextField nombreErht = new TextField();
@@ -176,8 +170,6 @@ public class VistaInicioSesion extends HBox {
         Platform.runLater(nombreErht::requestFocus);
     }
 
-    // ------------------------------------------------------------------ piezas
-
     private void mostrarErht(VBox tarjeta) {
         StackPane centroErht = new StackPane(tarjeta);
         centroErht.setPadding(new Insets(40));
@@ -205,7 +197,6 @@ public class VistaInicioSesion extends HBox {
         return cajaErht;
     }
 
-    /** Campo de 44 px con ícono a la izquierda; el borde se vuelve dorado al enfocar. */
     private static VBox campoErht(String titulo, Ikon ikon, TextField control) {
         Label l = new Label(UtilidadesInterfaz.espaciado(titulo));
         l.getStyleClass().add("campo-titulo");
@@ -235,7 +226,6 @@ public class VistaInicioSesion extends HBox {
         Usuario ejecutar();
     }
 
-    /** Ejecuta el ingreso o el registro; si falla, muestra el mensaje en rojo suave dentro de la tarjeta. */
     private void intentarErht(Label error, Intento intento) {
         try {
             Usuario u = intento.ejecutar();

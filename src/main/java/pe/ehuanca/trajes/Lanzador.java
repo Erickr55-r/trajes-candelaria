@@ -5,7 +5,6 @@ package pe.ehuanca.trajes;
 import pe.ehuanca.trajes.fx.AplicacionFx;
 import javafx.application.Application;
 
-
 /**
  * Punto de entrada: ejecuta esta clase.
  * No extiende Application para evitar el error "JavaFX runtime components are missing".

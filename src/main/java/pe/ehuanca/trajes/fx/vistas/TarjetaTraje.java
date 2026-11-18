@@ -46,15 +46,12 @@ public final class TarjetaTraje {
 
     public static final double ALTO_FOTO = 250;
 
-    /** Punto de color del chip de estado. */
     public enum Punto { VERDE, AMBAR, ROJO }
 
-    /** Todo lo que muestra una tarjeta. */
     public record Datos(TrajeFila traje, boolean masAlquilado, String estadoTexto, Punto punto,
                         List<String> piezas, String tallas, String sufijoPrecio, boolean reservable,
                         Runnable alReservar, Runnable alDobleClic, String textoBoton, boolean abrirConUnClic) {
 
-        /** Tarjeta de la tienda: botón "Reservar" y doble clic para el detalle. */
         public Datos(TrajeFila traje, boolean masAlquilado, String estadoTexto, Punto punto, List<String> piezas,
                      String tallas, String sufijoPrecio, boolean reservable, Runnable alReservar, Runnable alDobleClic) {
             this(traje, masAlquilado, estadoTexto, punto, piezas, tallas, sufijoPrecio, reservable, alReservar,
@@ -68,7 +65,6 @@ public final class TarjetaTraje {
     public static VBox crear(Datos d) {
         TrajeFila t = d.traje();
 
-        // ---------------- foto
         StackPane fotoErht = fotoErht(t);
         if (d.masAlquilado()) {
             Label etiquetaMasAlquiladoErht = new Label(UtilidadesInterfaz.espaciado("Más alquilado"), UtilidadesInterfaz.icono(Feather.AWARD));
@@ -90,7 +86,6 @@ public final class TarjetaTraje {
         StackPane.setMargin(estadoErht, new Insets(14));
         fotoErht.getChildren().add(estadoErht);
 
-        // ---------------- cuerpo
         Label metaErht = new Label(UtilidadesInterfaz.espaciado(t.danza()) + "  •  " + UtilidadesInterfaz.espaciado(t.color() == null ? "—" : t.color()));
         metaErht.getStyleClass().add("traje-datos");
         metaErht.setMinWidth(0);
@@ -114,7 +109,7 @@ public final class TarjetaTraje {
         descErht.setWrapText(true);
         descErht.setMinHeight(40);
         descErht.setPrefHeight(40);
-        descErht.setMaxHeight(40);   // dos líneas
+        descErht.setMaxHeight(40);
 
         Region sep1Erht = separadorErht();
         String incluyeErht = d.piezas().isEmpty() ? "Sin piezas registradas" : String.join(", ", d.piezas());
@@ -153,7 +148,6 @@ public final class TarjetaTraje {
         tarjetaErht.setMaxWidth(Double.MAX_VALUE);
         tarjetaErht.setMinWidth(0);
 
-        // Al pasar el mouse sube 4 px y crece la sombra (150 ms).
         TranslateTransition subeErht = new TranslateTransition(Duration.millis(150), tarjetaErht);
         tarjetaErht.hoverProperty().addListener((o, antes, encima) -> {
             subeErht.stop();
@@ -178,8 +172,6 @@ public final class TarjetaTraje {
         return tarjetaErht;
     }
 
-    // ------------------------------------------------------------------ foto
-
     private static StackPane fotoErht(TrajeFila t) {
         StackPane cajaErht = new StackPane();
         cajaErht.setMinHeight(ALTO_FOTO);
@@ -188,7 +180,6 @@ public final class TarjetaTraje {
 
         URL rutaErht = rutaFotoErht(t.idTraje());
         if (rutaErht != null) {
-            // "cover": llena el recuadro y recorta lo que sobra, sin deformar.
             cajaErht.setStyle("-fx-background-image: url('" + rutaErht.toExternalForm() + "');"
                     + "-fx-background-size: cover; -fx-background-position: center;");
         } else {
@@ -208,7 +199,6 @@ public final class TarjetaTraje {
             cajaErht.getChildren().addAll(chakanaErht, textosErht);
         }
 
-        // Esquinas superiores redondeadas: rectángulo con arcos + franja recta abajo.
         Rectangle redondoErht = new Rectangle();
         redondoErht.setArcWidth(36);
         redondoErht.setArcHeight(36);
@@ -255,9 +245,6 @@ public final class TarjetaTraje {
                 + ", listo para la festividad. Se entrega revisado pieza por pieza.";
     }
 
-    // ------------------------------------------------------------------ utilidades
-
-    /** "M · también S, L": la talla del traje y las de los trajes iguales (misma danza, personaje y color). */
     public static String tallas(TrajeFila t, List<TrajeFila> todos) {
         List<String> otrasErht = new ArrayList<>();
         for (String tallaErht : UtilidadesInterfaz.TALLAS) {
@@ -274,10 +261,6 @@ public final class TarjetaTraje {
         return otrasErht.isEmpty() ? t.talla() : t.talla() + " · también " + String.join(", ", otrasErht);
     }
 
-    /**
-     * Primer día (desde hoy) en que cada traje no está comprometido en un alquiler reservado o entregado.
-     * Un alquiler entregado y vencido se cuenta hasta hoy (el traje aún no volvió).
-     */
     public static Map<Integer, LocalDate> proximaFechaLibre(List<Ocupacion> ocupaciones, LocalDate hoy) {
         Map<Integer, List<Ocupacion>> porTrajeErht = new HashMap<>();
         for (Ocupacion o : ocupaciones) {
@@ -305,7 +288,6 @@ public final class TarjetaTraje {
         return libreErht;
     }
 
-    /** Cuadrícula de tarjetas: 3 columnas, o 2 si el ancho disponible es angosto. */
     public static final class Cuadricula extends GridPane {
 
         private static final double ANCHO_MINIMO_3 = 1100;
@@ -333,7 +315,6 @@ public final class TarjetaTraje {
             getChildren().clear();
             getColumnConstraints().clear();
             for (int i = 0; i < c; i++) {
-                // Columnas iguales: mismo ancho preferido y todas crecen (sin percentWidth).
                 ColumnConstraints cc = new ColumnConstraints();
                 cc.setMinWidth(0);
                 cc.setPrefWidth(100);

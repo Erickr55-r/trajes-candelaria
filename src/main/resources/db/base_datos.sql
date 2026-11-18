@@ -1,17 +1,5 @@
 -- Trajes Candelaria v1.0 · © 2026 Erick Reison Huanca Tiña. Todos los derechos reservados. Uso, copia o distribución solo con autorización escrita del autor.
 
--- =====================================================================
--- SISTEMA DE ALQUILER DE TRAJES DE DANZA (PostgreSQL)
--- Alquiler de trajes para la festividad de la Virgen de la Candelaria
--- y otras presentaciones de conjuntos de danza.
---
--- Tablas: danza, tipo_pieza, traje, pieza, cliente, conjunto,
---         alquiler, detalle_alquiler, danio, pago, mantenimiento, usuario
---
--- Uso:  psql -U postgres -c "CREATE DATABASE alquiler_trajes;"
---       psql -U postgres -d alquiler_trajes -f base_datos.sql
--- =====================================================================
-
 DROP VIEW IF EXISTS v_alquileres_resumen, v_trajes_estado CASCADE;
 DROP TABLE IF EXISTS usuario, pago, danio, detalle_alquiler, alquiler, mantenimiento,
                      pieza, traje, conjunto, cliente, tipo_pieza, danza CASCADE;
@@ -19,9 +7,6 @@ DROP FUNCTION IF EXISTS fn_validar_disponibilidad() CASCADE;
 DROP FUNCTION IF EXISTS fn_actualizar_totales() CASCADE;
 DROP FUNCTION IF EXISTS fn_trajes_disponibles(DATE, DATE, VARCHAR) CASCADE;
 
--- ===================== CATÁLOGOS =====================
-
--- Danzas que se atienden (diablada, morenada, caporales, ...)
 CREATE TABLE danza (
     id_danza      SERIAL PRIMARY KEY,
     nombre        VARCHAR(50)  NOT NULL UNIQUE,
@@ -29,31 +14,26 @@ CREATE TABLE danza (
     descripcion   VARCHAR(200)
 );
 
--- Partes que forman un traje (máscara, chaqueta, pollera, botas, ...)
 CREATE TABLE tipo_pieza (
     id_tipo_pieza SERIAL PRIMARY KEY,
     nombre        VARCHAR(40)  NOT NULL UNIQUE
 );
 
--- ===================== TRAJES =====================
-
--- Cada traje es un conjunto completo que se alquila como una unidad
 CREATE TABLE traje (
     id_traje          SERIAL PRIMARY KEY,
-    codigo            VARCHAR(10)  NOT NULL UNIQUE,          -- ej. DIA-001
+    codigo            VARCHAR(10)  NOT NULL UNIQUE,
     id_danza          INTEGER      NOT NULL REFERENCES danza(id_danza),
-    personaje         VARCHAR(50)  NOT NULL,                 -- ej. Diablo, Achachi, Caporal
+    personaje         VARCHAR(50)  NOT NULL,
     genero            VARCHAR(6)   NOT NULL CHECK (genero IN ('VARON', 'MUJER', 'UNISEX')),
     talla             VARCHAR(3)   NOT NULL CHECK (talla IN ('XS', 'S', 'M', 'L', 'XL')),
     color             VARCHAR(30),
-    precio_alquiler   NUMERIC(8,2) NOT NULL CHECK (precio_alquiler > 0),   -- por todo el periodo
-    garantia          NUMERIC(8,2) NOT NULL CHECK (garantia >= 0),         -- se devuelve si no hay daños
+    precio_alquiler   NUMERIC(8,2) NOT NULL CHECK (precio_alquiler > 0),
+    garantia          NUMERIC(8,2) NOT NULL CHECK (garantia >= 0),
     fecha_adquisicion DATE,
     estado            VARCHAR(15)  NOT NULL DEFAULT 'DISPONIBLE'
                       CHECK (estado IN ('DISPONIBLE', 'MANTENIMIENTO', 'BAJA'))
 );
 
--- Piezas de cada traje, para registrar daños por pieza
 CREATE TABLE pieza (
     id_pieza          SERIAL PRIMARY KEY,
     id_traje          INTEGER      NOT NULL REFERENCES traje(id_traje) ON DELETE CASCADE,
@@ -62,10 +42,8 @@ CREATE TABLE pieza (
     estado            VARCHAR(10)  NOT NULL DEFAULT 'BUENO'
                       CHECK (estado IN ('BUENO', 'REGULAR', 'DANADO', 'PERDIDO')),
     valor_reposicion  NUMERIC(8,2) NOT NULL CHECK (valor_reposicion >= 0),
-    UNIQUE (id_traje, id_tipo_pieza)          -- un traje no repite el mismo tipo de pieza
+    UNIQUE (id_traje, id_tipo_pieza)
 );
-
--- ===================== CLIENTES =====================
 
 CREATE TABLE cliente (
     id_cliente        SERIAL PRIMARY KEY,
@@ -79,7 +57,6 @@ CREATE TABLE cliente (
     fecha_registro    DATE         NOT NULL DEFAULT CURRENT_DATE
 );
 
--- Conjuntos (agrupaciones) que alquilan en bloque; su delegado es un cliente
 CREATE TABLE conjunto (
     id_conjunto       SERIAL PRIMARY KEY,
     nombre            VARCHAR(120) NOT NULL UNIQUE,
@@ -88,25 +65,22 @@ CREATE TABLE conjunto (
     telefono          VARCHAR(15)
 );
 
--- ===================== ALQUILERES =====================
-
 CREATE TABLE alquiler (
     id_alquiler                SERIAL PRIMARY KEY,
     id_cliente                 INTEGER      NOT NULL REFERENCES cliente(id_cliente),
-    id_conjunto                INTEGER      REFERENCES conjunto(id_conjunto),   -- NULL si es particular
+    id_conjunto                INTEGER      REFERENCES conjunto(id_conjunto),
     fecha_registro             DATE         NOT NULL DEFAULT CURRENT_DATE,
     fecha_salida               DATE         NOT NULL,
     fecha_devolucion_prevista  DATE         NOT NULL,
     fecha_devolucion_real      DATE,
-    -- SOLICITADO: pedido por el cliente desde su portal, pendiente de aprobación
     estado                     VARCHAR(10)  NOT NULL DEFAULT 'RESERVADO'
                                CHECK (estado IN ('SOLICITADO', 'RESERVADO', 'ENTREGADO', 'DEVUELTO',
                                                  'ANULADO', 'RECHAZADO')),
     monto_alquiler             NUMERIC(10,2) NOT NULL DEFAULT 0,
     monto_garantia             NUMERIC(10,2) NOT NULL DEFAULT 0,
     observacion                VARCHAR(200),
-    motivo_rechazo             VARCHAR(200),                                 -- solo si RECHAZADO
-    creado_en                  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP, -- fecha y hora de registro
+    motivo_rechazo             VARCHAR(200),
+    creado_en                  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CHECK (estado <> 'RECHAZADO' OR motivo_rechazo IS NOT NULL),
     CHECK (fecha_devolucion_prevista >= fecha_salida),
     CHECK (fecha_devolucion_real IS NULL OR fecha_devolucion_real >= fecha_salida),
@@ -119,10 +93,9 @@ CREATE TABLE detalle_alquiler (
     id_traje          INTEGER      NOT NULL REFERENCES traje(id_traje),
     precio            NUMERIC(8,2) NOT NULL CHECK (precio >= 0),
     garantia          NUMERIC(8,2) NOT NULL CHECK (garantia >= 0),
-    UNIQUE (id_alquiler, id_traje)            -- el mismo traje no se repite en un alquiler
+    UNIQUE (id_alquiler, id_traje)
 );
 
--- Daños o pérdidas detectados al devolver un traje
 CREATE TABLE danio (
     id_danio          SERIAL PRIMARY KEY,
     id_detalle        INTEGER      NOT NULL REFERENCES detalle_alquiler(id_detalle) ON DELETE CASCADE,
@@ -142,7 +115,6 @@ CREATE TABLE pago (
     metodo            VARCHAR(15)  NOT NULL CHECK (metodo IN ('EFECTIVO', 'YAPE', 'PLIN', 'TRANSFERENCIA'))
 );
 
--- Lavado y reparación de trajes entre temporadas
 CREATE TABLE mantenimiento (
     id_mantenimiento  SERIAL PRIMARY KEY,
     id_traje          INTEGER      NOT NULL REFERENCES traje(id_traje),
@@ -158,10 +130,6 @@ CREATE INDEX idx_alquiler_fechas  ON alquiler (fecha_salida, fecha_devolucion_pr
 CREATE INDEX idx_detalle_traje    ON detalle_alquiler (id_traje);
 CREATE INDEX idx_traje_danza      ON traje (id_danza, talla);
 
--- ===================== REGLAS DE NEGOCIO (TRIGGERS) =====================
-
--- Regla 1: un traje no puede estar en dos alquileres activos con fechas
--- que se crucen, ni alquilarse si está en mantenimiento o de baja.
 CREATE FUNCTION fn_validar_disponibilidad() RETURNS TRIGGER AS $$
 DECLARE
     v_salida   DATE;
@@ -183,7 +151,7 @@ BEGIN
       JOIN alquiler a ON a.id_alquiler = d.id_alquiler
      WHERE d.id_traje = NEW.id_traje
        AND d.id_detalle <> COALESCE(NEW.id_detalle, -1)
-       AND a.estado IN ('SOLICITADO', 'RESERVADO', 'ENTREGADO')   -- SOLICITADO también ocupa
+       AND a.estado IN ('SOLICITADO', 'RESERVADO', 'ENTREGADO')
        AND a.fecha_salida <= v_retorno
        AND a.fecha_devolucion_prevista >= v_salida
      LIMIT 1;
@@ -199,8 +167,6 @@ CREATE TRIGGER trg_validar_disponibilidad
 BEFORE INSERT OR UPDATE ON detalle_alquiler
 FOR EACH ROW EXECUTE FUNCTION fn_validar_disponibilidad();
 
--- Regla 2: los montos de la cabecera del alquiler se mantienen iguales a
--- la suma de sus detalles (alquiler y garantía).
 CREATE FUNCTION fn_actualizar_totales() RETURNS TRIGGER AS $$
 DECLARE
     v_id INTEGER := COALESCE(NEW.id_alquiler, OLD.id_alquiler);
@@ -217,9 +183,6 @@ CREATE TRIGGER trg_actualizar_totales
 AFTER INSERT OR UPDATE OR DELETE ON detalle_alquiler
 FOR EACH ROW EXECUTE FUNCTION fn_actualizar_totales();
 
--- ===================== FUNCIÓN DE CONSULTA =====================
-
--- Trajes libres entre dos fechas (opcionalmente de una danza)
 CREATE FUNCTION fn_trajes_disponibles(p_desde DATE, p_hasta DATE, p_danza VARCHAR DEFAULT NULL)
 RETURNS TABLE (codigo VARCHAR, danza VARCHAR, personaje VARCHAR, genero VARCHAR,
                talla VARCHAR, precio_alquiler NUMERIC, garantia NUMERIC) AS $$
@@ -237,7 +200,6 @@ RETURNS TABLE (codigo VARCHAR, danza VARCHAR, personaje VARCHAR, genero VARCHAR,
                           AND a.fecha_devolucion_prevista >= p_desde)
      ORDER BY d.nombre, t.personaje, t.talla;
 $$ LANGUAGE sql;
--- ===================== DATOS DE PRUEBA =====================
 
 INSERT INTO danza (nombre, tipo, descripcion) VALUES
 ('Diablada', 'TRAJE DE LUCES', 'Danza de diablos y chinas diablas, con máscaras de yeso y bordados de pedrería'),
@@ -611,8 +573,6 @@ INSERT INTO alquiler (id_cliente, id_conjunto, fecha_registro, fecha_salida, fec
 (26, NULL, '2026-10-13', '2027-01-30', '2027-02-10', NULL, 'RESERVADO', NULL),
 (8, NULL, '2026-10-05', '2027-01-29', '2027-02-11', NULL, 'RESERVADO', NULL),
 (13, NULL, '2026-10-12', '2027-01-30', '2027-02-10', NULL, 'RESERVADO', NULL);
-
--- Los montos de cada alquiler se calculan solos con el trigger trg_actualizar_totales
 
 INSERT INTO detalle_alquiler (id_alquiler, id_traje, precio, garantia) VALUES
 (1, 28, 144.00, 220.00),
@@ -1100,8 +1060,6 @@ INSERT INTO mantenimiento (id_traje, tipo, fecha_inicio, fecha_fin, costo, detal
 
 UPDATE traje SET estado = 'MANTENIMIENTO' WHERE codigo IN ('CAP-001', 'CAP-003');
 
--- El traje más antiguo sin reservas pendientes se da de baja
-
 UPDATE traje SET estado = 'BAJA'
 WHERE id_traje = (SELECT t.id_traje FROM traje t
                   WHERE t.estado = 'DISPONIBLE'
@@ -1109,7 +1067,6 @@ WHERE id_traje = (SELECT t.id_traje FROM traje t
                                     WHERE d.id_traje = t.id_traje AND a.estado IN ('RESERVADO', 'ENTREGADO'))
                   ORDER BY t.fecha_adquisicion LIMIT 1);
 
--- Trajes nuevos comprados en setiembre de 2026 (todavía sin alquilar)
 INSERT INTO traje (codigo, id_danza, personaje, genero, talla, color, precio_alquiler, garantia, fecha_adquisicion)
 VALUES ('TIN-006', (SELECT id_danza FROM danza WHERE nombre = 'Tinkus'), 'Tinku varón', 'VARON', 'M', 'Multicolor', 120.00, 150.00, '2026-09-15'),
        ('TIN-007', (SELECT id_danza FROM danza WHERE nombre = 'Tinkus'), 'Tinku mujer', 'MUJER', 'S', 'Multicolor', 120.00, 150.00, '2026-09-15');
@@ -1121,12 +1078,6 @@ JOIN (VALUES ('TIN-006', 'Sombrero', 80), ('TIN-006', 'Chaqueta', 120), ('TIN-00
      ON x.codigo = t.codigo
 JOIN tipo_pieza tp ON tp.nombre = x.pieza;
 
-
--- =====================================================================
--- VISTAS
--- =====================================================================
-
--- Resumen de cada alquiler: cliente, conjunto, trajes, montos, daños y pagos
 CREATE VIEW v_alquileres_resumen AS
 SELECT a.id_alquiler,
        a.id_cliente,
@@ -1151,7 +1102,6 @@ FROM alquiler a
 JOIN cliente c        ON c.id_cliente = a.id_cliente
 LEFT JOIN conjunto cj ON cj.id_conjunto = a.id_conjunto;
 
--- Estado actual de cada traje y su próxima reserva
 CREATE VIEW v_trajes_estado AS
 SELECT t.codigo, d.nombre AS danza, t.personaje, t.genero, t.talla, t.estado,
        (SELECT MIN(a.fecha_salida)
@@ -1164,21 +1114,12 @@ SELECT t.codigo, d.nombre AS danza, t.personaje, t.genero, t.talla, t.estado,
 FROM traje t
 JOIN danza d ON d.id_danza = t.id_danza;
 
-
--- Los alquileres de ejemplo se "registraron" en su fecha_registro (no en el momento de cargar el script)
 UPDATE alquiler SET creado_en = fecha_registro::timestamp + TIME '10:00';
-
--- =====================================================================
--- USUARIOS Y ROLES (inicio de sesión)
--- Contraseñas en BCrypt. Un usuario CLIENTE siempre está vinculado a un cliente.
---   admin / admin123 (ADMIN) · vendedor / venta123 (VENDEDOR)
---   cliente / cliente123 (CLIENTE, cliente con DNI 44268151)
--- =====================================================================
 
 CREATE TABLE usuario (
     id_usuario     SERIAL PRIMARY KEY,
     username       VARCHAR(30)  NOT NULL UNIQUE,
-    password_hash  VARCHAR(100) NOT NULL,                       -- BCrypt
+    password_hash  VARCHAR(100) NOT NULL,
     rol            VARCHAR(10)  NOT NULL CHECK (rol IN ('ADMIN', 'VENDEDOR', 'CLIENTE')),
     id_cliente     INTEGER      UNIQUE REFERENCES cliente(id_cliente),
     activo         BOOLEAN      NOT NULL DEFAULT TRUE,

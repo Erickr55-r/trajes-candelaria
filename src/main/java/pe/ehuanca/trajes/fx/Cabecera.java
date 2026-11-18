@@ -37,7 +37,6 @@ public final class Cabecera {
     private Cabecera() {
     }
 
-    /** Cuadro dorado con tijeras + "Trajes Candelaria" + "ALQUILER Y CONFECCIÓN". */
     public static HBox marca(Runnable alHacerClic) {
         StackPane logotipoErht = new StackPane(UtilidadesInterfaz.icono(Feather.SCISSORS));
         logotipoErht.getStyleClass().add("logotipo-cuadro");
@@ -58,7 +57,6 @@ public final class Cabecera {
         return marcaErht;
     }
 
-    /** Avatar circular con las iniciales del usuario de la sesión y el menú Tema / Cerrar sesión / Salir. */
     public static StackPane avatar(Runnable alCerrarSesion) {
         Usuario u = Sesion.actual().usuario();
         Circle circuloErht = new Circle(19);
@@ -70,7 +68,6 @@ public final class Cabecera {
         avatarErht.setMinWidth(Region.USE_PREF_SIZE);
         Tooltip.install(avatarErht, new Tooltip(u.nombreVisible() + " · " + u.rolVisible()));
 
-        // Encabezado del menú: nombre y rol (no se puede elegir)
         Label nombreErht = new Label(u.nombreVisible());
         nombreErht.getStyleClass().add("menu-usuario-nombre");
         Label rolErht = new Label(UtilidadesInterfaz.espaciado(u.rolVisible()) + "  ·  @" + u.nombreUsuario());
@@ -102,7 +99,6 @@ public final class Cabecera {
         return avatarErht;
     }
 
-    /** Botón visible "Cerrar sesión" para la barra superior. */
     public static javafx.scene.control.Button botonCerrarSesion(Runnable alCerrarSesion) {
         javafx.scene.control.Button b = new javafx.scene.control.Button(null, UtilidadesInterfaz.icono(Feather.LOG_OUT));
         b.getStyleClass().add("boton-salir");

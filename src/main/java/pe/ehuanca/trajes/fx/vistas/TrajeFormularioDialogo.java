@@ -38,7 +38,6 @@ public class TrajeFormularioDialogo {
         this.idTrajeErht = idTraje;
     }
 
-    /** Muestra el formulario; devuelve el id del traje guardado o null si se canceló. */
     public Integer mostrar() {
         UtilidadesInterfaz.ejecutar(this::abrirErht);
         return guardadoErht;

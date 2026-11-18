@@ -19,7 +19,6 @@ public record Usuario(int idUsuario, String nombreUsuario, String rol, Integer i
         return CLIENTE.equals(rol);
     }
 
-    /** Nombre para mostrar: el del cliente si lo hay, si no el usuario. */
     public String nombreVisible() {
         return nombreCliente != null && !nombreCliente.isBlank() ? nombreCliente : nombreUsuario;
     }

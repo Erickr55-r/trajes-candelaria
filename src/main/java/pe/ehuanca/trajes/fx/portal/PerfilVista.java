@@ -30,11 +30,10 @@ public class PerfilVista extends VBox {
 
     public PerfilVista(Servicios s, VistaPortalCliente portal) {
         getStyleClass().add("contenido");
-        int idClienteErht = Sesion.actual().idCliente();   // solo sus propios datos
+        int idClienteErht = Sesion.actual().idCliente();
         Usuario u = Sesion.actual().usuario();
         Cliente c = s.clientes().buscar(idClienteErht);
 
-        // ---------------- datos
         TextField documentoErht = UtilidadesInterfaz.campo(c.tipoDocumento() + " " + c.numeroDocumento(), "");
         documentoErht.setEditable(false);
         documentoErht.getStyleClass().add("campo-bloqueado");
@@ -77,7 +76,6 @@ public class PerfilVista extends VBox {
         datosErht.getStyleClass().add("tarjeta-blanca");
         HBox.setHgrow(datosErht, Priority.ALWAYS);
 
-        // ---------------- contraseña
         PasswordField actualErht = new PasswordField();
         PasswordField nuevaErht = new PasswordField();
         PasswordField repetirErht = new PasswordField();

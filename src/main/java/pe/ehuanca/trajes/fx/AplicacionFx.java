@@ -44,7 +44,6 @@ public class AplicacionFx extends Application {
             contextoErht = new SpringApplicationBuilder(AplicacionAlquilerTrajes.class)
                     .web(WebApplicationType.NONE)
                     .run(getParameters().getRaw().toArray(new String[0]));
-            // Prueba la conexión (y que exista la tabla) antes de abrir la ventana.
             contextoErht.getBean(JdbcTemplate.class).queryForObject("SELECT COUNT(*) FROM traje", Long.class);
         } catch (Exception e) {
             errorInicioErht = e;
@@ -85,14 +84,12 @@ public class AplicacionFx extends Application {
         escenario.show();
     }
 
-    /** Pantalla de inicio de sesión (también al cerrar sesión). */
     public void mostrarInicioSesion() {
         Sesion.actual().cerrar();
         escenaErht.setRoot(new VistaInicioSesion(serviciosErht, this::ingresar));
         escenarioErht.setTitle("Trajes Candelaria · Iniciar sesión");
     }
 
-    /** Guarda la sesión y abre la pantalla de su rol: CLIENTE → portal; ADMIN o VENDEDOR → panel de la tienda. */
     public void ingresar(Usuario u) {
         Sesion.actual().iniciar(u);
         Parent raizErht = u.esCliente()

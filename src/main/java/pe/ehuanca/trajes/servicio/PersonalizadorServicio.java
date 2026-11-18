@@ -38,7 +38,6 @@ public class PersonalizadorServicio {
     public static final List<String> ESTADOS = List.of("PENDIENTE", "COTIZADO", "APROBADO", "EN_CONFECCION",
             "LISTO", "ENTREGADO", "CANCELADO");
     public static final List<String> TIPOS = List.of("CONFECCION", "ALQUILER");
-    /** Mismo factor que el trigger: un ALQUILER paga el 30% del costo de confección. */
     public static final BigDecimal FACTOR_ALQUILER = new BigDecimal("0.30");
 
     private final JdbcTemplate jdbcErht;
@@ -64,9 +63,6 @@ public class PersonalizadorServicio {
             rs.getBigDecimal("adelanto"), rs.getBigDecimal("saldo"), rs.getString("observacion"),
             rs.getBigDecimal("precio_estimado"));
 
-    // ------------------------------------------------------------------ catálogos
-
-    /** Danzas que tienen partes configuradas en el personalizador. */
     public List<Opcion> danzas() {
         return jdbcErht.query("""
                 SELECT d.id_danza AS id, d.nombre
@@ -77,7 +73,6 @@ public class PersonalizadorServicio {
     }
 
     public List<ParteTraje> partesDe(int idDanza) {
-        // De la cabeza a los pies, como se ven en el maniquí
         return jdbcErht.query("""
                 SELECT * FROM parte_traje
                 WHERE id_danza = ?
@@ -95,15 +90,6 @@ public class PersonalizadorServicio {
         return jdbcErht.query("SELECT * FROM implemento ORDER BY nombre", IMPLEMENTO);
     }
 
-    // ------------------------------------------------------------------ pedidos
-
-    /**
-     * Registra un pedido con el color de cada parte y sus implementos. Si algo falla
-     * (por ejemplo, una parte de otra danza o un adelanto mayor al total), se deshace todo.
-     *
-     * @param partes       id de parte → id de color
-     * @param implementos  id de implemento → cantidad
-     */
     @Transactional
     public int crearPedido(int idCliente, int idDanza, String talla, String tipo, LocalDate fechaEntrega,
                            Map<Integer, Integer> partes, Map<Integer, Integer> implementos,
@@ -162,11 +148,6 @@ public class PersonalizadorServicio {
         return jdbcErht.query(sqlErht.toString(), RESUMEN, parametrosErht.toArray());
     }
 
-    /**
-     * La tienda cotiza un pedido PENDIENTE: fija el precio final (puede ser distinto del calculado por las
-     * partes) y lo pasa a COTIZADO para que el cliente lo apruebe. El trigger solo recalcula el monto cuando
-     * cambian las partes o los implementos, y estos ya no se tocan después de crear el pedido.
-     */
     public void cotizar(int idPedido, BigDecimal precio) {
         if (precio == null || precio.signum() <= 0) {
             throw new ExcepcionReglaNegocio("Escribe un precio mayor que cero.");
@@ -185,13 +166,11 @@ public class PersonalizadorServicio {
         }
     }
 
-    /** Guarda la imagen PNG del diseño, solo si el pedido es del cliente. */
     public void guardarImagen(int idPedido, int idCliente, byte[] png) {
         jdbcErht.update("UPDATE pedido_personalizado SET imagen_diseno = ? WHERE id_pedido = ? AND id_cliente = ?",
                 png, idPedido, idCliente);
     }
 
-    /** Imagen del diseño de un pedido del cliente (null si no tiene). */
     public byte[] imagenDiseno(int idPedido, int idCliente) {
         List<byte[]> l = jdbcErht.query(
                 "SELECT imagen_diseno FROM pedido_personalizado WHERE id_pedido = ? AND id_cliente = ?",
@@ -199,7 +178,6 @@ public class PersonalizadorServicio {
         return l.isEmpty() ? null : l.get(0);
     }
 
-    /** El cliente acepta el precio cotizado: COTIZADO → APROBADO. */
     public void aprobarCotizacion(int idPedido, int idCliente) {
         int n = jdbcErht.update("""
                 UPDATE pedido_personalizado SET estado = 'APROBADO'
@@ -210,7 +188,6 @@ public class PersonalizadorServicio {
         }
     }
 
-    /** El cliente no acepta el precio: el pedido queda CANCELADO. */
     public void rechazarCotizacion(int idPedido, int idCliente) {
         int n = jdbcErht.update("""
                 UPDATE pedido_personalizado
@@ -223,11 +200,6 @@ public class PersonalizadorServicio {
         }
     }
 
-    /**
-     * Pedido hecho con el personalizador por capas: cada prenda guarda su color exacto (hex) y, si es de la
-     * paleta, también su id_color. El trigger calcula monto_total con la misma fórmula que el portal muestra
-     * como estimado, y ese valor queda guardado en precio_estimado (la cotización cambia monto_total).
-     */
     @Transactional
     public int crearPedidoDiseno(int idCliente, int idDanza, String talla, String tipo, LocalDate fechaEntrega,
                                  List<pe.ehuanca.trajes.modelo.ParteElegida> partes, Map<Integer, Integer> implementos,
@@ -263,27 +235,23 @@ public class PersonalizadorServicio {
         return idPedidoErht;
     }
 
-    /** Guarda dónde quedó el PNG del diseño (carpeta disenos/). */
     public void guardarRutaImagen(int idPedido, int idCliente, String ruta) {
         jdbcErht.update("UPDATE pedido_personalizado SET imagen_ruta = ? WHERE id_pedido = ? AND id_cliente = ?",
                 ruta, idPedido, idCliente);
     }
 
-    /** Imagen del diseño para la tienda (sin filtrar por cliente: solo la usa el panel del vendedor). */
     public byte[] imagenDisenoTienda(int idPedido) {
         List<byte[]> l = jdbcErht.query("SELECT imagen_diseno FROM pedido_personalizado WHERE id_pedido = ?",
                 (rs, i) -> rs.getBytes(1), idPedido);
         return l.isEmpty() ? null : l.get(0);
     }
 
-    /** Pedidos de diseño que esperan cotización (insignia del panel). */
     public int contarPendientes() {
         Integer n = jdbcErht.queryForObject("SELECT COUNT(*) FROM pedido_personalizado WHERE estado = 'PENDIENTE'",
                 Integer.class);
         return n == null ? 0 : n;
     }
 
-    /** Pedidos de un cliente (portal del cliente). */
     public List<PedidoResumen> pedidosDelCliente(int idCliente) {
         return jdbcErht.query("SELECT * FROM v_pedidos_resumen WHERE id_cliente = ? ORDER BY fecha_pedido DESC, id_pedido DESC",
                 RESUMEN, idCliente);
@@ -323,7 +291,6 @@ public class PersonalizadorServicio {
         return new PedidoDetalle(resumenErht, partesErht, implementosErht);
     }
 
-    /** Estado que sigue en el flujo PENDIENTE → COTIZADO → APROBADO → EN_CONFECCION → LISTO → ENTREGADO. */
     public static String siguienteEstado(String estado) {
         return switch (estado) {
             case "PENDIENTE" -> "COTIZADO";
@@ -335,7 +302,6 @@ public class PersonalizadorServicio {
         };
     }
 
-    /** Avanza al siguiente estado o cancela. Para entregar, el pedido debe estar pagado. */
     @Transactional
     public void cambiarEstado(int idPedido, String estado) {
         PedidoResumen p = buscarPedido(idPedido);
@@ -353,7 +319,6 @@ public class PersonalizadorServicio {
         jdbcErht.update("UPDATE pedido_personalizado SET estado = ? WHERE id_pedido = ?", estado, idPedido);
     }
 
-    /** Suma un pago al adelanto del pedido (sin pasar del total). */
     @Transactional
     public void registrarAdelanto(int idPedido, BigDecimal monto) {
         if (monto == null || monto.signum() <= 0) {

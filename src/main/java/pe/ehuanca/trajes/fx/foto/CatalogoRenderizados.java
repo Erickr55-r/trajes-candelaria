@@ -26,13 +26,11 @@ import java.util.TreeMap;
  */
 public final class CatalogoRenderizados {
 
-    /** Orden en que se recorren los ángulos con las flechas ◀ ▶ (los demás van después, por nombre). */
     private static final List<String> ORDEN_ANGULOS = List.of("frente", "perfil", "espalda");
 
     private CatalogoRenderizados() {
     }
 
-    /** carpeta de danza → ángulos disponibles (en orden), p. ej. "caporal" → [frente, perfil, espalda]. */
     public static Map<String, List<String>> danzas() {
         Resource[] basesErht;
         try {
@@ -69,7 +67,6 @@ public final class CatalogoRenderizados {
         return ordenadoErht;
     }
 
-    /** Carpeta de render que corresponde a una danza de la base ("Caporales" ↔ render/caporal). */
     public static String carpetaDe(String danza, Map<String, List<String>> disponibles) {
         String d = clave(danza);
         for (String carpetaErht : disponibles.keySet()) {
@@ -81,7 +78,6 @@ public final class CatalogoRenderizados {
         return null;
     }
 
-    /** "Pantalón" → "pantalon"; sin tildes, en minúsculas y sin espacios. */
     public static String clave(String texto) {
         if (texto == null) {
             return "";

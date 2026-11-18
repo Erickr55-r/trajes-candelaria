@@ -69,17 +69,14 @@ import java.util.Map;
  */
 public class DisenaTuTrajeVista extends HBox {
 
-    /** Igual que el trigger fn_recalcular_pedido: ALQUILER paga el 30% del costo de confección. */
     private static final BigDecimal FACTOR_ALQUILER = PersonalizadorServicio.FACTOR_ALQUILER;
     private static final Path CARPETA_DISENOS = Path.of(System.getProperty("user.dir"), "disenos");
 
-    /** Fondo de estudio para la imagen que se guarda (en pantalla lo pone el CSS .estudio). */
     private static final Background FONDO_ESTUDIO = new Background(new BackgroundFill(
             new RadialGradient(0, 0, 0.5, 0.42, 0.75, true, CycleMethod.NO_CYCLE,
                     new Stop(0, Color.web("#5A2A34")), new Stop(0.55, Color.web("#2B0F15")), new Stop(1, Color.web("#12070A"))),
             null, null));
 
-    /** Color elegido para una prenda: de la paleta (con id) o libre (ColorPicker). */
     private record ColorElegido(Color color, Integer idColor, String nombre) {
         String colorHex() {
             return String.format("#%02X%02X%02X", Math.round(color.getRed() * 255), Math.round(color.getGreen() * 255),
@@ -93,19 +90,16 @@ public class DisenaTuTrajeVista extends HBox {
     private final List<ColorTraje> paletaErht;
     private final List<Implemento> implementosErht;
 
-    // estado del diseño
     private Opcion danzaErht;
     private final Map<String, RenderizadoCapas> angulosErht = new LinkedHashMap<>();
     private List<String> nombresAngulosErht = List.of();
     private int anguloErht;
-    /** clave de prenda ("pantalon") → parte_traje de la danza (null si la tienda no la cobra). */
     private final Map<String, ParteTraje> partePorPrendaErht = new LinkedHashMap<>();
     private final Map<String, String> nombrePrendaErht = new LinkedHashMap<>();
     private final Map<String, ColorElegido> coloresErht = new LinkedHashMap<>();
     private String prendaActualErht;
     private final Map<Integer, CheckBox> marcasImplementosErht = new LinkedHashMap<>();
 
-    // nodos
     private final StackPane escenarioErht = new StackPane();
     private final StackPane capasErht = new StackPane();
     private final Label lAnguloErht = new Label();
@@ -153,7 +147,6 @@ public class DisenaTuTrajeVista extends HBox {
                 elegirColorErht(new ColorElegido(b, null, "Personalizado"));
             }
         });
-        // primera danza con render
         Opcion primeraErht = null;
         for (Node n : opcionesDanzaErht.getChildren()) {
             if (!n.isDisabled()) {
@@ -169,8 +162,6 @@ public class DisenaTuTrajeVista extends HBox {
             avisoErht.setVisible(true);
         }
     }
-
-    // ------------------------------------------------------------------ estudio (foto grande)
 
     private StackPane estudioErht() {
         escenarioErht.getStyleClass().add("estudio");
@@ -212,7 +203,6 @@ public class DisenaTuTrajeVista extends HBox {
         String a = nombresAngulosErht.get(anguloErht);
         lAnguloErht.setText(a.substring(0, 1).toUpperCase(Locale.ROOT) + a.substring(1)
                 + (variosErht ? "  ·  " + (anguloErht + 1) + " de " + nombresAngulosErht.size() : ""));
-        // render sin transparencia: se avisa (se teñiría el cuadro entero)
         boolean opacoErht = r.prendas().stream().anyMatch(p -> p.fraccionTransparente() < 0.05);
         avisoErht.setText("Vista previa aproximada: este render aún no tiene fondo transparente.");
         avisoErht.setVisible(opacoErht);
@@ -233,8 +223,6 @@ public class DisenaTuTrajeVista extends HBox {
         anguloErht = Math.floorMod(anguloErht + paso, nombresAngulosErht.size());
         mostrarAnguloErht();
     }
-
-    // ------------------------------------------------------------------ pasos
 
     private VBox tarjetaPasosErht() {
         for (Opcion d : sErht.trajes().danzas()) {
@@ -258,7 +246,6 @@ public class DisenaTuTrajeVista extends HBox {
             opcionesDanzaErht.getChildren().add(b);
         }
 
-        // paleta de la tabla color
         for (ColorTraje c : paletaErht) {
             Circle circErht = new Circle(15, Color.web(c.colorHex()));
             circErht.getStyleClass().add("circulo-color");
@@ -278,7 +265,6 @@ public class DisenaTuTrajeVista extends HBox {
         lColorErht.setWrapText(true);
         VBox lineaSelectorErht = new VBox(8, filaSelectorErht, lColorErht);
 
-        // implementos
         VBox cajaImplementosErht = new VBox(8);
         for (Implemento impErht : implementosErht) {
             int n = cantidadSugeridaErht(impErht.nombre());
@@ -296,7 +282,6 @@ public class DisenaTuTrajeVista extends HBox {
             marcasImplementosErht.put(impErht.idImplemento(), cb);
         }
 
-        // modalidad, talla y entrega
         ToggleButton confeccionErht = tarjetaModalidadErht("CONFECCION", "Confeccionar", "El traje es tuyo", Feather.SCISSORS);
         ToggleButton alquilarErht = tarjetaModalidadErht("ALQUILER", "Alquilar", "30% del costo de confección", Feather.REPEAT);
         confeccionErht.setSelected(true);
@@ -327,11 +312,9 @@ public class DisenaTuTrajeVista extends HBox {
             }
         });
         entregaErht.setPrefWidth(170);
-        // talla y entrega una debajo de la otra: así las 5 tallas caben sin recortarse
         VBox tallaEntregaErht = new VBox(12, new VBox(6, UtilidadesInterfaz.etiqueta("TALLA"), cajaTallasErht),
                 new VBox(6, UtilidadesInterfaz.etiqueta("ENTREGA"), entregaErht));
 
-        // resumen
         Label tituloResumenErht = new Label("Precio estimado");
         tituloResumenErht.getStyleClass().add("resumen-titulo");
         totalErht.getStyleClass().add("resumen-total");
@@ -386,8 +369,6 @@ public class DisenaTuTrajeVista extends HBox {
         return v;
     }
 
-    // ------------------------------------------------------------------ lógica
-
     private void elegirDanzaErht(Opcion d) {
         String carpetaErht = CatalogoRenderizados.carpetaDe(d.nombre(), rendersErht);
         if (carpetaErht == null) {
@@ -401,7 +382,6 @@ public class DisenaTuTrajeVista extends HBox {
         nombresAngulosErht = List.copyOf(angulosErht.keySet());
         anguloErht = 0;
 
-        // prendas del primer ángulo ↔ partes de la danza (por nombre, sin tildes)
         partePorPrendaErht.clear();
         nombrePrendaErht.clear();
         coloresErht.clear();
@@ -454,7 +434,6 @@ public class DisenaTuTrajeVista extends HBox {
         recalcularErht();
     }
 
-    /** Teñido de capas: aplica el color elegido a la prenda en todos los ángulos (así al girar se ve igual). */
     private void tenirPrendaErht(String clave) {
         Color c = coloresErht.get(clave).color();
         for (RenderizadoCapas r : angulosErht.values()) {
@@ -488,7 +467,6 @@ public class DisenaTuTrajeVista extends HBox {
         return modalidadErht.getSelectedToggle() == null ? "CONFECCION" : (String) modalidadErht.getSelectedToggle().getUserData();
     }
 
-    /** Misma fórmula que el trigger fn_recalcular_pedido. */
     private void recalcularErht() {
         lineasResumenErht.getChildren().clear();
         BigDecimal partesErht = BigDecimal.ZERO;
@@ -552,7 +530,6 @@ public class DisenaTuTrajeVista extends HBox {
         int id = sErht.personalizador().crearPedidoDiseno(idClienteErht, danzaErht.id(), tallaErht, tipoErht(), entregaErht.getValue(),
                 partesErht, cantidadesImplementosErht, null);
 
-        // imagen final: el ángulo que se está viendo, a la resolución del render
         byte[] pngErht = UtilidadesInterfaz.aBytesPng(componerErht());
         sErht.personalizador().guardarImagen(id, idClienteErht, pngErht);
         try {
@@ -561,7 +538,6 @@ public class DisenaTuTrajeVista extends HBox {
             Files.write(archivoErht, pngErht);
             sErht.personalizador().guardarRutaImagen(id, idClienteErht, "disenos/" + archivoErht.getFileName());
         } catch (IOException e) {
-            // la imagen ya quedó en la base; la copia en disco es un respaldo
         }
         portalErht.confirmar("¡Diseño enviado!",
                 "Tu diseño N° " + id + " llegó a la tienda con un precio estimado de " + totalErht.getText()

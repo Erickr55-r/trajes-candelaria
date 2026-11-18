@@ -49,7 +49,6 @@ public class AlquilerDetalleDialogo {
         this.idAlquilerErht = idAlquiler;
     }
 
-    /** Abre el diálogo y espera a que se cierre. */
     public void mostrar() {
         if (!UtilidadesInterfaz.ejecutar(this::cargarErht)) {
             return;
@@ -115,9 +114,6 @@ public class AlquilerDetalleDialogo {
         return cajaErht;
     }
 
-    // ------------------------------------------------------------------ acciones
-
-    /** Solicitud hecha por el cliente desde su portal: la tienda la aprueba o la rechaza con un motivo. */
     private VBox accionesSolicitudErht(AlquilerResumen a) {
         Button aprobarErht = UtilidadesInterfaz.estilo(new Button("Aprobar solicitud"), "boton-primario");
         aprobarErht.setOnAction(e -> {
@@ -262,7 +258,6 @@ public class AlquilerDetalleDialogo {
                 filaErht, rejillaErht, botonErht);
     }
 
-    /** Ejecuta una acción, recarga el diálogo y muestra el mensaje de éxito. */
     private void hacerErht(UtilidadesInterfaz.Accion accion, String exito) {
         if (UtilidadesInterfaz.ejecutar(() -> {
             accion.ejecutar();
@@ -271,8 +266,6 @@ public class AlquilerDetalleDialogo {
             UtilidadesInterfaz.mostrarInformacion(exito);
         }
     }
-
-    // ------------------------------------------------------------------ tablas
 
     private TableView<AlquilerDetalleTraje> tablaTrajesErht(List<AlquilerDetalleTraje> trajes) {
         TableView<AlquilerDetalleTraje> t = UtilidadesInterfaz.tabla("Sin trajes.");

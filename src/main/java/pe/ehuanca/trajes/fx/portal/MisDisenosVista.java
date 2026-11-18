@@ -47,7 +47,7 @@ public class MisDisenosVista extends VBox {
         this.sErht = s;
         this.portalErht = portal;
         getStyleClass().add("contenido");
-        int idClienteErht = Sesion.actual().idCliente();   // solo los diseños de este cliente
+        int idClienteErht = Sesion.actual().idCliente();
 
         Button nuevoErht = UtilidadesInterfaz.estilo(new Button("Diseñar un traje", UtilidadesInterfaz.icono(Feather.SCISSORS)), "boton-primario");
         nuevoErht.setOnAction(e -> portal.ir(VistaPortalCliente.DISENIO));
@@ -120,7 +120,6 @@ public class MisDisenosVista extends VBox {
 
         Region sepErht = new Region();
         sepErht.getStyleClass().add("traje-separador");
-        // Precio estimado (al enviar el diseño) y, cuando la tienda cotiza, el precio final.
         BigDecimal estimadoErht = p.precioEstimado() == null ? p.montoTotal() : p.precioEstimado();
         boolean cotizadoErht = !List.of("PENDIENTE", "CANCELADO").contains(p.estado());
         Label lEstimadoErht = new Label("Precio estimado  " + UtilidadesInterfaz.soles(estimadoErht));

@@ -92,15 +92,12 @@ public class TrajeDetalleDialogo {
         raizErht.setBottom(pieErht);
     }
 
-    /** Ejecuta una acción y recarga el diálogo. */
     private void hacerErht(UtilidadesInterfaz.Accion accion) {
         UtilidadesInterfaz.ejecutar(() -> {
             accion.ejecutar();
             cargarErht();
         });
     }
-
-    // ------------------------------------------------------------------ piezas
 
     private VBox piezasErht() {
         TableView<PiezaFila> tablaErht = UtilidadesInterfaz.tabla("Este traje no tiene piezas registradas.");
@@ -138,8 +135,6 @@ public class TrajeDetalleDialogo {
         HBox accionesErht = new HBox(quitarErht);
         return new VBox(10, tablaErht, accionesErht, UtilidadesInterfaz.seccion("Agregar pieza"), formularioErht);
     }
-
-    // ------------------------------------------------------------------ estado
 
     private VBox estadoErht(Traje t) {
         VBox accionesErht = new VBox(10);
@@ -196,8 +191,6 @@ public class TrajeDetalleDialogo {
 
         return new VBox(12, UtilidadesInterfaz.panel(accionesErht), UtilidadesInterfaz.seccion("Historial de mantenimiento"), tablaErht);
     }
-
-    // ------------------------------------------------------------------ historial
 
     private VBox historialErht() {
         TableView<HistorialTraje> tablaErht = UtilidadesInterfaz.tabla("Este traje todavía no se ha alquilado.");

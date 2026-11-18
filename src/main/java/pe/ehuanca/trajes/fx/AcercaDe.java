@@ -36,9 +36,7 @@ import java.util.Properties;
  */
 public final class AcercaDe {
 
-    /** Correo de contacto del autor. */
     public static final String CONTACTO = "erickrhuanca@gmail.com";
-    /** Línea corta de derechos para el pie del inicio de sesión. */
     public static final String PIE_DERECHOS = "© 2026 Erick R. Huanca Tiña · v1.0";
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -46,7 +44,6 @@ public final class AcercaDe {
     private AcercaDe() {
     }
 
-    /** Abre la ventana «Acerca de» (modal). */
     public static void mostrar() {
         Properties datosErht = leerDatosErht();
 
@@ -83,7 +80,6 @@ public final class AcercaDe {
         ventanaErht.showAndWait();
     }
 
-    /** Muestra el contenido de TERCEROS.md en una ventana de solo lectura. */
     private static void mostrarTercerosErht() {
         TextArea textoErht = new TextArea(leerTerceros());
         textoErht.setEditable(false);
@@ -108,15 +104,10 @@ public final class AcercaDe {
                 p.load(new java.io.InputStreamReader(in, StandardCharsets.UTF_8));
             }
         } catch (IOException ignorada) {
-            // Sin el archivo se muestran los valores por defecto.
         }
         return p;
     }
 
-    /**
-     * Fecha de compilación en la hora local. Si el programa no se compiló con Maven (el valor sigue con @),
-     * se usa la fecha de modificación de esta clase compilada.
-     */
     static String fechaCompilacion(String valor) {
         try {
             if (!valor.isBlank() && !valor.startsWith("@")) {
@@ -130,12 +121,10 @@ public final class AcercaDe {
                 }
             }
         } catch (Exception ignorada) {
-            // Se devuelve el texto por defecto.
         }
         return "(fecha no disponible)";
     }
 
-    /** TERCEROS.md: primero el copiado al compilar (carpeta legal del classpath), si no el de la carpeta del proyecto. */
     static String leerTerceros() {
         try (InputStream in = AcercaDe.class.getResourceAsStream("/legal/TERCEROS.md")) {
             if (in != null) {
@@ -146,7 +135,6 @@ public final class AcercaDe {
                 return Files.readString(archivoErht, StandardCharsets.UTF_8);
             }
         } catch (IOException ignorada) {
-            // Se muestra el aviso de abajo.
         }
         return "No se encontró el archivo TERCEROS.md. Consulte el repositorio del programa.";
     }

@@ -62,7 +62,6 @@ public class VistaPanelVendedor extends BorderPane {
     public static final String REPORTES = "Reportes";
     public static final String USUARIOS = "Usuarios";
 
-    /** Pantallas que solo ve el ADMIN. */
     private static final List<String> SOLO_ADMIN = List.of(REPORTES, USUARIOS);
 
     private final Servicios serviciosErht;
@@ -70,7 +69,6 @@ public class VistaPanelVendedor extends BorderPane {
     private final boolean adminErht;
     private final Map<String, Button> botonesErht = new LinkedHashMap<>();
     private final Label insigniaErht = new Label();
-    /** Pedidos de diseño PENDIENTES (por cotizar). */
     private final Label insigniaPedidosErht = new Label();
     private final ScrollPane areaErht = new ScrollPane();
     private final Timeline refrescoErht;
@@ -85,7 +83,6 @@ public class VistaPanelVendedor extends BorderPane {
         setLeft(barraLateralErht());
         setCenter(areaErht);
 
-        // La insignia de Solicitudes se actualiza sola cada minuto (los clientes piden desde su portal).
         refrescoErht = new Timeline(new KeyFrame(Duration.seconds(60), e -> actualizarInsignia()));
         refrescoErht.setCycleCount(Timeline.INDEFINITE);
         refrescoErht.play();
@@ -96,8 +93,6 @@ public class VistaPanelVendedor extends BorderPane {
         });
         mostrar(INICIO);
     }
-
-    // ------------------------------------------------------------------ barra lateral
 
     private Node barraLateralErht() {
         Button nuevaErht = UtilidadesInterfaz.estilo(new Button("Nueva reserva", UtilidadesInterfaz.icono(Feather.PLUS)), "boton-primario");
@@ -153,7 +148,6 @@ public class VistaPanelVendedor extends BorderPane {
         b.setMaxWidth(Double.MAX_VALUE);
         b.setAlignment(Pos.CENTER_LEFT);
         b.setOnAction(e -> mostrar(pantalla));
-        // Animación suave: el ítem se desliza unos píxeles al pasar el mouse.
         TranslateTransition t = new TranslateTransition(Duration.millis(150), b);
         b.hoverProperty().addListener((o, antes, encima) -> {
             t.stop();
@@ -175,7 +169,6 @@ public class VistaPanelVendedor extends BorderPane {
         }
     }
 
-    /** Usuario de la sesión abajo: avatar (menú Tema / Cerrar sesión / Salir), nombre, rol y botón de salida. */
     private HBox tarjetaUsuarioErht() {
         Usuario u = Sesion.actual().usuario();
         Label nombreErht = new Label(u.nombreVisible());
@@ -191,7 +184,6 @@ public class VistaPanelVendedor extends BorderPane {
         return cajaErht;
     }
 
-    /** Insignias rojas: solicitudes por aprobar y pedidos de diseño por cotizar (ocultas si no hay). */
     public void actualizarInsignia() {
         pintarErht(insigniaErht, () -> serviciosErht.alquileres().contarSolicitudes());
         pintarErht(insigniaPedidosErht, () -> serviciosErht.personalizador().contarPendientes());
@@ -202,15 +194,12 @@ public class VistaPanelVendedor extends BorderPane {
         try {
             n = contar.getAsInt();
         } catch (RuntimeException e) {
-            n = 0;   // sin conexión: no se muestra la insignia
+            n = 0;
         }
         insigniaOpcion.setText(n > 99 ? "99+" : String.valueOf(n));
         insigniaOpcion.setVisible(n > 0);
     }
 
-    // ------------------------------------------------------------------ navegación
-
-    /** Cambia la pantalla (se crea de nuevo para que muestre datos actualizados). */
     public void mostrar(String pantalla) {
         if (SOLO_ADMIN.contains(pantalla) && !adminErht) {
             UtilidadesInterfaz.mostrarError("Esta opción solo está disponible para el administrador.");
@@ -232,7 +221,6 @@ public class VistaPanelVendedor extends BorderPane {
         });
     }
 
-    /** Abre Nueva reserva con las fechas, el conjunto y el traje ya puestos. */
     public void reservar(int idTraje, LocalDate desde, LocalDate hasta, Opcion conjunto, String observacion) {
         cambiarErht(NUEVA_RESERVA, () -> {
             NuevaReservaVista v = new NuevaReservaVista(serviciosErht, this);

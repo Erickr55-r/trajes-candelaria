@@ -34,7 +34,6 @@ import static pe.ehuanca.trajes.servicio.TrajeServicio.vacioANulo;
 @Service
 public class AlquilerServicio {
 
-    /** Descuento por conjunto: se cobra el 90% del precio (10% menos) a conjuntos que alquilan 5 trajes o más. */
     private static final BigDecimal DESCUENTO_CONJUNTO = new BigDecimal("0.90");
 
     private final JdbcTemplate jdbcErht;
@@ -49,8 +48,6 @@ public class AlquilerServicio {
             Filas.fecha(rs, "fecha_devolucion_real"), rs.getString("cliente"), rs.getString("conjunto"),
             rs.getLong("num_trajes"), rs.getBigDecimal("monto_alquiler"), rs.getBigDecimal("monto_garantia"),
             rs.getBigDecimal("monto_danios"), rs.getBigDecimal("pagado_alquiler"), rs.getString("observacion"));
-
-    // ------------------------------------------------------------------ consultas
 
     public Resumen resumen() {
         return jdbcErht.queryForObject("""
@@ -84,7 +81,6 @@ public class AlquilerServicio {
         return jdbcErht.query(sqlErht.toString(), RESUMEN, parametrosErht.toArray());
     }
 
-    /** Alquileres que salen o deben volver en los próximos días (pantalla de inicio). */
     public List<AlquilerResumen> proximosMovimientos() {
         return jdbcErht.query("""
                 SELECT * FROM v_alquileres_resumen
@@ -147,7 +143,6 @@ public class AlquilerServicio {
                 rs.getString("descripcion"), rs.getBigDecimal("monto_cobro")), idAlquiler);
     }
 
-    /** Piezas de los trajes de un alquiler, para marcar daños al devolver. */
     public List<PiezaAlquiler> piezasDelAlquiler(int idAlquiler) {
         return jdbcErht.query("""
                 SELECT p.id_pieza,
@@ -163,11 +158,6 @@ public class AlquilerServicio {
                 rs.getBigDecimal("valor_reposicion")), idAlquiler);
     }
 
-    /**
-     * Trajes libres entre dos fechas (misma lógica que fn_trajes_disponibles).
-     * Disponibilidad: el traje debe estar DISPONIBLE y ninguna reserva activa (SOLICITADO, RESERVADO o
-     * ENTREGADO) puede cruzarse con el rango; dos rangos se cruzan si salida ≤ hasta y devolución ≥ desde.
-     */
     public List<TrajeDisponible> disponibles(LocalDate desde, LocalDate hasta, Integer idDanza, String talla) {
         StringBuilder sqlErht = new StringBuilder("""
                 SELECT t.id_traje, t.codigo, d.nombre AS danza, t.personaje, t.genero, t.talla, t.color,
@@ -199,13 +189,11 @@ public class AlquilerServicio {
                 rs.getBigDecimal("garantia")), parametrosErht.toArray());
     }
 
-    /** Códigos de los trajes libres según la función fn_trajes_disponibles de la base de datos. */
     public List<String> codigosDisponibles(LocalDate desde, LocalDate hasta, String danza) {
         return jdbcErht.queryForList("SELECT codigo FROM fn_trajes_disponibles(?::date, ?::date, ?::varchar)",
                 String.class, desde, hasta, vacioANulo(danza));
     }
 
-    /** Alquileres solicitados, reservados o entregados (aún no devueltos) de cada traje, para saber cuándo queda libre. */
     public List<Ocupacion> ocupaciones() {
         return jdbcErht.query("""
                 SELECT da.id_traje, a.fecha_salida, a.fecha_devolucion_prevista, a.estado
@@ -217,32 +205,18 @@ public class AlquilerServicio {
                 rs.getDate("fecha_devolucion_prevista").toLocalDate(), rs.getString("estado")));
     }
 
-    // ------------------------------------------------------------------ operaciones
-
-    /**
-     * Registra una reserva con sus trajes. El trigger de la base de datos rechaza
-     * cualquier traje que ya esté ocupado en esas fechas; si eso pasa, se deshace todo.
-     */
     @Transactional
     public int crear(int idCliente, Integer idConjunto, LocalDate salida, LocalDate devolucion,
                      List<Integer> idTrajes, BigDecimal adelanto, String metodo, String observacion) {
         return crearConErht("RESERVADO", idCliente, idConjunto, salida, devolucion, idTrajes, adelanto, metodo, observacion);
     }
 
-    /**
-     * Solicitud hecha por el cliente desde su portal: queda SOLICITADO (los trajes ya quedan
-     * apartados para que nadie más los pida) hasta que la tienda la apruebe o la rechace.
-     */
     @Transactional
     public int solicitar(int idCliente, LocalDate salida, LocalDate devolucion, List<Integer> idTrajes,
                          String observacion) {
         return solicitar(idCliente, null, salida, devolucion, idTrajes, observacion);
     }
 
-    /**
-     * Igual que {@link #solicitar(int, LocalDate, LocalDate, List, String)} pero a nombre de un conjunto
-     * del que el cliente es delegado (así aplica el 10% desde 5 trajes, igual que en la tienda).
-     */
     @Transactional
     public int solicitar(int idCliente, Integer idConjunto, LocalDate salida, LocalDate devolucion,
                          List<Integer> idTrajes, String observacion) {
@@ -260,7 +234,6 @@ public class AlquilerServicio {
         return crearConErht("SOLICITADO", idCliente, idConjunto, salida, devolucion, idTrajes, null, null, observacion);
     }
 
-    /** Trajes de un alquiler, solo si el alquiler es del cliente indicado (portal del cliente). */
     public List<AlquilerDetalleTraje> trajesDelCliente(int idAlquiler, int idCliente) {
         Integer suyoErht = jdbcErht.queryForObject("SELECT COUNT(*) FROM alquiler WHERE id_alquiler = ? AND id_cliente = ?",
                 Integer.class, idAlquiler, idCliente);
@@ -270,7 +243,6 @@ public class AlquilerServicio {
         return trajes(idAlquiler);
     }
 
-    /** Solicitudes de clientes por aprobar, de la más antigua a la más reciente. */
     public List<pe.ehuanca.trajes.modelo.SolicitudFila> solicitudesPendientes() {
         return jdbcErht.query("""
                 SELECT a.id_alquiler, a.id_cliente, CONCAT_WS(' ', c.nombres, c.apellidos) AS cliente, c.telefono,
@@ -289,13 +261,11 @@ public class AlquilerServicio {
                 rs.getString("observacion"), rs.getTimestamp("creado_en").toLocalDateTime()));
     }
 
-    /** Número de solicitudes por aprobar (insignia del menú e indicador de Inicio). */
     public int contarSolicitudes() {
         Integer n = jdbcErht.queryForObject("SELECT COUNT(*) FROM alquiler WHERE estado = 'SOLICITADO'", Integer.class);
         return n == null ? 0 : n;
     }
 
-    /** La tienda aprueba la solicitud: pasa a RESERVADO. */
     public void aprobar(int idAlquiler) {
         int filasErht = jdbcErht.update("UPDATE alquiler SET estado = 'RESERVADO' WHERE id_alquiler = ? AND estado = 'SOLICITADO'",
                 idAlquiler);
@@ -304,7 +274,6 @@ public class AlquilerServicio {
         }
     }
 
-    /** La tienda rechaza la solicitud con un motivo (los trajes quedan libres). */
     public void rechazar(int idAlquiler, String motivo) {
         if (!tieneTexto(motivo)) {
             throw new ExcepcionReglaNegocio("Escribe el motivo del rechazo: el cliente lo verá en su portal.");
@@ -318,7 +287,6 @@ public class AlquilerServicio {
         }
     }
 
-    /** El cliente retira su propia solicitud mientras sigue pendiente. */
     public void cancelarSolicitud(int idAlquiler, int idCliente) {
         int filasErht = jdbcErht.update("""
                 UPDATE alquiler SET estado = 'ANULADO', observacion = COALESCE(observacion, 'Cancelada por el cliente')
@@ -329,7 +297,6 @@ public class AlquilerServicio {
         }
     }
 
-    /** Motivo de rechazo de cada alquiler rechazado del cliente. */
     public java.util.Map<Integer, String> motivosRechazo(int idCliente) {
         java.util.Map<Integer, String> m = new java.util.HashMap<>();
         jdbcErht.query("SELECT id_alquiler, motivo_rechazo FROM alquiler WHERE id_cliente = ? AND estado = 'RECHAZADO'",
@@ -345,10 +312,6 @@ public class AlquilerServicio {
         return l.isEmpty() ? null : l.get(0);
     }
 
-    /**
-     * Crea el alquiler con sus trajes. Los montos se guardan en detalle_alquiler copiando el precio y la
-     * garantía vigentes de cada traje; los triggers de la base suman los totales del alquiler.
-     */
     private int crearConErht(String estado, int idCliente, Integer idConjunto, LocalDate salida, LocalDate devolucion,
                          List<Integer> idTrajes, BigDecimal adelanto, String metodo, String observacion) {
         if (idTrajes == null || idTrajes.isEmpty()) {
@@ -363,8 +326,6 @@ public class AlquilerServicio {
                 RETURNING id_alquiler
                 """, Integer.class, idCliente, idConjunto, salida, devolucion, vacioANulo(observacion), estado);
 
-        // Descuento por conjunto: solo si el alquiler va a nombre de un conjunto y lleva 5 trajes o más.
-        // Se aplica al precio de cada traje (redondeado a 2 decimales); la garantía nunca tiene descuento.
         BigDecimal factorErht = (idConjunto != null && idTrajes.size() >= 5) ? DESCUENTO_CONJUNTO : BigDecimal.ONE;
         for (Integer idTrajeErht : idTrajes) {
             jdbcErht.update("""
@@ -390,7 +351,6 @@ public class AlquilerServicio {
                 """, idAlquiler, concepto, monto, metodo);
     }
 
-    /** Entrega los trajes: cobra el saldo pendiente y la garantía. */
     @Transactional
     public void entregar(int idAlquiler, String metodo) {
         AlquilerResumen a = buscar(idAlquiler);
@@ -406,14 +366,6 @@ public class AlquilerServicio {
         jdbcErht.update("UPDATE alquiler SET estado = 'ENTREGADO' WHERE id_alquiler = ?", idAlquiler);
     }
 
-    /**
-     * Registra la devolución: guarda los daños, cambia el estado de las piezas
-     * y liquida la garantía (devuelve la diferencia o cobra lo que falte).
-     *
-     * @param piezas  id de pieza de cada fila de daño (vacío = fila sin usar)
-     * @param tipos   LEVE, GRAVE o PERDIDA
-     * @param montos  monto a cobrar; si está vacío se calcula según el tipo
-     */
     @Transactional
     public BigDecimal devolver(int idAlquiler, LocalDate fechaReal, String[] piezas, String[] tipos,
                                String[] descripciones, String[] montos, String metodo) {
@@ -434,7 +386,6 @@ public class AlquilerServicio {
             int idPiezaErht = Integer.parseInt(piezas[k].trim());
             String tipoErht = valorErht(tipos, k, "LEVE");
             String descripcionErht = valorErht(descripciones, k, null);
-            // Daños: cada fila registra la pieza dañada, el tipo y el monto a cobrar.
             BigDecimal montoErht = montoDanioErht(idPiezaErht, tipoErht, valorErht(montos, k, null));
 
             Integer idDetalleErht = jdbcErht.queryForObject("""
@@ -447,7 +398,6 @@ public class AlquilerServicio {
                     INSERT INTO danio (id_detalle, id_pieza, tipo, descripcion, monto_cobro)
                     VALUES (?, ?, ?, ?, ?)
                     """, idDetalleErht, idPiezaErht, tipoErht, descripcionErht, montoErht);
-            // La pieza queda marcada según el daño: perdida, dañada (grave) o en estado regular (leve).
             String estadoPiezaErht = switch (tipoErht) {
                 case "PERDIDA" -> "PERDIDO";
                 case "GRAVE" -> "DANADO";
@@ -468,8 +418,6 @@ public class AlquilerServicio {
                 WHERE id_alquiler = ?
                 """, fechaReal, observacionErht, idAlquiler);
 
-        // Liquidación de la garantía: si los daños son menores se devuelve la diferencia al cliente;
-        // si la superan, se cobra lo que falta. Si son iguales no se registra ningún pago.
         BigDecimal diferenciaErht = a.montoGarantia().subtract(totalDaniosErht);
         if (diferenciaErht.signum() > 0) {
             registrarPago(idAlquiler, "DEVOLUCION_GARANTIA", diferenciaErht, metodo);
@@ -490,10 +438,6 @@ public class AlquilerServicio {
         }
     }
 
-    /**
-     * Monto del daño. Si no se escribe un monto, se cobra un porcentaje del valor de reposición de la pieza:
-     * 100% si se perdió, 35% si el daño es grave y 10% si es leve.
-     */
     private BigDecimal montoDanioErht(int idPieza, String tipo, String montoEscrito) {
         if (tieneTexto(montoEscrito)) {
             return new BigDecimal(montoEscrito.trim()).setScale(2, RoundingMode.HALF_UP);

@@ -1,30 +1,9 @@
 -- Trajes Candelaria v1.0 · © 2026 Erick Reison Huanca Tiña. Todos los derechos reservados. Uso, copia o distribución solo con autorización escrita del autor.
 
--- =====================================================================
--- INICIO DE SESIÓN CON ROLES + SOLICITUDES DE CLIENTES (PostgreSQL)
---
--- Migración para una base que YA tiene base_datos.sql y personalizador.sql.
--- No borra datos. Se puede ejecutar más de una vez.
--- (Las instalaciones nuevas ya traen estos cambios en base_datos.sql y
---  personalizador.sql; ahí no hace falta este archivo.)
---
---  1. alquiler: estados SOLICITADO y RECHAZADO + columna motivo_rechazo.
---  2. El trigger trg_validar_disponibilidad, fn_trajes_disponibles y la vista
---     v_trajes_estado cuentan SOLICITADO como ocupado.
---  3. pedido_personalizado: PENDIENTE, COTIZADO, APROBADO, EN_CONFECCION,
---     LISTO, ENTREGADO, CANCELADO (los ANULADO pasan a CANCELADO).
---  4. Tabla usuario (contraseñas BCrypt) y usuarios de prueba:
---       admin / admin123 (ADMIN) · vendedor / venta123 (VENDEDOR)
---       cliente / cliente123 (CLIENTE, vinculado al cliente con DNI 44268151)
---
--- Uso:  psql -U postgres -d alquiler_trajes -f login_roles.sql
--- =====================================================================
-
 SET client_encoding = 'UTF8';
 
 BEGIN;
 
--- ---------------------------------------------------------------- 1. alquiler
 DO $$
 DECLARE r RECORD;
 BEGIN
@@ -43,7 +22,6 @@ ALTER TABLE alquiler ADD CONSTRAINT alquiler_estado_check
 ALTER TABLE alquiler ADD CONSTRAINT alquiler_motivo_rechazo_check
     CHECK (estado <> 'RECHAZADO' OR motivo_rechazo IS NOT NULL);
 
--- ---------------------------------------------------------------- 2. disponibilidad
 CREATE OR REPLACE FUNCTION fn_validar_disponibilidad() RETURNS TRIGGER AS $$
 DECLARE
     v_salida   DATE;
@@ -60,7 +38,6 @@ BEGIN
         RAISE EXCEPTION 'El traje % no se puede alquilar: está en estado %', NEW.id_traje, v_estado;
     END IF;
 
-    -- SOLICITADO también ocupa el traje: así dos clientes no piden el mismo traje.
     SELECT a.id_alquiler INTO v_choque
       FROM detalle_alquiler d
       JOIN alquiler a ON a.id_alquiler = d.id_alquiler
@@ -108,7 +85,6 @@ SELECT t.codigo, d.nombre AS danza, t.personaje, t.genero, t.talla, t.estado,
 FROM traje t
 JOIN danza d ON d.id_danza = t.id_danza;
 
--- ---------------------------------------------------------------- 3. pedidos
 DO $$
 DECLARE r RECORD;
 BEGIN
@@ -146,16 +122,14 @@ FROM pedido_personalizado p
 JOIN cliente c ON c.id_cliente = p.id_cliente
 JOIN danza d   ON d.id_danza = p.id_danza;
 
--- ---------------------------------------------------------------- 4. usuarios
 CREATE TABLE IF NOT EXISTS usuario (
     id_usuario     SERIAL PRIMARY KEY,
     username       VARCHAR(30)  NOT NULL UNIQUE,
-    password_hash  VARCHAR(100) NOT NULL,                       -- BCrypt
+    password_hash  VARCHAR(100) NOT NULL,
     rol            VARCHAR(10)  NOT NULL CHECK (rol IN ('ADMIN', 'VENDEDOR', 'CLIENTE')),
     id_cliente     INTEGER      UNIQUE REFERENCES cliente(id_cliente),
     activo         BOOLEAN      NOT NULL DEFAULT TRUE,
     fecha_creacion TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    -- un CLIENTE siempre está vinculado a un cliente; ADMIN y VENDEDOR pueden no estarlo
     CHECK (rol <> 'CLIENTE' OR id_cliente IS NOT NULL)
 );
 

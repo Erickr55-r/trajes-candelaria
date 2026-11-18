@@ -1,32 +1,7 @@
 /* Trajes Candelaria v1.0 · © 2026 Erick Reison Huanca Tiña. Todos los derechos reservados. Uso, copia o distribución solo con autorización escrita del autor. */
 
-/* =====================================================================
-   Trajes Candelaria · estructura y componentes
-   Los colores salen de variables -c-* definidas en tema-guindo.css / tema-marino.css
-   (cada tema importa este archivo). Títulos: Playfair Display · Texto: Plus Jakarta Sans.
-   =====================================================================
-
-.root {
-    -fx-font-family: "Plus Jakarta Sans";
-    -fx-font-size: 13px;
-    -fx-background-color: -c-fondo;
-    -fx-accent: -c-oro;
-    -fx-focus-color: -c-oro;
-    -fx-faint-focus-color: transparent;
-    -fx-text-base-color: -c-texto;
-    -fx-selection-bar: -c-oro-claro;
-    -fx-selection-bar-non-focused: -c-oro-claro;
-    -fx-selection-bar-text: -c-texto;
-}
-
-.label { -fx-text-fill: -c-texto; }
-
-/* ---------- Íconos (Ikonli) ---------- */
 .ikonli-font-icon { -fx-icon-color: -c-texto-2; -fx-icon-size: 16px; }
 
-/* =====================================================================
-   Botones
-   ===================================================================== */
 .button, .toggle-button, .menu-button {
     -fx-background-color: white;
     -fx-background-radius: 12;
@@ -52,7 +27,6 @@
     -fx-text-fill: white;
 }
 
-/* Primario: dorado */
 .boton-primario, .boton-dorado {
     -fx-background-color: linear-gradient(to bottom, derive(-c-oro, 12%), -c-oro);
     -fx-border-color: transparent;
@@ -75,9 +49,6 @@
 
 .boton-grande { -fx-padding: 14 26 14 26; -fx-font-size: 14px; }
 
-/* =====================================================================
-   Campos de formulario: 44 px, borde crema, dorado al enfocar
-   ===================================================================== */
 .text-field, .password-field, .text-area, .combo-box, .date-picker, .spinner, .color-picker {
     -fx-background-color: white;
     -fx-background-radius: 12;
@@ -133,9 +104,6 @@
 .check-box:selected .box { -fx-background-color: -c-oro; -fx-border-color: -c-oro; }
 .check-box:selected .mark { -fx-background-color: white; }
 
-/* =====================================================================
-   Navegación superior + contenido
-   ===================================================================== */
 .barra-superior {
     -fx-background-color: -c-side;
     -fx-padding: 0 28 0 24;
@@ -218,9 +186,6 @@
 .scroll-bar:vertical { -fx-pref-width: 10; -fx-padding: 2; }
 .scroll-bar:horizontal { -fx-pref-height: 10; -fx-padding: 2; }
 
-/* =====================================================================
-   Contenido y tipografía
-   ===================================================================== */
 .contenido {
     -fx-padding: 34 38 34 38;
     -fx-spacing: 20;
@@ -232,7 +197,6 @@
     -fx-font-size: 30px;
     -fx-text-fill: -c-texto;
 }
-/* Subtítulo de pantalla: 13 px, mayúsculas, dorado, espaciado (ver Ui.sobretitulo) */
 .sobretitulo {
     -fx-font-family: "Plus Jakarta Sans";
     -fx-font-weight: bold;
@@ -257,7 +221,6 @@
 }
 .encabezado { -fx-spacing: 6; }
 
-/* Tarjetas blancas (formularios, paneles) */
 .panel, .barra-filtros, .totales, .tarjeta-blanca {
     -fx-background-color: white;
     -fx-background-radius: 16;
@@ -268,7 +231,6 @@
 .barra-filtros { -fx-padding: 14 18 14 18; -fx-spacing: 12; -fx-alignment: center-left; }
 .tarjeta-blanca { -fx-padding: 22; }
 
-/* ---------- Tarjetas de indicadores ---------- */
 .tarjeta {
     -fx-background-color: white;
     -fx-background-radius: 16;
@@ -302,7 +264,6 @@
 .tarjeta.granate .tarjeta-icono { -fx-background-color: #F4E3E5; }
 .tarjeta.granate .tarjeta-icono .ikonli-font-icon { -fx-icon-color: -c-guindo; }
 .tarjeta.gris .tarjeta-icono    { -fx-background-color: #EEF0F3; }
-/* Las tarjetas de los diálogos (sin ícono) llevan una línea de color arriba */
 .tarjeta.verde   { -fx-border-color: -c-verde transparent transparent transparent; }
 .tarjeta.azul    { -fx-border-color: -c-side-2 transparent transparent transparent; }
 .tarjeta.naranja { -fx-border-color: #D98A1C transparent transparent transparent; }
@@ -313,7 +274,6 @@
 .tarjeta { -fx-border-width: 3 0 0 0; -fx-border-radius: 16 16 0 0; }
 .tarjeta.con-icono { -fx-border-width: 0; }
 
-/* ---------- Chips de estado ---------- */
 .insignia-estado, .etiqueta-opcion {
     -fx-padding: 4 10 4 10;
     -fx-background-radius: 20;
@@ -353,9 +313,6 @@
 }
 .etiqueta-opcion-portada .ikonli-font-icon { -fx-icon-color: -c-oro; -fx-icon-size: 12px; }
 
-/* =====================================================================
-   Tablas modernas
-   ===================================================================== */
 .table-view {
     -fx-background-color: white;
     -fx-background-radius: 16;
@@ -407,7 +364,6 @@
 .table-view .placeholder .label { -fx-text-fill: -c-texto-2; }
 .table-view > .corner { -fx-background-color: white; }
 
-/* ---------- Pestañas (Reportes) ---------- */
 .tab-pane > .tab-header-area { -fx-padding: 0 0 10 0; }
 .tab-pane > .tab-header-area > .tab-header-background { -fx-background-color: transparent; }
 .tab-pane > .tab-header-area > .headers-region > .tab {
@@ -423,7 +379,6 @@
 .tab-pane > .tab-header-area > .headers-region > .tab:selected .focus-indicator { -fx-border-color: transparent; }
 .tab-pane > .tab-content-area { -fx-background-color: transparent; -fx-padding: 6 0 0 0; }
 
-/* ---------- Totales ---------- */
 .totales { -fx-padding: 16 22 16 22; -fx-alignment: center-left; }
 .total-grande {
     -fx-font-family: "Playfair Display";
@@ -433,7 +388,6 @@
 }
 .descuento { -fx-text-fill: -c-verde; -fx-font-family: "Plus Jakarta Sans SemiBold"; }
 
-/* ---------- Diálogos ---------- */
 .dialog-pane { -fx-background-color: -c-fondo; }
 .dialog-pane > .header-panel { -fx-background-color: -c-side; }
 .dialog-pane > .header-panel .label { -fx-text-fill: white; -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 16px; }
@@ -453,9 +407,6 @@
     -fx-border-color: -c-borde transparent transparent transparent;
 }
 
-/* =====================================================================
-   Inicio
-   ===================================================================== */
 .inicio { -fx-padding: 0 0 44 0; -fx-spacing: 0; -fx-background-color: -c-fondo; }
 .inicio-seccion { -fx-padding: 0 44 0 44; }
 .portada {
@@ -530,9 +481,6 @@
     -fx-text-fill: -c-texto;
 }
 
-/* =====================================================================
-   Tarjeta de traje (Inicio y Catálogo)
-   ===================================================================== */
 .traje-tarjeta {
     -fx-background-color: white;
     -fx-background-radius: 18;
@@ -590,9 +538,6 @@
 .punto-ambar { -fx-fill: #D98A1C; }
 .vacio-catalogo { -fx-padding: 60; -fx-alignment: center; -fx-spacing: 10; }
 
-/* =====================================================================
-   Personalizadores
-   ===================================================================== */
 .visor-3d { -fx-background-radius: 16; -fx-border-color: transparent; -fx-effect: dropshadow(gaussian, rgba(27,35,51,0.10), 24, 0, 0, 6); }
 .visor-barra { -fx-padding: 10 0 0 0; }
 .parte-fila {
@@ -626,7 +571,6 @@
     -fx-font-size: 11px;
 }
 
-/* ---------- Tooltips ---------- */
 .tooltip {
     -fx-background-color: -c-side;
     -fx-background-radius: 8;
@@ -635,9 +579,6 @@
     -fx-padding: 6 10 6 10;
 }
 
-/* =====================================================================
-   Inicio de sesión
-   ===================================================================== */
 .inicio-sesion { -fx-background-color: -c-fondo; }
 .inicio-sesion-izq {
     -fx-background-color: linear-gradient(to bottom right, -c-hero1 0%, -c-hero2 100%);
@@ -688,7 +629,6 @@
 .enlace:visited { -fx-text-fill: -c-guindo; }
 .boton-ancho { -fx-pref-height: 46; -fx-font-size: 14px; }
 
-/* Campo de 44 px con ícono: el borde va en la caja y se vuelve dorado si el campo de adentro tiene el foco */
 .campo-icono {
     -fx-background-color: white;
     -fx-background-radius: 12;
@@ -723,7 +663,6 @@
 }
 .error-suave .ikonli-font-icon { -fx-icon-color: #C0392B; -fx-icon-size: 15px; }
 
-/* ---------- Usuario en la barra superior ---------- */
 .saludo { -fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px; }
 .boton-salir {
     -fx-background-color: rgba(255,255,255,0.08);
@@ -739,9 +678,6 @@
 .menu-usuario-nombre { -fx-font-family: "Plus Jakarta Sans"; -fx-font-weight: bold; -fx-text-fill: -c-texto; }
 .menu-usuario-rol { -fx-text-fill: -c-oro-osc; -fx-font-size: 10px; }
 
-/* =====================================================================
-   Portal del cliente
-   ===================================================================== */
 .usuario-caja { -fx-padding: 6 10 6 6; -fx-background-radius: 30; }
 .usuario-caja:hover { -fx-background-color: rgba(255,255,255,0.08); }
 .usuario-caja .ikonli-font-icon { -fx-icon-color: rgba(255,255,255,0.7); }
@@ -771,7 +707,6 @@
     -fx-effect: null;
 }
 
-/* ---------- Detalle del traje ---------- */
 .detalle { -fx-background-color: -c-fondo; }
 .detalle-scroll, .detalle-scroll > .viewport { -fx-background-color: transparent; }
 .detalle-foto { -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.16), 28, 0, 0, 8); }
@@ -811,7 +746,6 @@
 }
 .talla-etiqueta.elegida { -fx-background-color: -c-guindo; -fx-border-color: -c-guindo; -fx-text-fill: white; }
 
-/* Mini calendario */
 .cal-caja {
     -fx-background-color: white;
     -fx-background-radius: 16;
@@ -838,7 +772,6 @@
 .cal-muestra { -fx-min-width: 14; -fx-min-height: 14; -fx-max-width: 14; -fx-max-height: 14; -fx-background-radius: 4; }
 .cal-muestra.cal-libre { -fx-background-color: white; -fx-border-color: -c-borde; -fx-border-radius: 4; }
 
-/* Tarjeta resumen fija */
 .resumen-tarjeta {
     -fx-background-color: white;
     -fx-background-radius: 20;
@@ -856,7 +789,6 @@
 .resumen-total-chico { -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: -c-guindo; }
 .boton-solicitar { -fx-pref-height: 52; -fx-font-size: 15px; }
 
-/* Confirmación con check animado */
 .confirmacion-velo { -fx-background-color: rgba(30,10,15,0.55); }
 .confirmacion-tarjeta {
     -fx-background-color: white;
@@ -869,7 +801,6 @@
 .confirmacion-titulo { -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 28px; }
 .confirmacion-texto { -fx-text-fill: -c-texto-2; -fx-font-size: 14px; -fx-text-alignment: center; -fx-alignment: center; }
 
-/* ---------- Mis reservas ---------- */
 .reserva-tarjeta {
     -fx-background-color: white;
     -fx-background-radius: 20;
@@ -894,12 +825,8 @@
 .paso-linea.paso-hecho { -fx-background-color: -c-guindo; }
 .paso-linea.paso-pendiente { -fx-background-color: #E3DCD2; }
 
-/* ---------- Mis diseños ---------- */
 .diseno-imagen { -fx-background-color: radial-gradient(center 50% 40%, radius 75%, #FFFFFF 0%, -c-fondo-2 100%); }
 
-/* =====================================================================
-   Panel de la tienda: barra lateral guindo
-   ===================================================================== */
 .menu-scroll, .menu-scroll > .viewport { -fx-background-color: -c-side; -fx-background-insets: 0; }
 .menu-lateral {
     -fx-background-color: linear-gradient(to bottom, -c-side, derive(-c-side, -28%));
@@ -962,7 +889,6 @@
     -fx-spacing: 10;
 }
 
-/* ---------- Solicitudes / pedidos / inicio ---------- */
 .solicitud-cliente { -fx-font-family: "Playfair Display"; -fx-font-weight: bold; -fx-font-size: 21px; }
 .etiqueta-opcion-hace { -fx-background-color: #F3ECE0; -fx-text-fill: -c-oro-osc; -fx-font-size: 11.5px; -fx-padding: 6 12 6 10; }
 .etiqueta-opcion-hace .ikonli-font-icon { -fx-icon-color: -c-oro-osc; }
@@ -972,9 +898,6 @@
 .tarjeta-clic { -fx-cursor: hand; }
 .tarjeta-clic:hover { -fx-effect: dropshadow(gaussian, rgba(30,10,15,0.20), 30, 0, 0, 10); }
 
-/* =====================================================================
-   Diseña tu traje (portal, por capas)
-   ===================================================================== */
 .disena { -fx-padding: 30 34 30 34; }
 .pasos-scroll, .pasos-scroll > .viewport { -fx-background-color: transparent; }
 .pasos-tarjeta {

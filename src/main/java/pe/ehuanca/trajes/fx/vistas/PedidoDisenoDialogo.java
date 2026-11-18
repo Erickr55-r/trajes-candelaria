@@ -68,7 +68,6 @@ public class PedidoDisenoDialogo {
         PedidoDetalle d = sErht.personalizador().detallePedido(idPedidoErht);
         PedidoResumen p = d.resumen();
 
-        // cabecera
         Label tituloErht = UtilidadesInterfaz.titulo("Pedido de diseño N° " + p.idPedido());
         HBox lineaErht = new HBox(12, tituloErht, UtilidadesInterfaz.insigniaEstado(p.estado()), UtilidadesInterfaz.insigniaEstado(p.tipo()));
         lineaErht.setAlignment(Pos.CENTER_LEFT);
@@ -81,7 +80,6 @@ public class PedidoDisenoDialogo {
         cabeceraErht.getStyleClass().add("cabecera");
         raizErht.setTop(cabeceraErht);
 
-        // izquierda: imagen grande
         StackPane imagenErht = new StackPane();
         imagenErht.getStyleClass().add("estudio");
         imagenErht.setPrefSize(470, 560);
@@ -107,7 +105,6 @@ public class PedidoDisenoDialogo {
         recorteErht.heightProperty().bind(imagenErht.heightProperty());
         imagenErht.setClip(recorteErht);
 
-        // derecha: prendas, implementos, precios y acciones
         VBox derechaErht = new VBox(16,
                 UtilidadesInterfaz.seccion("Prendas y colores"), tablaPrendasErht(d.partes()),
                 UtilidadesInterfaz.seccion("Implementos"), tablaImplementosErht(d.implementos()),

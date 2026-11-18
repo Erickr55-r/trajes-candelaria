@@ -44,7 +44,6 @@ import java.util.Map;
  */
 public class NuevaReservaVista extends VBox {
 
-    /** Mismo descuento que AlquilerServicio: 10% para conjuntos con 5 trajes o más. */
     private static final BigDecimal DESCUENTO_CONJUNTO = new BigDecimal("0.90");
     private static final int MINIMO_DESCUENTO = 5;
 
@@ -71,7 +70,6 @@ public class NuevaReservaVista extends VBox {
     private final ComboBox<String> metodoErht = UtilidadesInterfaz.comboTexto(UtilidadesInterfaz.METODOS, null);
     private final TextField observacionErht = UtilidadesInterfaz.campo("", "Opcional");
 
-    /** Fechas con las que se hizo la última búsqueda. */
     private LocalDate buscadoDesdeErht;
     private LocalDate buscadoHastaErht;
 
@@ -86,7 +84,6 @@ public class NuevaReservaVista extends VBox {
         conjuntoErht = UtilidadesInterfaz.combo(s.clientes().opcionesConjunto(), Opcion::nombre, "— Sin conjunto —");
         danzaErht = UtilidadesInterfaz.combo(s.trajes().danzas(), Opcion::nombre, "Todas");
         conjuntoErht.setOnAction(e -> recalcularErht());
-        // Si cambian las fechas, la lista de trajes libres ya no vale.
         salidaErht.valueProperty().addListener((o, a, b) -> limpiarResultadosErht());
         devolucionErht.valueProperty().addListener((o, a, b) -> limpiarResultadosErht());
 
@@ -138,7 +135,6 @@ public class NuevaReservaVista extends VBox {
         tablaErht.getColumns().add(UtilidadesInterfaz.colTexto("Color", TrajeDisponible::color, 120));
         tablaErht.getColumns().add(UtilidadesInterfaz.colSoles("Precio", TrajeDisponible::precioAlquiler, 100));
         tablaErht.getColumns().add(UtilidadesInterfaz.colSoles("Garantía", TrajeDisponible::garantia, 100));
-        // Doble clic en la fila también marca o desmarca el traje.
         UtilidadesInterfaz.alDobleClic(tablaErht, t -> marcaErht(t).set(!marcaErht(t).get()));
         tablaErht.setMinHeight(200);
         VBox.setVgrow(tablaErht, Priority.ALWAYS);
@@ -168,10 +164,6 @@ public class NuevaReservaVista extends VBox {
         return cajaErht;
     }
 
-    /**
-     * Viene de Inicio o del Catálogo: pone las fechas (y el conjunto y la observación si llegan),
-     * busca los trajes libres y deja marcado el elegido.
-     */
     public void preparar(int idTraje, LocalDate desde, LocalDate hasta, Opcion conjuntoElegido, String nota) {
         if (conjuntoElegido != null) {
             conjuntoErht.getItems().stream().filter(o -> o != null && o.id().equals(conjuntoElegido.id()))
@@ -189,8 +181,6 @@ public class NuevaReservaVista extends VBox {
             tablaErht.scrollTo(t);
         });
     }
-
-    // ------------------------------------------------------------------ lógica
 
     private void buscarErht() {
         LocalDate desdeErht = UtilidadesInterfaz.requerido(salidaErht, "Salida");
@@ -220,7 +210,6 @@ public class NuevaReservaVista extends VBox {
         recalcularErht();
     }
 
-    /** Casilla de un traje (se crea la primera vez y recalcula los totales al cambiar). */
     private BooleanProperty marcaErht(TrajeDisponible t) {
         return marcadosErht.computeIfAbsent(t.idTraje(), id -> {
             BooleanProperty p = new SimpleBooleanProperty(false);
@@ -239,14 +228,12 @@ public class NuevaReservaVista extends VBox {
         return listaErht;
     }
 
-    /** Recalcula los totales en vivo (mismo redondeo que el INSERT del servicio). */
     private void recalcularErht() {
         List<TrajeDisponible> selErht = seleccionadosErht();
         boolean descuentoErht = conjuntoErht.getValue() != null && selErht.size() >= MINIMO_DESCUENTO;
         BigDecimal subtotalErht = BigDecimal.ZERO;
         BigDecimal totalErht = BigDecimal.ZERO;
         BigDecimal garantiaErht = BigDecimal.ZERO;
-        // Descuento por conjunto traje por traje; la garantía se suma sin descuento.
         for (TrajeDisponible t : selErht) {
             subtotalErht = subtotalErht.add(t.precioAlquiler());
             totalErht = totalErht.add(descuentoErht

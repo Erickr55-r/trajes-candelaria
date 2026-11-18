@@ -36,7 +36,6 @@ public final class Sesion {
         return usuarioErht != null;
     }
 
-    /** Usuario actual (lanza un error si no hay sesión). */
     public Usuario usuario() {
         if (usuarioErht == null) {
             throw new IllegalStateException("No hay una sesión iniciada.");
@@ -44,14 +43,12 @@ public final class Sesion {
         return usuarioErht;
     }
 
-    /** Reemplaza los datos del usuario (por ejemplo, después de editar el perfil). */
     public void actualizar(Usuario u) {
         if (usuarioErht != null && u.idUsuario() == usuarioErht.idUsuario()) {
             this.usuarioErht = u;
         }
     }
 
-    /** Id del cliente de la sesión (solo para usuarios CLIENTE). */
     public int idCliente() {
         Integer id = usuario().idCliente();
         if (id == null) {

@@ -43,7 +43,7 @@ public class MisReservasVista extends VBox {
         this.sErht = s;
         this.portalErht = portal;
         getStyleClass().add("contenido");
-        int idClienteErht = Sesion.actual().idCliente();   // todo se filtra por el cliente de la sesión
+        int idClienteErht = Sesion.actual().idCliente();
 
         List<AlquilerResumen> listaErht = s.alquileres().delCliente(idClienteErht);
         Map<Integer, String> motivosErht = s.alquileres().motivosRechazo(idClienteErht);
@@ -98,7 +98,6 @@ public class MisReservasVista extends VBox {
             cajaErht.getChildren().add(m);
         }
 
-        // Datos: fechas, trajes y montos
         long diasErht = Math.max(1, ChronoUnit.DAYS.between(a.fechaSalida(), a.fechaDevolucionPrevista()));
         VBox fechasErht = datoErht("Fechas", UtilidadesInterfaz.fecha(a.fechaSalida()) + "  →  " + UtilidadesInterfaz.fecha(a.fechaDevolucionPrevista()),
                 diasErht + (diasErht == 1 ? " día" : " días") + (a.conjunto() != null && !"PARTICULAR".equals(a.conjunto())
@@ -131,12 +130,11 @@ public class MisReservasVista extends VBox {
         return cajaErht;
     }
 
-    /** Pasos con el actual en dorado; los anteriores, completados; si fue rechazado o cancelado, se marca. */
     private static HBox lineaDeTiempoErht(String estado) {
         int actualErht = PASOS.indexOf(estado);
         boolean corteErht = "RECHAZADO".equals(estado) || "ANULADO".equals(estado);
         if (corteErht) {
-            actualErht = 0;   // se quedó en la solicitud
+            actualErht = 0;
         }
         HBox lineaErht = new HBox();
         lineaErht.setAlignment(Pos.CENTER_LEFT);

@@ -82,7 +82,6 @@ public class GenerarCapturas {
     private static final int ANCHO = 1440;
     private static final int ALTO = 900;
     private static final File CARPETA = new File(System.getProperty("user.dir"), "capturas");
-    /** -Dcapturas=22,31,... escribe solo esas capturas (el recorrido completo igual se hace). Vacío = todas. */
     private static final List<String> SOLO = System.getProperty("capturas", "").isBlank() ? List.of()
             : Arrays.stream(System.getProperty("capturas").split(",")).map(String::trim).toList();
 
@@ -96,14 +95,13 @@ public class GenerarCapturas {
         Application.launch(AplicacionCapturas.class, args);
     }
 
-    /** La misma AplicacionFx, con la escena a 1440×900 y un hilo que la recorre. */
     public static class AplicacionCapturas extends AplicacionFx {
 
         @Override
         public void start(Stage escenario) {
             super.start(escenario);
             if (leer(this, "serviciosErht") == null) {
-                return; // no conectó a PostgreSQL: AplicacionFx ya mostró el error
+                return;
             }
             escenario.setX(0);
             escenario.setY(0);
@@ -125,8 +123,6 @@ public class GenerarCapturas {
         }
     }
 
-    // =====================================================================================================
-
     private static final class Recorrido {
 
         private final AplicacionCapturas aplicacion;
@@ -143,7 +139,6 @@ public class GenerarCapturas {
         void ejecutar() throws Exception {
             CARPETA.mkdirs();
             pausa(1500);
-            // login · pantalla de inicio de sesión (con la línea de derechos en el pie)
             guardar("login.png");
             portalCliente();
             panelVendedor();
@@ -152,20 +147,16 @@ public class GenerarCapturas {
             generadas.forEach(n -> System.out.println("   " + n));
         }
 
-        // ------------------------------------------------------------------ portal del cliente
-
         private void portalCliente() throws Exception {
             fx(() -> aplicacion.ingresar(s.usuarios().autenticar("cliente", "cliente123")));
             pausa(2500);
             VistaPortalCliente portal = (VistaPortalCliente) escenario.getScene().getRoot();
 
-            // Dos diseños enviados desde «Diseña tu traje» (con su imagen): uno queda PENDIENTE y otro se cotiza.
             int pendiente = enviarDiseno(portal, 1, "ALQUILER", true);
             int cotizado = enviarDiseno(portal, 4, "CONFECCION", false);
             s.personalizador().cotizar(cotizado, new BigDecimal("185.00"));
             System.out.println("[capturas] diseños: " + pendiente + " PENDIENTE, " + cotizado + " COTIZADO");
 
-            // 22 · personalizador con color, dos implementos, modalidad y precio estimado (sin enviar)
             fx(() -> portal.ir(VistaPortalCliente.DISENIO));
             pausa(3000);
             Node disena = centro(portal).getContent();
@@ -190,7 +181,6 @@ public class GenerarCapturas {
             pausa(600);
             guardar("22_portal_disena_traje.png");
 
-            // 21 · catálogo con el buscador lleno (Caporales, 01/02 al 04/02/2027)
             fx(() -> portal.ir(VistaPortalCliente.INICIO));
             pausa(2500);
             fx(() -> {
@@ -207,31 +197,26 @@ public class GenerarCapturas {
             pausa(800);
             guardar("21_portal_catalogo.png");
 
-            // 25 · mis reservas (SOLICITADO, RESERVADO y RECHAZADO)
             fx(() -> portal.ir(VistaPortalCliente.MIS_RESERVAS));
             pausa(1800);
             fx(() -> desplazarHasta(centro(portal), ".reserva-tarjeta", 18));
             pausa(700);
             guardar("25_portal_mis_reservas.png");
 
-            // 26 · mis diseños (PENDIENTE y COTIZADO con Aprobar / Rechazar)
             fx(() -> portal.ir(VistaPortalCliente.MIS_DISENOS));
             pausa(1800);
             guardar("26_portal_mis_disenos.png");
 
-            // 27 · perfil
             fx(() -> portal.ir(VistaPortalCliente.PERFIL));
             pausa(1500);
             guardar("27_portal_perfil.png");
 
-            // portal_detalle_traje · detalle de un traje de Caporales para la Candelaria 2027
             TrajeFila traje = s.trajes().listar(null, "DISPONIBLE", null, null).stream()
                     .filter(t -> "Caporales".equals(t.danza())).findFirst().orElseThrow();
             fx(() -> portal.verTraje(traje, LocalDate.of(2027, 2, 1), LocalDate.of(2027, 2, 4)));
             pausa(2500);
             guardar("portal_detalle_traje.png");
 
-            // Verificación: solicitar la reserva desde el detalle crea un alquiler SOLICITADO del cliente.
             int idCliente = Sesion.actual().idCliente();
             long antes = s.alquileres().listar("SOLICITADO", null).stream()
                     .filter(a -> a.idCliente() == idCliente).count();
@@ -244,7 +229,6 @@ public class GenerarCapturas {
             }
             System.out.println("[verificación] reserva solicitada desde el portal: " + antes + " → " + despues);
 
-            // acerca_de · ventana «Acerca de» y lista de componentes de terceros
             Platform.runLater(AcercaDe::mostrar);
             pausa(1500);
             Stage acerca = ventana(w -> titulo(w).equals("Acerca de Trajes Candelaria"));
@@ -262,7 +246,6 @@ public class GenerarCapturas {
             pausa(500);
         }
 
-        /** Verificación: el usuario «vendedor» entra al panel de la tienda. */
         private void verificarVendedor() throws Exception {
             fx(aplicacion::mostrarInicioSesion);
             fx(() -> aplicacion.ingresar(s.usuarios().autenticar("vendedor", "venta123")));
@@ -275,7 +258,6 @@ public class GenerarCapturas {
                     + Sesion.actual().usuario().rol() + ")");
         }
 
-        /** Envía un diseño desde el personalizador del portal: color de la paleta, modalidad e implemento. */
         private int enviarDiseno(VistaPortalCliente portal, int indiceColor, String modalidad, boolean cascabeles)
                 throws Exception {
             fx(() -> portal.ir(VistaPortalCliente.DISENIO));
@@ -290,7 +272,6 @@ public class GenerarCapturas {
             fx(() -> clic(new ArrayList<>(vista.lookupAll(".muestra")).get(indiceColor)));
             pausa(400);
             fx(() -> {
-                // entrega antes de la Candelaria 2027
                 ((DatePicker) campo(vista, "entregaErht")).setValue(LocalDate.of(2027, 1, cascabeles ? 22 : 26));
                 for (Node n : vista.lookupAll(".modalidad")) {
                     if (modalidad.equals(n.getUserData())) {
@@ -310,15 +291,12 @@ public class GenerarCapturas {
             return s.personalizador().pedidosDelCliente(Sesion.actual().idCliente()).get(0).idPedido();
         }
 
-        // ------------------------------------------------------------------ panel de la tienda
-
         private void panelVendedor() throws Exception {
             fx(aplicacion::mostrarInicioSesion);
             fx(() -> aplicacion.ingresar(s.usuarios().autenticar("admin", "admin123")));
             pausa(2500);
             VistaPanelVendedor panel = (VistaPanelVendedor) escenario.getScene().getRoot();
 
-            // 31 · inicio: indicadores y agenda de próximos movimientos
             fx(() -> panel.mostrar(VistaPanelVendedor.INICIO));
             pausa(2500);
             fx(() -> {
@@ -330,12 +308,10 @@ public class GenerarCapturas {
             pausa(700);
             guardar("31_panel_inicio.png");
 
-            // panel_solicitudes · solicitudes pendientes por aprobar o rechazar
             fx(() -> panel.mostrar(VistaPanelVendedor.SOLICITUDES));
             pausa(1800);
             guardar("panel_solicitudes.png");
 
-            // 33 · nueva reserva: cliente, fechas de la Candelaria, 3 trajes marcados y adelanto
             fx(() -> panel.mostrar(VistaPanelVendedor.NUEVA_RESERVA));
             pausa(1800);
             fx(() -> {
@@ -365,7 +341,6 @@ public class GenerarCapturas {
             pausa(900);
             guardar("33_panel_nueva_reserva.png");
 
-            // 34 · alquileres con estados variados (ordenados por cliente para que se mezclen)
             fx(() -> panel.mostrar(VistaPanelVendedor.ALQUILERES));
             pausa(1800);
             fx(() -> {
@@ -379,7 +354,6 @@ public class GenerarCapturas {
             pausa(800);
             guardar("34_panel_alquileres.png");
 
-            // 35 · registrar un pago (adelanto) de un alquiler RESERVADO de un conjunto
             AlquilerResumen reservado = s.alquileres().listar("RESERVADO", null).stream()
                     .filter(a -> a.saldo().signum() > 0 && !"PARTICULAR".equals(a.conjunto()))
                     .findFirst().orElseThrow();
@@ -404,7 +378,6 @@ public class GenerarCapturas {
             pausa(700);
             guardarConDialogos("35_panel_pago.png", detalle);
 
-            // 36 · confirmación de entrega del mismo alquiler RESERVADO
             Platform.runLater(() -> boton(detalle.getScene().getRoot(), "Registrar entrega").fire());
             pausa(1500);
             Window confirmar = ventana(w -> w.getScene() != null && w.getScene().getRoot() instanceof DialogPane);
@@ -414,7 +387,6 @@ public class GenerarCapturas {
             fx(detalle::close);
             pausa(800);
 
-            // 37 · devolución con dos daños (LEVE y GRAVE) y la liquidación de la garantía
             AlquilerResumen entregado = s.alquileres().listar("ENTREGADO", null).stream()
                     .filter(a -> s.alquileres().piezasDelAlquiler(a.idAlquiler()).size() >= 2)
                     .findFirst().orElseThrow();
@@ -460,12 +432,10 @@ public class GenerarCapturas {
             fx(devolucion::close);
             pausa(800);
 
-            // 38 · pedidos de diseño (uno COTIZADO)
             fx(() -> panel.mostrar(VistaPanelVendedor.PEDIDOS));
             pausa(1800);
             guardar("38_panel_pedidos_diseno.png");
 
-            // 39 · detalle del pedido PENDIENTE con su imagen y el diálogo para cotizar
             PedidoResumen pendiente = s.personalizador().listarPedidos("PENDIENTE", null).stream()
                     .filter(p -> s.personalizador().imagenDisenoTienda(p.idPedido()) != null)
                     .findFirst().orElseThrow();
@@ -487,7 +457,6 @@ public class GenerarCapturas {
             fx(pedido::close);
             pausa(800);
 
-            // 40 · clientes con el detalle de un cliente abierto (sus alquileres)
             fx(() -> panel.mostrar(VistaPanelVendedor.CLIENTES));
             pausa(1800);
             int idCliente = s.clientes().listar("44268151").get(0).idCliente();
@@ -498,7 +467,6 @@ public class GenerarCapturas {
             fx(detalleCliente::close);
             pausa(600);
 
-            // 42 · inventario de trajes (ordenado por estado: primero los que están en mantenimiento)
             fx(() -> panel.mostrar(VistaPanelVendedor.TRAJES));
             pausa(1800);
             fx(() -> {
@@ -513,7 +481,6 @@ public class GenerarCapturas {
             pausa(700);
             guardar("42_panel_trajes.png");
 
-            // 44 · reportes con «Ingresos por mes»
             fx(() -> panel.mostrar(VistaPanelVendedor.REPORTES));
             pausa(1800);
             fx(() -> {
@@ -527,7 +494,6 @@ public class GenerarCapturas {
             pausa(900);
             guardar("44_panel_reportes.png");
 
-            // 41 · conjuntos y 43 · usuarios
             fx(() -> panel.mostrar(VistaPanelVendedor.CONJUNTOS));
             pausa(1500);
             guardar("41_panel_conjuntos.png");
@@ -536,16 +502,10 @@ public class GenerarCapturas {
             guardar("43_panel_usuarios.png");
         }
 
-        // ------------------------------------------------------------------ capturas
-
         private void guardar(String archivo) throws Exception {
             guardarConDialogos(archivo);
         }
 
-        /**
-         * Captura la ventana principal y, encima, cada diálogo (en orden): se oscurece lo de atrás y el diálogo
-         * se dibuja centrado con una sombra, como se ve en pantalla.
-         */
         private void guardarConDialogos(String archivo, Window... dialogos) throws Exception {
             String clave = archivo.matches("\\d+_.*") ? archivo.substring(0, archivo.indexOf('_'))
                     : archivo.replace(".png", "");
@@ -570,7 +530,7 @@ public class GenerarCapturas {
                 g.fillRect(0, 0, img.getWidth(), img.getHeight());
                 int x = Math.max(0, (img.getWidth() - d.getWidth()) / 2);
                 int y = Math.max(0, (img.getHeight() - d.getHeight()) / 2);
-                for (int k = 14; k > 0; k -= 2) {   // sombra suave
+                for (int k = 14; k > 0; k -= 2) {
                     g.setColor(new Color(0, 0, 0, 10));
                     g.fillRoundRect(x - k, y - k + 8, d.getWidth() + 2 * k, d.getHeight() + 2 * k, 24 + k, 24 + k);
                 }
@@ -582,8 +542,6 @@ public class GenerarCapturas {
             System.out.println("[capturas] " + archivo);
         }
 
-        // ------------------------------------------------------------------ ayudas de navegación
-
         private static ScrollPane centro(VistaPortalCliente portal) {
             return (ScrollPane) ((BorderPane) portal.getChildren().get(0)).getCenter();
         }
@@ -592,7 +550,6 @@ public class GenerarCapturas {
             return (ScrollPane) panel.getCenter();
         }
 
-        /** Desplaza el scroll para que el primer nodo con esa clase quede arriba (con un margen). */
         private static void desplazarHasta(ScrollPane sp, String selector, double margen) {
             Node contenido = sp.getContent();
             Node objetivo = contenido.lookup(selector);
@@ -604,7 +561,6 @@ public class GenerarCapturas {
             sp.setVvalue(total <= 0 ? 0 : Math.min(1, Math.max(0, y / total)));
         }
 
-        /** Desplaza el scroll para que ese nodo (hijo directo del contenido) quede arriba. */
         private static void desplazarANodo(ScrollPane sp, Node nodo, double margen) {
             Node contenido = sp.getContent();
             double y = nodo.getBoundsInParent().getMinY() - margen;
@@ -677,8 +633,6 @@ public class GenerarCapturas {
         }
     }
 
-    // =====================================================================================================
-
     private static BufferedImage aImagenAwt(WritableImage im) {
         int w = (int) im.getWidth();
         int h = (int) im.getHeight();
@@ -693,7 +647,6 @@ public class GenerarCapturas {
         Thread.sleep(ms);
     }
 
-    /** Ejecuta en el hilo de JavaFX y espera a que termine (no usar con acciones que abren diálogos modales). */
     private static void fx(Runnable r) throws InterruptedException {
         CountDownLatch l = new CountDownLatch(1);
         Platform.runLater(() -> {

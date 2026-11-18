@@ -56,7 +56,6 @@ import java.util.Set;
  */
 public class InicioVista extends VBox {
 
-    /** Qué hace el botón Reservar de cada tarjeta (la tienda abre Nueva reserva; el cliente envía una solicitud). */
     @FunctionalInterface
     public interface AccionReservar {
         void reservar(TrajeFila traje, LocalDate desde, LocalDate hasta, Opcion conjunto, String nota);
@@ -73,12 +72,9 @@ public class InicioVista extends VBox {
 
     private final Servicios sErht;
     private final AccionReservar accionErht;
-    /** true: panel de la tienda (conjunto + próximos movimientos); false: portal del cliente. */
     private final boolean tiendaErht;
-    /** Tienda: abre la pantalla Solicitudes (clic en el indicador). */
     private final Runnable verSolicitudesErht;
 
-    // buscador
     private final ToggleGroup modalidadErht = new ToggleGroup();
     private final ComboBox<Opcion> danzaErht;
     private final ComboBox<Opcion> conjuntoErht;
@@ -86,7 +82,6 @@ public class InicioVista extends VBox {
     private final DatePicker devolucionErht = UtilidadesInterfaz.selectorFecha(LocalDate.now().plusDays(4));
     private final Label duracionErht = new Label();
 
-    // resultados
     private final Label ubicacionErht = new Label();
     private final Label tituloResultadosErht = new Label();
     private final Label subResultadosErht = UtilidadesInterfaz.subtitulo("");
@@ -96,11 +91,9 @@ public class InicioVista extends VBox {
             List.of(ORDEN_RECOMENDADO, ORDEN_MENOR, ORDEN_MAYOR, ORDEN_POPULAR), null);
     private final TarjetaTraje.Cuadricula cuadriculaErht = new TarjetaTraje.Cuadricula();
 
-    // próximos movimientos
     private final HBox tarjetasErht = new HBox(18);
     private final TableView<AlquilerResumen> tablaErht = UtilidadesInterfaz.tabla("No hay salidas ni devoluciones pendientes.");
 
-    // última búsqueda
     private List<TrajeFila> encontradosErht = List.of();
     private Set<Integer> masAlquiladosErht = Set.of();
     private Map<Integer, LocalDate> libreDesdeErht = Map.of();
@@ -128,7 +121,6 @@ public class InicioVista extends VBox {
         conjuntoErht = UtilidadesInterfaz.combo(s.clientes().opcionesConjunto(), Opcion::nombre, "Sin conjunto (opcional)");
 
         VBox buscadorErht = buscadorErht();
-        // La tarjeta de búsqueda se superpone al borde inferior del banner.
         VBox.setMargin(buscadorErht, new Insets(-92, 44, 0, 44));
         VBox resultadosErht = resultadosErht(danzasErht);
         VBox.setMargin(resultadosErht, new Insets(46, 0, 0, 0));
@@ -144,8 +136,6 @@ public class InicioVista extends VBox {
             UtilidadesInterfaz.ejecutar(this::cargarMovimientosErht);
         }
     }
-
-    // ------------------------------------------------------------------ banner
 
     private StackPane portadaErht() {
         Label chipErht = new Label("Festividad Virgen de la Candelaria  •  Disponibilidad en tiempo real",
@@ -172,7 +162,6 @@ public class InicioVista extends VBox {
         textosErht.setAlignment(Pos.CENTER_LEFT);
         StackPane.setAlignment(textosErht, Pos.CENTER_LEFT);
 
-        // Chakana y grecas doradas a la derecha (opacidad 0.33). Sin fotos de personas.
         Group chakanaErht = Adornos.chakanaEnGrupo(196, "adorno");
         Group grecaArribaErht = Adornos.greca(5, 9, "adorno-linea", "adorno");
         Group grecaAbajoErht = Adornos.greca(5, 9, "adorno-linea", "adorno");
@@ -188,9 +177,7 @@ public class InicioVista extends VBox {
         Runnable ubicarErht = () -> {
             adornosErht.autosize();
             double x = bannerErht.getWidth() - adornosErht.getWidth() - Math.max(40, bannerErht.getWidth() * 0.06);
-            // centrado en la parte del banner que no tapa el buscador (los 92 px de abajo)
             adornosErht.relocate(x, Math.max(24, (bannerErht.getHeight() - 92 - adornosErht.getHeight()) / 2));
-            // En ventanas angostas los adornos chocarían con el título: se ocultan.
             adornosErht.setVisible(x > 700);
         };
         bannerErht.widthProperty().addListener((o, a, b) -> ubicarErht.run());
@@ -210,15 +197,13 @@ public class InicioVista extends VBox {
         return x;
     }
 
-    // ------------------------------------------------------------------ buscador
-
     private VBox buscadorErht() {
         ToggleButton enTiendaErht = pestanaErht(RECOJO_TIENDA, Feather.SHOPPING_BAG);
         ToggleButton pestanaTiendaErht = pestanaErht(ENTREGA_EN_TIENDA, Feather.TRUCK);
         enTiendaErht.setSelected(true);
         modalidadErht.selectedToggleProperty().addListener((o, antes, ahora) -> {
             if (ahora == null) {
-                modalidadErht.selectToggle(antes);   // siempre hay una elegida
+                modalidadErht.selectToggle(antes);
             } else {
                 actualizarUbicacionErht();
             }
@@ -229,7 +214,6 @@ public class InicioVista extends VBox {
 
         GridPane filaErht = new GridPane();
         filaErht.setHgap(14);
-        // Anchos preferidos proporcionales + crecimiento (sin percentWidth, que infla el ancho mínimo).
         for (double a : new double[]{240, 260, 180, 180}) {
             ColumnConstraints c = new ColumnConstraints();
             c.setMinWidth(90);
@@ -250,7 +234,6 @@ public class InicioVista extends VBox {
         if (tiendaErht) {
             filaErht.add(campoErht("Conjunto", conjuntoErht), 1, 0);
         } else {
-            // el cliente no reserva a nombre de un conjunto: la columna queda vacía y sin ancho
             filaErht.getColumnConstraints().get(1).setPrefWidth(0);
             filaErht.getColumnConstraints().get(1).setMinWidth(0);
             filaErht.getColumnConstraints().get(1).setHgrow(javafx.scene.layout.Priority.NEVER);
@@ -291,7 +274,7 @@ public class InicioVista extends VBox {
         Label l = new Label(UtilidadesInterfaz.espaciado(titulo));
         l.getStyleClass().add("campo-titulo");
         control.setMaxWidth(Double.MAX_VALUE);
-        control.setMinWidth(90);   // que el nombre más largo de la lista no ensanche la página
+        control.setMinWidth(90);
         control.setPrefWidth(120);
         return new VBox(7, l, control);
     }
@@ -321,8 +304,6 @@ public class InicioVista extends VBox {
             duracionErht.getStyleClass().add("etiqueta-opcion-verde");
         }
     }
-
-    // ------------------------------------------------------------------ resultados
 
     private VBox resultadosErht(List<Opcion> danzas) {
         ubicacionErht.getStyleClass().add("sobretitulo");
@@ -382,7 +363,6 @@ public class InicioVista extends VBox {
                 + UtilidadesInterfaz.espaciado(esEntregaEnTiendaErht() ? "Entrega en local del conjunto" : "Recojo en tienda"));
     }
 
-    /** Busca con la función fn_trajes_disponibles de la base y prepara los datos de las tarjetas. */
     private void buscarErht() {
         LocalDate desdeErht = UtilidadesInterfaz.requerido(recojoErht, "Fecha de recojo");
         LocalDate hastaErht = UtilidadesInterfaz.requerido(devolucionErht, "Devolución");
@@ -405,7 +385,6 @@ public class InicioVista extends VBox {
         buscadoDesdeErht = desdeErht;
         buscadoHastaErht = hastaErht;
 
-        // El chip de danza sigue a la danza buscada.
         for (Node n : etiquetasDanzaErht.getChildren()) {
             Opcion o = (Opcion) n.getUserData();
             if ((d == null && o == null) || (d != null && o != null && o.id().equals(d.id()))) {
@@ -457,7 +436,6 @@ public class InicioVista extends VBox {
                     hoyErht ? TarjetaTraje.Punto.VERDE : TarjetaTraje.Punto.AMBAR,
                     piezasErht(t.idTraje()), TarjetaTraje.tallas(t, encontradosErht), sufijoErht, true,
                     () -> reservarErht(t),
-                    // el cliente abre el detalle del portal con un clic; la tienda, el diálogo con doble clic
                     tiendaErht ? () -> new TrajeDetalleDialogo(sErht, t.idTraje()).mostrar() : () -> reservarErht(t),
                     tiendaErht ? "Reservar" : "Ver traje", !tiendaErht)));
         }
@@ -478,8 +456,6 @@ public class InicioVista extends VBox {
         accionErht.reservar(t, buscadoDesdeErht, buscadoHastaErht, tiendaErht ? conjuntoErht.getValue() : null,
                 esEntregaEnTiendaErht() ? "Entrega en local del conjunto" : null);
     }
-
-    // ------------------------------------------------------------------ próximos movimientos
 
     private VBox movimientosErht() {
         tablaErht.getColumns().add(UtilidadesInterfaz.colNumero("N°", AlquilerResumen::idAlquiler, 60));

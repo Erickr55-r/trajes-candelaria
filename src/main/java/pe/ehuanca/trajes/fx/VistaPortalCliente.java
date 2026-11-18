@@ -57,13 +57,12 @@ public class VistaPortalCliente extends StackPane {
     private final BorderPane marcoErht = new BorderPane();
     private final Map<String, Button> botonesErht = new LinkedHashMap<>();
     private final ScrollPane areaErht = new ScrollPane();
-    /** Pantalla a la que vuelve el detalle de un traje. */
     private String origenErht = INICIO;
 
     public VistaPortalCliente(Servicios s, Runnable alCerrarSesion) {
         this.sErht = s;
         this.alCerrarSesionErht = alCerrarSesion;
-        UtilidadesInterfaz.cambiarTema("Guindo");   // el portal siempre usa la paleta guindo
+        UtilidadesInterfaz.cambiarTema("Guindo");
         areaErht.setFitToWidth(true);
         areaErht.setFitToHeight(true);
         areaErht.getStyleClass().add("area-contenido");
@@ -72,8 +71,6 @@ public class VistaPortalCliente extends StackPane {
         getChildren().add(marcoErht);
         ir(INICIO);
     }
-
-    // ------------------------------------------------------------------ barra superior
 
     private HBox barraSuperiorErht() {
         HBox menuErht = new HBox();
@@ -96,7 +93,6 @@ public class VistaPortalCliente extends StackPane {
         return barraErht;
     }
 
-    /** Avatar con el nombre del cliente; al hacer clic, menú Perfil / Cerrar sesión. */
     private HBox usuarioErht() {
         Usuario u = Sesion.actual().usuario();
         Circle circuloErht = new Circle(18);
@@ -126,13 +122,10 @@ public class VistaPortalCliente extends StackPane {
         return cajaErht;
     }
 
-    /** Después de editar el perfil: el nombre del avatar cambia. */
     public void refrescarCabecera() {
         marcoErht.setTop(barraSuperiorErht());
         marcarActivoErht(PERFIL);
     }
-
-    // ------------------------------------------------------------------ navegación
 
     public void ir(String pantalla) {
         if (INICIO.equals(pantalla) || CATALOGO.equals(pantalla)) {
@@ -148,17 +141,14 @@ public class VistaPortalCliente extends StackPane {
         });
     }
 
-    /** Abre el detalle del traje (con las fechas del buscador si las hay). */
     public void verTraje(TrajeFila t, LocalDate desde, LocalDate hasta) {
         cambiarErht(null, () -> new DetalleTrajeVista(sErht, this, t, desde, hasta));
     }
 
-    /** Vuelve del detalle a la lista de la que vino (Inicio o Catálogo). */
     public void volver() {
         ir(origenErht);
     }
 
-    /** Confirmación elegante con check animado encima de todo el portal. */
     public void confirmar(String titulo, String mensaje, AnimacionConfirmacion.Opcion... opciones) {
         AnimacionConfirmacion.mostrar(this, titulo, mensaje, opciones);
     }

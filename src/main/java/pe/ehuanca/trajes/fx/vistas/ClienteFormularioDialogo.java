@@ -34,7 +34,6 @@ public class ClienteFormularioDialogo {
         this.idClienteErht = idCliente;
     }
 
-    /** Muestra el formulario; devuelve el id del cliente guardado o null si se canceló. */
     public Integer mostrar() {
         UtilidadesInterfaz.ejecutar(this::abrirErht);
         return guardadoErht;

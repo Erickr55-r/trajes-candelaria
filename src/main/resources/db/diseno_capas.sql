@@ -1,22 +1,5 @@
 -- Trajes Candelaria v1.0 · © 2026 Erick Reison Huanca Tiña. Todos los derechos reservados. Uso, copia o distribución solo con autorización escrita del autor.
 
--- =====================================================================
--- PERSONALIZADOR POR CAPAS (PostgreSQL)
--- Migración para una base que ya tiene los scripts anteriores. No borra
--- datos y se puede ejecutar más de una vez. (personalizador.sql ya trae
--- estos cambios para instalaciones nuevas.)
---
---  · pedido_parte.color_hex: color exacto elegido para cada prenda (puede
---    venir del ColorPicker y no estar en la tabla color, por eso id_color
---    pasa a ser opcional; siempre hay al menos uno de los dos).
---  · pedido_personalizado.precio_estimado: precio calculado al crear el
---    diseño (la cotización de la tienda cambia monto_total, no este).
---  · pedido_personalizado.imagen_ruta: archivo PNG guardado en disenos/.
---  · v_pedidos_resumen: agrega precio_estimado al final.
---
--- Uso:  psql -U postgres -d alquiler_trajes -f diseno_capas.sql
--- =====================================================================
-
 SET client_encoding = 'UTF8';
 
 BEGIN;
@@ -29,7 +12,6 @@ ALTER TABLE pedido_parte ADD CONSTRAINT pedido_parte_color_hex_check
 ALTER TABLE pedido_parte DROP CONSTRAINT IF EXISTS pedido_parte_algun_color_check;
 ALTER TABLE pedido_parte ADD CONSTRAINT pedido_parte_algun_color_check
     CHECK (id_color IS NOT NULL OR color_hex IS NOT NULL);
--- los pedidos que ya existían toman el hex de su color
 UPDATE pedido_parte pp SET color_hex = c.hex FROM color c WHERE c.id_color = pp.id_color AND pp.color_hex IS NULL;
 
 ALTER TABLE pedido_personalizado ADD COLUMN IF NOT EXISTS precio_estimado NUMERIC(10,2);

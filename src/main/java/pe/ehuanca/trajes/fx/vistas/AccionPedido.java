@@ -24,7 +24,6 @@ public final class AccionPedido {
     private AccionPedido() {
     }
 
-    /** Botón (o etiqueta) de la acción; {@code despues} se ejecuta si la acción se completó. */
     public static Node crear(Servicios s, PedidoResumen p, Runnable despues) {
         return switch (p.estado()) {
             case "PENDIENTE" -> botonErht("Cotizar", Feather.DOLLAR_SIGN, () -> cotizarErht(s, p, despues));
@@ -70,7 +69,6 @@ public final class AccionPedido {
         }
     }
 
-    /** Para entregar, el pedido debe estar pagado: si falta saldo, ofrece registrarlo antes. */
     private static void entregarErht(Servicios s, PedidoResumen p, Runnable despues) {
         String preguntaErht = p.saldo().signum() > 0
                 ? "Falta cobrar " + UtilidadesInterfaz.soles(p.saldo()) + " del pedido N° " + p.idPedido() + ".\n"

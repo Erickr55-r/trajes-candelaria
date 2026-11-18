@@ -61,7 +61,6 @@ import java.util.Set;
  */
 public class DetalleTrajeVista extends BorderPane {
 
-    /** Igual que AlquilerServicio: 10% para conjuntos que alquilan 5 trajes o más. */
     private static final BigDecimal DESCUENTO_CONJUNTO = new BigDecimal("0.90");
     private static final int MINIMO_DESCUENTO = 5;
     private static final Locale ES = new Locale("es", "PE");
@@ -69,7 +68,6 @@ public class DetalleTrajeVista extends BorderPane {
     private final Servicios sErht;
     private final VistaPortalCliente portalErht;
     private final TrajeFila trajeErht;
-    /** Trajes del mismo modelo (misma danza, personaje, color y género), activos. */
     private final List<TrajeFila> modeloErht;
     private final Set<LocalDate> ocupadosErht = new HashSet<>();
 
@@ -84,7 +82,6 @@ public class DetalleTrajeVista extends BorderPane {
     private final Label mesTituloErht = new Label();
     private YearMonth mesErht;
 
-    // resumen
     private final Label rAlquilerTextoErht = new Label();
     private final Label rAlquilerErht = new Label();
     private final Label rDescuentoTextoErht = new Label();
@@ -95,7 +92,6 @@ public class DetalleTrajeVista extends BorderPane {
     private final Label rAvisoErht = new Label();
     private final Button solicitarErht = new Button("Solicitar reserva");
 
-    /** Trajes que se apartarían con la selección actual. */
     private List<TrajeFila> elegidosErht = List.of();
 
     public DetalleTrajeVista(Servicios s, VistaPortalCliente portal, TrajeFila traje, LocalDate desde, LocalDate hasta) {
@@ -142,7 +138,7 @@ public class DetalleTrajeVista extends BorderPane {
 
         VBox resumenErht = resumenErht();
         BorderPane.setMargin(resumenErht, new Insets(18, 38, 30, 6));
-        setRight(resumenErht);   // fija: no se mueve con el scroll
+        setRight(resumenErht);
 
         recojoErht.valueProperty().addListener((o, a, b) -> {
             if (b != null) {
@@ -160,8 +156,6 @@ public class DetalleTrajeVista extends BorderPane {
         return a.danza().equals(b.danza()) && a.personaje().equals(b.personaje())
                 && Objects.equals(a.color(), b.color()) && Objects.equals(a.genero(), b.genero());
     }
-
-    // ------------------------------------------------------------------ fotos
 
     private VBox columnaFotosErht() {
         List<URL> fotosErht = new ArrayList<>();
@@ -235,8 +229,6 @@ public class DetalleTrajeVista extends BorderPane {
         p.getChildren().setAll(chakanaErht, t);
     }
 
-    // ------------------------------------------------------------------ información
-
     private VBox columnaDatosErht() {
         Label metaErht = new Label(UtilidadesInterfaz.espaciado(trajeErht.danza()) + "  •  " + UtilidadesInterfaz.espaciado(trajeErht.color() == null ? "—" : trajeErht.color()));
         metaErht.getStyleClass().add("traje-datos");
@@ -259,7 +251,6 @@ public class DetalleTrajeVista extends BorderPane {
         descErht.setWrapText(true);
         descErht.setMinHeight(Region.USE_PREF_SIZE);
 
-        // Piezas
         VBox piezasErht = new VBox(8);
         List<PiezaFila> listaErht = sErht.trajes().piezas(trajeErht.idTraje());
         if (listaErht.isEmpty()) {
@@ -273,7 +264,6 @@ public class DetalleTrajeVista extends BorderPane {
             piezasErht.getChildren().add(l);
         }
 
-        // Tallas del modelo (clic para ver otra talla)
         FlowPane tallasErht = new FlowPane(8, 8);
         for (String t : UtilidadesInterfaz.TALLAS) {
             List<TrajeFila> deTallaErht = modeloErht.stream().filter(m -> t.equals(m.talla())).toList();
@@ -290,7 +280,6 @@ public class DetalleTrajeVista extends BorderPane {
             tallasErht.getChildren().add(b);
         }
 
-        // Fechas, cantidad, conjunto
         GridPane fechasErht = new GridPane();
         fechasErht.setHgap(14);
         fechasErht.setVgap(6);
@@ -331,8 +320,6 @@ public class DetalleTrajeVista extends BorderPane {
         VBox.setMargin(l, new Insets(10, 0, 0, 0));
         return l;
     }
-
-    // ------------------------------------------------------------------ calendario
 
     private VBox calendarioCajaErht() {
         Button antesErht = new Button(null, UtilidadesInterfaz.icono(Feather.CHEVRON_LEFT));
@@ -405,8 +392,6 @@ public class DetalleTrajeVista extends BorderPane {
         }
     }
 
-    // ------------------------------------------------------------------ resumen
-
     private VBox resumenErht() {
         Label tituloErht = new Label("Resumen de tu reserva");
         tituloErht.getStyleClass().add("resumen-titulo");
@@ -453,7 +438,6 @@ public class DetalleTrajeVista extends BorderPane {
         return h;
     }
 
-    /** Fechas cambiaron: vuelve a ver cuántos trajes del modelo están libres (fn_trajes_disponibles). */
     private void recalcularErht() {
         pintarCalendarioErht();
         LocalDate a = recojoErht.getValue();
@@ -468,7 +452,6 @@ public class DetalleTrajeVista extends BorderPane {
             duracionErht.setText("Revisa las fechas");
         }
         boolean esteLibreErht = libresErht.stream().anyMatch(t -> t.idTraje().equals(trajeErht.idTraje()));
-        // el traje elegido va primero; después los del mismo modelo
         List<TrajeFila> ordenErht = new ArrayList<>(libresErht);
         ordenErht.sort(Comparator.comparing((TrajeFila t) -> !t.idTraje().equals(trajeErht.idTraje())));
         elegidosErht = ordenErht;
@@ -482,10 +465,6 @@ public class DetalleTrajeVista extends BorderPane {
         recalcularResumenErht();
     }
 
-    /**
-     * Recalcula el resumen de la reserva: alquiler, descuento por conjunto (10% desde 5 trajes), garantía
-     * reembolsable y total. Usa el mismo redondeo que el servicio para que el monto mostrado sea el cobrado.
-     */
     private void recalcularResumenErht() {
         LocalDate a = recojoErht.getValue();
         LocalDate b = devolucionErht.getValue();
@@ -497,7 +476,6 @@ public class DetalleTrajeVista extends BorderPane {
         BigDecimal alquilerErht = BigDecimal.ZERO;
         BigDecimal conDescuentoErht = BigDecimal.ZERO;
         BigDecimal garantiaErht = BigDecimal.ZERO;
-        // El descuento se aplica traje por traje; la garantía se suma completa y se devuelve si no hay daños.
         for (TrajeFila t : selErht) {
             alquilerErht = alquilerErht.add(t.precioAlquiler());
             conDescuentoErht = conDescuentoErht.add(descuentoErht

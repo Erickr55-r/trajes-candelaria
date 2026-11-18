@@ -32,10 +32,6 @@ import javafx.util.Duration;
  */
 public final class AnimacionConfirmacion extends StackPane {
 
-    /**
-     * "Ease-out-back": pasa un poco del tamaño final y vuelve (el rebote del círculo).
-     * Interpolator.SPLINE no sirve: sus puntos de control deben estar entre 0 y 1.
-     */
     private static final Interpolator REBOTE = new Interpolator() {
         @Override
         protected double curve(double t) {
@@ -45,7 +41,6 @@ public final class AnimacionConfirmacion extends StackPane {
         }
     };
 
-    /** Un botón de la confirmación. */
     public record Opcion(String texto, boolean principal, Runnable accion) {}
 
     private AnimacionConfirmacion(String titulo, String mensaje, Opcion... opciones) {
@@ -89,7 +84,6 @@ public final class AnimacionConfirmacion extends StackPane {
         tarjetaErht.setMaxSize(460, Region.USE_PREF_SIZE);
         getChildren().add(tarjetaErht);
 
-        // Animación: velo y tarjeta aparecen, el círculo rebota y el check se dibuja.
         setOpacity(0);
         circuloErht.setScaleX(0);
         circuloErht.setScaleY(0);
@@ -104,7 +98,6 @@ public final class AnimacionConfirmacion extends StackPane {
         new SequentialTransition(apareceErht, reboteErht, dibujaErht).play();
     }
 
-    /** Muestra la confirmación encima de {@code capa} (un StackPane que cubre la ventana). */
     public static void mostrar(StackPane capa, String titulo, String mensaje, Opcion... opciones) {
         capa.getChildren().removeIf(n -> n instanceof AnimacionConfirmacion);
         capa.getChildren().add(new AnimacionConfirmacion(titulo, mensaje, opciones));

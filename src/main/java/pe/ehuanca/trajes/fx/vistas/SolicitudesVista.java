@@ -31,7 +31,6 @@ import java.util.List;
 public class SolicitudesVista extends VBox {
 
     private final Servicios sErht;
-    /** Avisa al panel para actualizar la insignia del menú. */
     private final Runnable alCambiarErht;
     private final VBox listaErht = new VBox(16);
     private final Label cantidadErht = UtilidadesInterfaz.subtitulo("");
@@ -76,14 +75,13 @@ public class SolicitudesVista extends VBox {
         Label haceErht = new Label(antiguedad(f.creadoEn()), UtilidadesInterfaz.icono(Feather.CLOCK, 13));
         haceErht.getStyleClass().addAll("etiqueta-opcion", "etiqueta-opcion-hace");
         if (Duration.between(f.creadoEn(), LocalDateTime.now()).toHours() >= 24) {
-            haceErht.getStyleClass().add("etiqueta-opcion-hace-viejo");   // más de un día esperando: resalta
+            haceErht.getStyleClass().add("etiqueta-opcion-hace-viejo");
         }
         Label numeroErht = new Label("N° " + f.idAlquiler());
         numeroErht.getStyleClass().add("traje-codigo");
         HBox cabeceraErht = new HBox(12, new VBox(4, clienteErht, contactoErht), UtilidadesInterfaz.espacio(), numeroErht, haceErht);
         cabeceraErht.setAlignment(Pos.CENTER_LEFT);
 
-        // trajes
         VBox trajesErht = new VBox(4);
         for (AlquilerDetalleTraje t : sErht.alquileres().trajes(f.idAlquiler())) {
             Label l = new Label(t.personaje() + " · " + t.danza() + "  (talla " + t.talla() + ", " + t.codigo() + ")",
@@ -151,7 +149,6 @@ public class SolicitudesVista extends VBox {
         return cajaErht;
     }
 
-    /** "hace 5 min", "hace 2 h", "hace 3 días". */
     static String antiguedad(LocalDateTime desde) {
         Duration d = Duration.between(desde, LocalDateTime.now());
         long minErht = Math.max(0, d.toMinutes());

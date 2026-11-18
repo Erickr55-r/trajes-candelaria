@@ -24,11 +24,8 @@ public final class PrendaTenible {
     private final String nombreErht;
     private final int anchoErht;
     private final int altoErht;
-    /** Píxeles originales en ARGB (sin premultiplicar). No se modifican nunca. */
     private final int[] originalErht;
-    /** Buffer reutilizable para el resultado del teñido. */
     private final int[] resultadoErht;
-    /** Imagen que se muestra; se reescribe en cada cambio de color. */
     private final WritableImage imagenErht;
     private final double fraccionTransparenteErht;
     private Color colorErht = Color.WHITE;
@@ -52,10 +49,6 @@ public final class PrendaTenible {
         aplicarColor(Color.WHITE);
     }
 
-    /**
-     * Teñido de la capa: rgb = rgb_original × color, conservando el alfa de cada píxel.
-     * Como el render de la prenda es claro, multiplicar conserva sus sombras y pliegues con el nuevo color.
-     */
     public void aplicarColor(Color nuevo) {
         this.colorErht = nuevo;
         int cr = (int) Math.round(nuevo.getRed() * 255);
@@ -68,7 +61,6 @@ public final class PrendaTenible {
                 resultadoErht[i] = 0;
                 continue;
             }
-            // Cada canal se multiplica por el del color elegido (0–255): el blanco deja la prenda igual.
             int r = ((p >> 16) & 0xFF) * cr / 255;
             int g = ((p >> 8) & 0xFF) * cg / 255;
             int b = (p & 0xFF) * cb / 255;
@@ -85,7 +77,6 @@ public final class PrendaTenible {
         return nombreErht;
     }
 
-    /** Proporción de píxeles totalmente transparentes (una capa de prenda bien hecha suele pasar de 0.5). */
     public double fraccionTransparente() {
         return fraccionTransparenteErht;
     }

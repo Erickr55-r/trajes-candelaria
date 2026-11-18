@@ -48,8 +48,6 @@ public class TrajeServicio {
 
     private static final RowMapper<Opcion> OPCION = (rs, i) -> new Opcion(rs.getInt("id"), rs.getString("nombre"));
 
-    // ------------------------------------------------------------------ consultas
-
     public List<TrajeFila> listar(Integer idDanza, String estado, String talla, String texto) {
         StringBuilder sqlErht = new StringBuilder("""
                 SELECT t.id_traje, t.codigo, d.nombre AS danza, t.personaje, t.genero, t.talla, t.color,
@@ -140,9 +138,6 @@ public class TrajeServicio {
                 rs.getBigDecimal("costo"), rs.getString("detalle")), idTraje);
     }
 
-    // ------------------------------------------------------------------ cambios
-
-    /** Crea un traje nuevo (idTraje null) o actualiza uno existente. Devuelve su id. */
     public int guardar(Integer idTraje, String codigo, int idDanza, String personaje, String genero, String talla,
                        String color, BigDecimal precio, BigDecimal garantia, LocalDate fechaAdquisicion) {
         String codigoLimpioErht = codigo.trim().toUpperCase();
@@ -176,7 +171,6 @@ public class TrajeServicio {
         jdbcErht.update("DELETE FROM pieza WHERE id_pieza = ?", idPieza);
     }
 
-    /** Envía el traje a lavado o reparación: queda bloqueado para alquilar. */
     @Transactional
     public void enviarAMantenimiento(int idTraje, String tipo, String detalle) {
         validarSinAlquileresActivosErht(idTraje, "enviar a mantenimiento");
@@ -187,7 +181,6 @@ public class TrajeServicio {
         jdbcErht.update("UPDATE traje SET estado = 'MANTENIMIENTO' WHERE id_traje = ?", idTraje);
     }
 
-    /** Cierra el mantenimiento abierto, registra su costo y deja el traje disponible. */
     @Transactional
     public void terminarMantenimiento(int idTraje, BigDecimal costo) {
         jdbcErht.update("""

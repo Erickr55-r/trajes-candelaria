@@ -58,9 +58,7 @@ public class CatalogoVista extends VBox {
     private enum Estado { HOY, LUEGO, MANTENIMIENTO }
 
     private final Servicios sErht;
-    /** Botón de la tarjeta: la tienda abre Nueva reserva; el cliente, el detalle del traje. */
     private final java.util.function.BiConsumer<TrajeFila, LocalDate> alReservarErht;
-    /** Clic en la tarjeta: la tienda abre el diálogo del traje (doble clic); el cliente, el detalle (un clic). */
     private final java.util.function.Consumer<TrajeFila> alAbrirErht;
     private final boolean tiendaErht;
 
@@ -153,8 +151,6 @@ public class CatalogoVista extends VBox {
         barraErht.getStyleClass().add("barra-filtros");
         return barraErht;
     }
-
-    // ------------------------------------------------------------------ datos
 
     private void cargarErht() {
         Opcion d = fDanzaErht.getValue();
